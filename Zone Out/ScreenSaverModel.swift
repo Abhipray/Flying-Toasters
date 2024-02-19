@@ -17,6 +17,9 @@ class ScreenSaverModel {
     /// A Boolean value that indicates that game assets have loaded.
     var readyToStart = false
     
+    var numberOfToasters: Double = 3
+    var toastLevel: Int = 1
+    
     static let gameTime = 35
     var timeLeft = gameTime
     
@@ -75,8 +78,8 @@ class ScreenSaverModel {
             
             let line = FromToByAnimation<Transform>(
                 name: "line",
-                from: .init(scale: .init(repeating: 1), translation: simd_float(start.vector)),
-                to: .init(scale: .init(repeating: 1), translation: simd_float(end.vector)),
+                from: .init(scale: .init(repeating: 0.01), translation: simd_float(start.vector)),
+                to: .init(scale: .init(repeating: 0.01), translation: simd_float(end.vector)),
                 duration: speed,
                 bindTarget: .transform
             )
