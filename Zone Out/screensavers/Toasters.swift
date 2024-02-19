@@ -66,27 +66,16 @@ func spawnToasterExact(start: Point3D, end: Point3D, speed: Double) async throws
     toaster.name = "CToaster\(toasterNumber)"
     toasterNumber += 1
     
-//    toaster.components[PhysicsBodyComponent.self] = PhysicsBodyComponent()
-    print("Scale before \(toaster.scale) \(toaster.transform.scale)")
-    toaster.scale = SIMD3<Float>(x: 0.01, y: 0.01, z: 0.01)
-    print("Scale after \(toaster.scale) \(toaster.transform.scale)")
+    toaster.components[PhysicsBodyComponent.self] = PhysicsBodyComponent()
+    toaster.scale = SIMD3<Float>(x: 0.005, y: 0.005, z: 0.005)
     toaster.position = simd_float(start.vector + .init(x: 0, y: 0, z: -0.7))
     
-//    var accessibilityComponent = AccessibilityComponent()
-//    accessibilityComponent.label = "Toaster"
-//    accessibilityComponent.value = "Grumpy"
-//    accessibilityComponent.isAccessibilityElement = true
-//    accessibilityComponent.traits = [.button, .playsSound]
-//    accessibilityComponent.systemActions = [.activate]
-//    toaster.components[AccessibilityComponent.self] = accessibilityComponent
-    
     let animation = toasterMovementAnimations[toasterPathsIndex]
-//    
-//    print("Playing toaster animation")
+
     toaster.playAnimation(animation, transitionDuration: 1.0, startsPaused: false)
-//    toaster.setMaterialParameterValues(parameter: "saturation", value: .float(0.0))
-//    toaster.setMaterialParameterValues(parameter: "animate_texture", value: .bool(false))
-//    
+    toaster.setMaterialParameterValues(parameter: "saturation", value: .float(0.0))
+    toaster.setMaterialParameterValues(parameter: "animate_texture", value: .bool(false))
+    
     toasterAnimate(toaster, kind: .flapWings, shouldRepeat: true)
     
     spaceOrigin.addChild(toaster)

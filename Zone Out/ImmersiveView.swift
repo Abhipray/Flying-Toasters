@@ -20,25 +20,6 @@ struct ImmersiveView: View {
             // The root entity.
             content.add(spaceOrigin)
             content.add(cameraAnchor)
-            
-            
-//            // Add the initial RealityKit content
-//            if let immersiveContentEntity = try? await Entity(named: "flying_toasters", in: realityKitContentBundle) {
-//                content.add(immersiveContentEntity)
-//
-//                // Add an ImageBasedLight for the immersive content
-//                guard let resource = try? await EnvironmentResource(named: "ImageBasedLight") else { return }
-//                let iblComponent = ImageBasedLightComponent(source: .single(resource), intensityExponent: 0.25)
-//                immersiveContentEntity.components.set(iblComponent)
-//                immersiveContentEntity.components.set(ImageBasedLightReceiverComponent(imageBasedLight: immersiveContentEntity))
-//
-//                // Put skybox here.  See example in World project available at
-//                // https://developer.apple.com/
-//
-//            }
-        
-            
-            
         }
         .onReceive(timer) { _ in
             print("Time left \(screenSaverModel.timeLeft)")
@@ -61,7 +42,7 @@ struct ImmersiveView: View {
                 }
             } else if screenSaverModel.timeLeft == 0 {
                 print("Game finished.")
-                screenSaverModel.timeLeft = ScreenSaverModel.gameTime
+                screenSaverModel.reset()
             }
             
         }

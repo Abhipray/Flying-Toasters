@@ -24,14 +24,12 @@ struct ContentView: View {
             VStack {
                 @Bindable var screenSaverModel = screenSaverModel
                 
-                Model3D(named: "Scene", bundle: realityKitContentBundle)
-                    .padding(.bottom, 50).hoverEffect()
-                
                 Text("Flying Toasters")
                 
-                Toggle("Enter Immersive Space", isOn: $showImmersiveSpace)
+                Toggle(showImmersiveSpace ? "Stop" : "Start", isOn: $showImmersiveSpace)
                     .toggleStyle(.button)
                     .padding(.top, 50)
+
                 
                 // Display the number of toasters
                 Text("Number of toasters: \(Int(screenSaverModel.numberOfToasters))")
