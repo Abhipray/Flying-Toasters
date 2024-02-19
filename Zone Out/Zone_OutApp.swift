@@ -6,16 +6,20 @@
 //
 
 import SwiftUI
+import RealityKit
 
 @main
 struct Zone_OutApp: App {
-    var body: some Scene {
-        WindowGroup {
+    @State private var screenSaverModel = ScreenSaverModel()
+    
+    var body: some SwiftUI.Scene {
+        WindowGroup("ScreenSavers", id: "main") {
             ContentView()
+                .environment(screenSaverModel)
         }
 
         ImmersiveSpace(id: "ImmersiveSpace") {
-            ImmersiveView()
-        }.immersionStyle(selection: .constant(.progressive), in: .progressive)
+            ImmersiveView().environment(screenSaverModel)
+        }.immersionStyle(selection: .constant(.full), in: .full)
     }
 }

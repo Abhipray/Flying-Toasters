@@ -13,14 +13,16 @@ struct ContentView: View {
 
     @State private var showImmersiveSpace = false
     @State private var immersiveSpaceIsShown = false
-
+    
+    
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
+    @Environment(ScreenSaverModel.self) var screenSaverModel
 
     var body: some View {
         VStack {
             Model3D(named: "Scene", bundle: realityKitContentBundle)
-                .padding(.bottom, 50)
+                .padding(.bottom, 50).hoverEffect()
 
             Text("Hello, world!")
 
