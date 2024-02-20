@@ -60,7 +60,9 @@ def Xform "Root"
             def RealityKitStruct "Shape"
             {
                 float3 extent = (180.04044, 66.70497, 89.0094)
-                token shapeType = "Box"
+                float height = 66.70497
+                float radius = 90.02022
+                token shapeType = "Capsule"
 
                 def RealityKitStruct "pose"
                 {
@@ -81,7 +83,10 @@ def Xform "Root"
                     color3f inputs:diffuseColor = (1, 1, 1) (
                         colorSpace = "srgb_displayp3"
                     )
-                    float inputs:metallic = 0.7
+                    color3f inputs:emissiveColor = (0.7066688, 0.7066688, 0.7066688) (
+                        colorSpace = "srgb_displayp3"
+                    )
+                    float inputs:metallic = 0.2
                 }
             }
         }
