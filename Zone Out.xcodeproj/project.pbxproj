@@ -19,6 +19,7 @@
 		2A4A069E2B82F9B900512032 /* GlobalEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4A069D2B82F9B900512032 /* GlobalEntities.swift */; };
 		2A4A06A22B83087800512032 /* ScreenSaverModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4A06A12B83087800512032 /* ScreenSaverModel.swift */; };
 		2A4A06A42B833F3400512032 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4A06A32B833F3400512032 /* Extensions.swift */; };
+		2A4A06A62B84412C00512032 /* Flying-Toasters-HD.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2A4A06A52B84412B00512032 /* Flying-Toasters-HD.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		2A4A069D2B82F9B900512032 /* GlobalEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalEntities.swift; sourceTree = "<group>"; };
 		2A4A06A12B83087800512032 /* ScreenSaverModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenSaverModel.swift; sourceTree = "<group>"; };
 		2A4A06A32B833F3400512032 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		2A4A06A52B84412B00512032 /* Flying-Toasters-HD.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Flying-Toasters-HD.mp3"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +100,7 @@
 				2A4A067D2B81B47A00512032 /* ImmersiveView.swift */,
 				2A4A067F2B81B47A00512032 /* ImageBasedLighting.skybox */,
 				2A4A06812B81B47C00512032 /* Assets.xcassets */,
+				2A4A06A52B84412B00512032 /* Flying-Toasters-HD.mp3 */,
 				2A4A06862B81B47C00512032 /* Info.plist */,
 				2A4A06832B81B47C00512032 /* Preview Content */,
 				2A4A06A12B83087800512032 /* ScreenSaverModel.swift */,
@@ -229,6 +232,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A4A06A62B84412C00512032 /* Flying-Toasters-HD.mp3 in Resources */,
 				2A4A06822B81B47C00512032 /* Assets.xcassets in Resources */,
 				2A4A06852B81B47C00512032 /* Preview Assets.xcassets in Resources */,
 				2A4A06802B81B47A00512032 /* ImageBasedLighting.skybox in Resources */,
@@ -409,6 +413,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Flying Toasters";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -435,6 +441,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Flying Toasters";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
