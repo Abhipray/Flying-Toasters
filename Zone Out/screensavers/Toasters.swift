@@ -25,14 +25,14 @@ func blinkPortal(duration: TimeInterval, blinkTimes: Int) {
     
     Timer.scheduledTimer(withTimeInterval: blinkInterval, repeats: true) { timer in
         // Update the opacity
-        updatePortalOpacity(to: blinkCount % 2 == 0 ? 0.95 : 1.0)
+        updatePortalOpacity(to: blinkCount % 2 == 0 ? 1.0 : 0.0)
         
         // Increment the blink count and stop the timer if needed
         blinkCount += 1
         if blinkCount / 2 >= blinkTimes {
             timer.invalidate()
             // Make sure the portal is visible at the end of the blinking
-            updatePortalOpacity(to: 1.0)
+            updatePortalOpacity(to: 0.0)
         }
     }
 }

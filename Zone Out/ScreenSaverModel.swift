@@ -15,7 +15,7 @@ func calculateRotationAngle(from startPoint: SIMD3<Double>, to endPoint: SIMD3<D
     let directionVector = endPoint - startPoint
     let normalizedDirection = normalize(directionVector)
     
-    let forwardVector = SIMD3<Double>(0, 0, -1) // Assuming forward is along the -z axis
+    let forwardVector = SIMD3<Double>(0, 0, 1) 
     let dotProduct = dot(normalize(forwardVector), normalizedDirection)
     let angleCosine = acos(dotProduct)
     

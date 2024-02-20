@@ -17,6 +17,7 @@ struct ContentView: View {
     @State private var isMusicPlaying = false
     @State private var audioPlayer: AVAudioPlayer?
     @State private var showingCredits = false
+    @State private var wasAudioPlayingBeforeStop = false
     
     
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
@@ -25,6 +26,7 @@ struct ContentView: View {
 
     var body: some View {
         GeometryReader {geometry in
+        ScrollView {
             VStack {
                 
                 Spacer()
@@ -99,7 +101,7 @@ struct ContentView: View {
                 }
                 .padding()
                 
-    
+                
                 
                 Button(action: {
                     self.showingCredits = true
@@ -114,7 +116,7 @@ struct ContentView: View {
                 .sheet(isPresented: $showingCredits) {
                     CreditsView()
                 }
-            
+                
                 Spacer()
                 
             }
@@ -123,6 +125,16 @@ struct ContentView: View {
             .onChange(of: showImmersiveSpace) { _, newValue in
                 Task {
                     if newValue {
+                        // If the immersive space is started
+                        if wasAudioPlayingBeforeStop {
+                            // Resume audio only if it was playing before stopping
+                            isMusicPlaying = true
+                            self.audioPlayer?.play() // Ensure this function starts playing the audio
+                        } else {
+                            // If the immersive space is stopped
+                            wasAudioPlayingBeforeStop = isMusicPlaying // Remember if audio was playing
+                            self.audioPlayer?.stop() // Ensure this function stops the audio
+                        }
                         switch await openImmersiveSpace(id: "ImmersiveSpace") {
                         case .opened:
                             immersiveSpaceIsShown = true
@@ -133,12 +145,15 @@ struct ContentView: View {
                             showImmersiveSpace = false
                         }
                     } else if immersiveSpaceIsShown {
+                        wasAudioPlayingBeforeStop = isMusicPlaying
+                        self.audioPlayer?.stop() // Ensure this function stops the audio
                         await dismissImmersiveSpace()
                         immersiveSpaceIsShown = false
                     }
                 }
             }
         }
+    }
     }
 }
 

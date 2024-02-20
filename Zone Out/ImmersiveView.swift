@@ -29,9 +29,9 @@ struct ImmersiveView: View {
             }
             
             portal.position = simd_float(.init(x:toasterSrcPoint.x, y:toasterSrcPoint.y, z:toasterSrcPoint.z))
-            portal.scale = SIMD3<Float>(x:15, y: 15, z: 15)
+            portal.scale = SIMD3<Float>(x:5, y: 5, z: 5)
             
-            content.add(portal)
+//            content.add(portal)
             toasterPortal = portal
         }
         .onReceive(timer) { _ in
