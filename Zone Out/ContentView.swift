@@ -33,19 +33,28 @@ struct ContentView: View {
                 
                 Image("flying_toasters_splashscreen")
                     .resizable()
-                    .frame(width: 180, height: 180)
+                    .frame(width: 180, height: 180).help("Tap on me to reset the screensaver timer!")
                 
-                Text("Flying Toasters").padding()
+                Text("Flying Toasters")
+                    .font(.title) // Makes the font size much larger
+                    .fontWeight(.bold) // Makes the text bold
+                    .foregroundColor(.primary) // Uses the primary color, which adapts to light/dark mode
+                    .padding() // Adds some padding around the text
+                    .background(Color.blue.opacity(0.05)) // Adds a light blue background with some transparency
+                    .cornerRadius(20) // Rounds the corners of the background
+                    .shadow(radius: 5) // Adds a shadow for a 3D effect
+                    .help("A screensaver")
                 
                 Toggle(showImmersiveSpace ? "Stop" : "Start", isOn: $showImmersiveSpace)
                     .toggleStyle(.button)
                     .padding()
+                    .help("Start or stop the screensaver")
                 
                 
                 // Display the number of toasters
                 @Bindable var screenSaverModel = screenSaverModel
                 Text("Number of toasters: \(Int(screenSaverModel.numberOfToastersConfig))")
-                    .padding()
+                    .help("Number of toasters flying at any given time")
                 
                 // Slider for choosing the number of toasters
                 Slider(value: $screenSaverModel.numberOfToastersConfig, in: 10...20, step: 1)
@@ -56,7 +65,6 @@ struct ContentView: View {
                 
                 // Display the toast level
                 Text("Toast level: \(toastLevels[screenSaverModel.toastLevelConfig])")
-                    .padding()
                 
                 // Dial (Picker) for choosing the toast level
                 Picker("Toast Level", selection: $screenSaverModel.toastLevelConfig) {
@@ -66,7 +74,6 @@ struct ContentView: View {
                 }
                 .pickerStyle(.segmented)
                 .frame(maxWidth:300)
-                .padding()
                 
                 
                 // Music controls
