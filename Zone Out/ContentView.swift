@@ -45,6 +45,14 @@ struct ContentView: View {
                     .shadow(radius: 5) // Adds a shadow for a 3D effect
                     .help("A screensaver")
                 
+                RealityView { content in
+                            let model = ModelEntity(
+                                         mesh: .generateSphere(radius: 0.05),
+                                         materials: [SimpleMaterial(color: .white, isMetallic: true)])
+                            model.components[OpacityComponent.self] = OpacityComponent(opacity:0.1)
+                            content.add(model)
+                        }
+                
                 Toggle(showImmersiveSpace ? "Stop" : "Start", isOn: $showImmersiveSpace)
                     .toggleStyle(.button)
                     .padding()
