@@ -10,15 +10,20 @@
 
 def Xform "Root"
 {
+    reorder nameChildren = ["toaster", "Material", "Material_wing"]
     def "toaster" (
         active = true
         prepend apiSchemas = ["MaterialBindingAPI"]
-        prepend references = @toaster.usdz@
+        customData = {
+            float3 rotationEulerHint = (0, 0, 0)
+        }
+        references = @toaster.usdz@
     )
     {
         rel material:binding = </Root/Material> (
             bindMaterialAs = "weakerThanDescendants"
         )
+        quatf xformOp:orient = (1, 0, 0, 0)
         float3 xformOp:scale = (0.01, 0.01, 0.01)
         float3 xformOp:translate = (0, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
@@ -80,14 +85,35 @@ def Xform "Root"
 
                 over "Shader"
                 {
-                    color3f inputs:diffuseColor = (1, 1, 1) (
+                    color3f inputs:diffuseColor = (0.9575176, 1, 0.081351794) (
                         colorSpace = "srgb_displayp3"
                     )
                     color3f inputs:emissiveColor = (0.7066688, 0.7066688, 0.7066688) (
                         colorSpace = "srgb_displayp3"
                     )
-                    float inputs:metallic = 0.2
+                    float inputs:metallic = 0.8
                 }
+            }
+        }
+
+        over "Geom"
+        {
+            over "wings" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
+            {
+                rel material:binding = </Root/Material_wing> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+            }
+
+            over "wings_001" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
+            {
+                rel material:binding = </Root/Material_wing> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
             }
         }
     }
@@ -124,6 +150,37 @@ def Xform "Root"
             )
             float inputs:metallic = 1
             float inputs:roughness = 0.9
+            token outputs:surface
+        }
+    }
+
+    def Material "Material_wing"
+    {
+        token outputs:mtlx:surface.connect = </Root/Material_wing/PreviewSurface.outputs:out>
+        token outputs:realitykit:vertex
+        prepend token outputs:surface.connect = </Root/Material_wing/UsdPreviewSurface.outputs:surface>
+        float2 ui:nodegraph:realitykit:subgraphOutputs:pos = (299.25, 99.5)
+        float2 ui:nodegraph:realitykit:subgraphOutputs:size = (181.5, 99)
+
+        def Shader "PreviewSurface" (
+            active = false
+        )
+        {
+            uniform token info:id = "ND_UsdPreviewSurface_surfaceshader"
+            token outputs:out
+            float2 ui:nodegraph:node:pos = (74.25, 99.5)
+            float2 ui:nodegraph:node:size = (148.5, 199)
+        }
+
+        def Shader "UsdPreviewSurface"
+        {
+            uniform token info:id = "UsdPreviewSurface"
+            color3f inputs:diffuseColor = (1, 1, 1) (
+                colorSpace = "srgb_displayp3"
+            )
+            color3f inputs:emissiveColor = (0.96285033, 0.96285033, 0.96285033) (
+                colorSpace = "srgb_displayp3"
+            )
             token outputs:surface
         }
     }

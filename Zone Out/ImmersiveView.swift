@@ -28,13 +28,8 @@ struct ImmersiveView: View {
                     do {
                         let spawnAmount = Int.random(in: 1...maxNumToSpawn)
                         for _ in (0..<spawnAmount) {
-                            var toaster = try await spawnToaster()
+                            var _ = try await spawnToaster(screenSaverModel:screenSaverModel)
                             screenSaverModel.currentNumberOfToasters += 1
-                            // Schedule the removal of the entity after the animation completes
-                            DispatchQueue.main.asyncAfter(deadline: .now() + ToasterSpawnParameters.duration) {
-                                toaster.removeFromParent()
-                                screenSaverModel.currentNumberOfToasters -= 1
-                            }
                         }
                     } catch {
                         print("Error spawning a toaster:", error)
