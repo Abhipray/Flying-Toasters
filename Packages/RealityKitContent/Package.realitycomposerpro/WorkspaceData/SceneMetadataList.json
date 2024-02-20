@@ -36,7 +36,36 @@
       },
       [
         "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "toaster",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
         "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "Material"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "toaster_template",
+        "Materials"
       ],
       {
         "isExpanded" : true,
@@ -54,8 +83,7 @@
       [
         "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
         "Root",
-        "toaster_template",
-        "Materials"
+        "toaster"
       ],
       {
         "isExpanded" : true,

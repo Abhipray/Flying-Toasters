@@ -17,17 +17,15 @@ class ScreenSaverModel {
     /// A Boolean value that indicates that game assets have loaded.
     var readyToStart = false
     
-    var numberOfToasters: Double = 3
-    var toastLevel: Int = 1
+    var numberOfToastersConfig: Double = 10
+    var toastLevelConfig: Int = 1
     
-    static let gameTime = 35
-    var timeLeft = gameTime
+    var currentNumberOfToasters: Int = 0
     
     /// Resets game state information.
     func reset() {
         isPlaying = false
         readyToStart = false
-        timeLeft = ScreenSaverModel.gameTime
     }
     
     /// Preload assets when the app launches to avoid pop-in during the game.
@@ -52,7 +50,7 @@ class ScreenSaverModel {
             
             // Generate animations inside the toaster models.
             let def = toasterTemplate!.availableAnimations[0].definition
-            toasterAnimations[.flapWings] = try .generate(with: AnimationView(source: def, trimStart: 0.0, trimEnd: 5.0))
+            toasterAnimations[.flapWings] = try .generate(with: AnimationView(source: def, speed: 5.0))
             
             generateToasterMovementAnimations()
         
@@ -74,13 +72,13 @@ class ScreenSaverModel {
                 y: start.y + ToasterSpawnParameters.deltaY,
                 z: start.z + ToasterSpawnParameters.deltaZ
             )
-            let speed = ToasterSpawnParameters.speed
+            let duration = ToasterSpawnParameters.duration
             
             let line = FromToByAnimation<Transform>(
                 name: "line",
-                from: .init(scale: .init(repeating: 0.01), translation: simd_float(start.vector)),
-                to: .init(scale: .init(repeating: 0.01), translation: simd_float(end.vector)),
-                duration: speed,
+                from: .init(scale: .init(repeating: toasterScale), translation: simd_float(start.vector)),
+                to: .init(scale: .init(repeating: toasterScale), translation: simd_float(end.vector)),
+                duration: duration,
                 bindTarget: .transform
             )
             

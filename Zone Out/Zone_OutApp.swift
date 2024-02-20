@@ -20,6 +20,6 @@ struct Zone_OutApp: App {
 
         ImmersiveSpace(id: "ImmersiveSpace") {
             ImmersiveView().environment(screenSaverModel)
-        }.immersionStyle(selection: .constant(.full), in: .full)
+        }.immersionStyle(selection: .constant(.progressive), in: .progressive)
     }
 }

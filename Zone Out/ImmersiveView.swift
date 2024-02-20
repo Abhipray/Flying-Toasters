@@ -22,29 +22,24 @@ struct ImmersiveView: View {
             content.add(cameraAnchor)
         }
         .onReceive(timer) { _ in
-            print("Time left \(screenSaverModel.timeLeft)")
-            if screenSaverModel.timeLeft > 0 {
-                screenSaverModel.timeLeft -= 1
-                if (screenSaverModel.timeLeft % 5 == 0 || screenSaverModel.timeLeft == ScreenSaverModel.gameTime - 1) && screenSaverModel.timeLeft > 4 {
-                    Task { @MainActor () -> Void in
-                        do {
-                            let spawnAmount = 3
-                            for _ in (0..<spawnAmount) {
-                                _ = try await spawnToaster()
-                                try await Task.sleep(for: .milliseconds(300))
+            if screenSaverModel.currentNumberOfToasters < Int(screenSaverModel.numberOfToastersConfig) {
+                Task { @MainActor () -> Void in
+                    do {
+                        let spawnAmount = 1
+                        for _ in (0..<spawnAmount) {
+                            var toaster = try await spawnToaster()
+                            screenSaverModel.currentNumberOfToasters += 1
+                            // Schedule the removal of the entity after the animation completes
+                            DispatchQueue.main.asyncAfter(deadline: .now() + ToasterSpawnParameters.duration) {
+                                toaster.removeFromParent()
+                                screenSaverModel.currentNumberOfToasters -= 1
                             }
-                            
-                        } catch {
-                            print("Error spawning a cloud:", error)
                         }
-                        
+                    } catch {
+                        print("Error spawning a toaster:", error)
                     }
                 }
-            } else if screenSaverModel.timeLeft == 0 {
-                print("Game finished.")
-                screenSaverModel.reset()
             }
-            
         }
     }
 }

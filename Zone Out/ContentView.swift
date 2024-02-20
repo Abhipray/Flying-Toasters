@@ -32,20 +32,20 @@ struct ContentView: View {
 
                 
                 // Display the number of toasters
-                Text("Number of toasters: \(Int(screenSaverModel.numberOfToasters))")
+                Text("Number of toasters: \(Int(screenSaverModel.numberOfToastersConfig))")
                     .padding()
                 
                 // Slider for choosing the number of toasters
-                Slider(value: $screenSaverModel.numberOfToasters, in: 3...20, step: 1)
+                Slider(value: $screenSaverModel.numberOfToastersConfig, in: 10...20, step: 1)
                     .padding()
                 
                 // Display the toast level
-                Text("Toast level: \(screenSaverModel.toastLevel)")
+                Text("Toast level: \(screenSaverModel.toastLevelConfig)")
                     .padding()
                 
                 // Dial (Picker) for choosing the toast level
                 let toastLevels : Array = ["Light", "Medium", "Dark"]
-                Picker("Toast Level", selection: $screenSaverModel.toastLevel) {
+                Picker("Toast Level", selection: $screenSaverModel.toastLevelConfig) {
                     ForEach(toastLevels, id: \.self) { toastLevel in
                         Text(toastLevel).tag(toastLevel)
                     }

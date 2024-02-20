@@ -7,9 +7,6 @@
 
 import RealityKit
 
-/// The toasters in the current scene
-var toasterEntities: [Entity] = []
-
 /// The root entity for entities placed during the app.
 let spaceOrigin = Entity()
 

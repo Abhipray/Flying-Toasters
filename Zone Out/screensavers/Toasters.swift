@@ -31,14 +31,13 @@ func spawnToaster() async throws -> Entity {
             y: start.y + ToasterSpawnParameters.deltaY,
             z: start.z + ToasterSpawnParameters.deltaZ
         ),
-        speed: ToasterSpawnParameters.speed
+        speed: ToasterSpawnParameters.duration
     )
     
     // Needs to increment *after* spawnToasterExact()
     toasterPathsIndex += 1
     toasterPathsIndex %= toasterPaths.count
     
-    toasterEntities.append(toaster)
     return toaster
 }
 
@@ -112,8 +111,10 @@ struct ToasterSpawnParameters {
     static var deltaY = -0.12
     static var deltaZ = 12.1
     
-    static var speed = 5.0
+    static var duration = 5.0
 }
+
+var toasterScale : Float = 0.005
 
 /// A counter that advances to the next toaster path.
 var toasterPathsIndex = 0
