@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "flying_toasters_appicon_back.png",
       "idiom" : "vision",
       "scale" : "2x"
     }

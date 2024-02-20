@@ -29,6 +29,10 @@ struct ContentView: View {
                 
                 Spacer()
                 
+                Image("flying_toasters_splashscreen")
+                    .resizable()
+                    .frame(width: 180, height: 180)
+                
                 Text("Flying Toasters").padding()
                 
                 Toggle(showImmersiveSpace ? "Stop" : "Start", isOn: $showImmersiveSpace)
