@@ -22,10 +22,11 @@ struct ImmersiveView: View {
             content.add(cameraAnchor)
         }
         .onReceive(timer) { _ in
-            if screenSaverModel.currentNumberOfToasters < Int(screenSaverModel.numberOfToastersConfig) {
+            var maxNumToSpawn = Int(screenSaverModel.numberOfToastersConfig) - screenSaverModel.currentNumberOfToasters
+            if maxNumToSpawn > 1 {
                 Task { @MainActor () -> Void in
                     do {
-                        let spawnAmount = 1
+                        let spawnAmount = Int.random(in: 1...maxNumToSpawn)
                         for _ in (0..<spawnAmount) {
                             var toaster = try await spawnToaster()
                             screenSaverModel.currentNumberOfToasters += 1

@@ -94,7 +94,6 @@ struct ContentView: View {
                         .foregroundColor(isMusicPlaying ? .green : .red) // Optional color change
                 }
                 .padding()
-                .background(Circle().fill(isMusicPlaying ? Color.green.opacity(0.2) : Color.red.opacity(0.2))) // Optional background
                 
     
                 
