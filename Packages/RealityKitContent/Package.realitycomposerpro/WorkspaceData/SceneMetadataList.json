@@ -74,6 +74,15 @@
       [
         "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
         "Root",
+        "portal"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
         "toaster_template",
         "Materials"
       ],
@@ -183,6 +192,78 @@
       },
       [
         "D66134B1-3681-4A8E-AFE5-29F257229F3B",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "E97B8253-420B-4156-8BD6-6EA01E3B4099" : {
+    "objectMetadataList" : [
+      [
+        "E97B8253-420B-4156-8BD6-6EA01E3B4099",
+        "Root",
+        "background",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "E97B8253-420B-4156-8BD6-6EA01E3B4099",
+        "Root",
+        "background"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "E97B8253-420B-4156-8BD6-6EA01E3B4099",
+        "Root",
+        "background",
+        "Object001"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "E97B8253-420B-4156-8BD6-6EA01E3B4099",
+        "Root",
+        "Fantasy_Sky_Background",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "E97B8253-420B-4156-8BD6-6EA01E3B4099",
+        "Root",
+        "Fantasy_Sky_Background",
+        "Meshes"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "E97B8253-420B-4156-8BD6-6EA01E3B4099",
+        "Root",
+        "Fantasy_Sky_Background",
+        "Meshes",
+        "Sketchfab_model"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "E97B8253-420B-4156-8BD6-6EA01E3B4099",
         "Root"
       ],
       {

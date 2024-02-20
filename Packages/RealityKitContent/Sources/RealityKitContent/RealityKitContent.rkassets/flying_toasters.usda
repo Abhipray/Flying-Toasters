@@ -10,7 +10,7 @@
 
 def Xform "Root"
 {
-    reorder nameChildren = ["toaster", "Material", "Material_wing"]
+    reorder nameChildren = ["toaster", "Material", "Material_wing", "portal"]
     def "toaster" (
         active = true
         prepend apiSchemas = ["MaterialBindingAPI"]
@@ -28,14 +28,17 @@ def Xform "Root"
         float3 xformOp:translate = (0, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
-        def RealityKitComponent "RigidBody" (
-            active = false
-        )
+        def RealityKitComponent "RigidBody"
         {
+            bool gravityEnabled = 0
             uniform token info:id = "RealityKit.RigidBody"
+            bool isCCDEnabled = 1
+            token motionType = "Kinematic"
 
             def RealityKitStruct "massFrame"
             {
+                float m_mass = 0.5
+
                 def RealityKitStruct "m_pose"
                 {
                 }
@@ -182,6 +185,51 @@ def Xform "Root"
                 colorSpace = "srgb_displayp3"
             )
             token outputs:surface
+        }
+    }
+
+    def Cylinder "portal" (
+        active = true
+        prepend apiSchemas = ["MaterialBindingAPI"]
+        customData = {
+            float3 rotationEulerHint = (1.5707964, 0, 0)
+        }
+    )
+    {
+        uniform token axis = "Y"
+        double height = 0.01
+        rel material:binding = </Root/portal/DefaultMaterial>
+        double radius = 0.1
+        quatf xformOp:orient = (0.70710677, 0.70710677, 0, 0)
+        float3 xformOp:translate = (-0.648456, 1.7433527, 0.14439286)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def Material "DefaultMaterial"
+        {
+            token outputs:mtlx:surface
+            token outputs:realitykit:vertex
+            prepend token outputs:surface.connect = </Root/portal/DefaultMaterial/DefaultSurfaceShader.outputs:surface>
+
+            def Shader "DefaultSurfaceShader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0, 0, 0) (
+                    colorSpace = "srgb_displayp3"
+                )
+                color3f inputs:emissiveColor = (0.12518525, 0.12644975, 0.12644975) (
+                    colorSpace = "srgb_displayp3"
+                )
+                float inputs:metallic = 1
+                float inputs:opacity = 1
+                float inputs:roughness = 0.75
+                token outputs:surface
+            }
+        }
+
+        def RealityKitComponent "HierarchicalFade"
+        {
+            uniform token info:id = "RealityKit.HierarchicalFade"
+            float opacity = 1
         }
     }
 }

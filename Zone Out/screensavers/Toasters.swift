@@ -13,10 +13,37 @@ import RealityKitContent
 /// The main toaster model; it's cloned when a new toaster spawns.
 var toasterTemplate: Entity? = nil
 var toasterNumber = 0
+var toasterSrcPoint = (x: 4.0, y: 4.0, z: -6.0)
 
+var toasterPortal : Entity? = nil
+
+
+// A function to blink the portal by updating its opacity
+func blinkPortal(duration: TimeInterval, blinkTimes: Int) {
+    var blinkCount = 0
+    let blinkInterval = duration / TimeInterval(blinkTimes * 2)
+    
+    Timer.scheduledTimer(withTimeInterval: blinkInterval, repeats: true) { timer in
+        // Update the opacity
+        updatePortalOpacity(to: blinkCount % 2 == 0 ? 0.95 : 1.0)
+        
+        // Increment the blink count and stop the timer if needed
+        blinkCount += 1
+        if blinkCount / 2 >= blinkTimes {
+            timer.invalidate()
+            // Make sure the portal is visible at the end of the blinking
+            updatePortalOpacity(to: 1.0)
+        }
+    }
+}
+
+func updatePortalOpacity(to: Float) {
+    // Change opacity of portal
+    toasterPortal?.components[OpacityComponent.self] = .init(opacity:to)
+}
 
 func generateToasterStartEndRotation() -> (Point3D, Point3D, simd_quatf) {
-    let centralPoint = (x: 3.0, y: 3.0, z: -6.0)
+    let centralPoint = toasterSrcPoint
     let range: Double = 1
     
 
@@ -81,6 +108,7 @@ func spawnToaster(screenSaverModel: ScreenSaverModel) async throws -> Entity {
     toaster.position = simd_float(start.vector + .init(x: 0, y: 0, z: -0.0))
     toaster.transform.rotation = rotationQuaternion
     
+    
     // Generate animation
     let line = FromToByAnimation<Transform>(
         name: "line",
@@ -108,6 +136,9 @@ func spawnToaster(screenSaverModel: ScreenSaverModel) async throws -> Entity {
         toaster.removeFromParent()
         screenSaverModel.currentNumberOfToasters -= 1
     }
+    
+    // Block portal
+    blinkPortal(duration: 0.2, blinkTimes: 1)
     
     return toaster
 }

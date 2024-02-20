@@ -20,6 +20,19 @@ struct ImmersiveView: View {
             // The root entity.
             content.add(spaceOrigin)
             content.add(cameraAnchor)
+            
+            guard let portal = await loadFromRealityComposerPro(
+                named: "portal",
+                fromSceneNamed: "flying_toasters"
+            ) else {
+                fatalError("Error loading toaster from Reality Composer Pro project.")
+            }
+            
+            portal.position = simd_float(.init(x:toasterSrcPoint.x, y:toasterSrcPoint.y, z:toasterSrcPoint.z))
+            portal.scale = SIMD3<Float>(x:15, y: 15, z: 15)
+            
+            content.add(portal)
+            toasterPortal = portal
         }
         .onReceive(timer) { _ in
             var maxNumToSpawn = Int(screenSaverModel.numberOfToastersConfig) - screenSaverModel.currentNumberOfToasters
