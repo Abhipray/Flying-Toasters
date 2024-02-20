@@ -137,3 +137,8 @@ extension SIMD4 {
     }
 }
 
+extension Point3D {
+    func toSIMD3() -> SIMD3<Double> {
+        return SIMD3<Double>(x, y, z)
+    }
+}

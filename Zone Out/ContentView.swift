@@ -16,6 +16,7 @@ struct ContentView: View {
     @State private var immersiveSpaceIsShown = false
     @State private var isMusicPlaying = false
     @State private var audioPlayer: AVAudioPlayer?
+    @State private var showingCredits = false
     
     
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
@@ -95,6 +96,22 @@ struct ContentView: View {
                 .padding()
                 .background(Circle().fill(isMusicPlaying ? Color.green.opacity(0.2) : Color.red.opacity(0.2))) // Optional background
                 
+    
+                
+                Button(action: {
+                    self.showingCredits = true
+                }) {
+                    Text("Show Credits")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .cornerRadius(10)
+                        .shadow(radius: 5)
+                }
+                .sheet(isPresented: $showingCredits) {
+                    CreditsView()
+                }
+            
                 Spacer()
                 
             }
