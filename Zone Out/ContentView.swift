@@ -18,21 +18,95 @@ struct ContentView: View {
     @State private var audioPlayer: AVAudioPlayer?
     @State private var showingCredits = false
     @State private var wasAudioPlayingBeforeStop = false
+    @State private var isJiggling = false
     
     
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
     @Environment(ScreenSaverModel.self) var screenSaverModel
+    
+    @State private var secondsElapsed = 0
+    @State private var minutesLeft = Int.max
+    
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var selectedIncrement = 1 // Default to 15 minutes
+    
+    let increments = [("1 Minute", 1), ("5 Minutes", 5), ("15 Minutes", 15), ("30 Minutes", 30), ("1 Hour", 60), ("2 Hours", 120), ("Never", -1)]
+
+    func handleImmersiveSpaceChange(newValue: Bool) {
+        Task {
+            if newValue {
+                // If the immersive space is started
+                if wasAudioPlayingBeforeStop {
+                    // Resume audio only if it was playing before stopping
+                    isMusicPlaying = true
+                    self.audioPlayer?.play() // Ensure this function starts playing the audio
+                } else {
+                    // If the immersive space is stopped
+                    wasAudioPlayingBeforeStop = isMusicPlaying // Remember if audio was playing
+                    self.audioPlayer?.stop() // Ensure this function stops the audio
+                }
+                switch await openImmersiveSpace(id: "ImmersiveSpace") {
+                case .opened:
+                    immersiveSpaceIsShown = true
+                case .error, .userCancelled:
+                    fallthrough
+                @unknown default:
+                    immersiveSpaceIsShown = false
+                    showImmersiveSpace = false
+                }
+            } else if immersiveSpaceIsShown {
+                wasAudioPlayingBeforeStop = isMusicPlaying
+                self.audioPlayer?.stop() // Ensure this function stops the audio
+                await dismissImmersiveSpace()
+                immersiveSpaceIsShown = false
+                secondsElapsed = 0
+            }
+        }
+    }
+    
+    struct AnimConfigView: View {
+        @Environment(\.dismiss) var dismiss
+        
+        var body: some View {
+            VStack(alignment: .center, spacing: 20) {
+                Text("Credits")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundColor(.black) // Ensure text color contrasts with background
+
+                Text("App developed by Your Name")
+                    .foregroundColor(.black) // Change text color
+
+                Text("Icons and graphics provided by Designer Name")
+                    .foregroundColor(.black) // Change text color
+
+                Text("Special thanks to...")
+                    .foregroundColor(.black) // Change text color
+
+                Button("Dismiss") {
+                    dismiss() // Dismiss the credits sheet
+                }
+                .foregroundColor(.blue) // Button text color
+                .padding()
+                .cornerRadius(10)
+
+                Spacer()
+            }
+            .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.white) // Background color of the entire view
+            .cornerRadius(20)
+            .shadow(radius: 10)
+            .padding()
+        }
+    }
 
     var body: some View {
         GeometryReader {geometry in
             ScrollView {
-                VStack {
+                VStack(alignment: .center, spacing: 20) {
                     Spacer()
-                    
-                    Image("flying_toasters_splashscreen")
-                        .resizable()
-                        .frame(width: 180, height: 180).help("Tap on me to reset the screensaver timer!")
                     
                     Text("Flying Toasters")
                         .font(.title) // Makes the font size much larger
@@ -44,23 +118,49 @@ struct ContentView: View {
                         .shadow(radius: 5) // Adds a shadow for a 3D effect
                         .help("A screensaver")
                     
+                    Image("flying_toasters_splashscreen")
+                        .resizable()
+                        .frame(width: 180, height: 180).help("Tap on me to reset the screensaver timer!")
+                        .rotationEffect(.degrees(isJiggling ? 3 : -3), anchor: .center)
+                        .animation(isJiggling ? .linear(duration: 0.1).repeatForever(autoreverses: true) : .default, value: isJiggling)
+                        .onTapGesture {
+                            isJiggling.toggle()
+                            
+                            // Optionally, stop the jiggle after some time
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                isJiggling = false
+                            }
+                            
+                            secondsElapsed = 0
+                        }
+
                     
-                    ZStack {
-                        TimerView()
-                        RealityView { content in
-                            let model = ModelEntity(
-                                mesh: .generateSphere(radius: 0.05),
-                                materials: [SimpleMaterial(color: .white, isMetallic: true)])
-                            model.components[OpacityComponent.self] = OpacityComponent(opacity:0.1)
-                            content.add(model)
+                    Text("\(self.minutesLeft) minutes left until Screen Saver")
+                        .onReceive(timer) { _ in
+                            if minutesLeft != 0 {
+                                secondsElapsed += 1
+                            }
+                        }
+                        .font(.title)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                        .onChange(of: secondsElapsed) {_,newValue in
+                            self.minutesLeft = increments[selectedIncrement].1 - secondsElapsed/60
+                            
+                            if (minutesLeft == 0) {
+//                                handleImmersiveSpaceChange(newValue:true)
+                                self.showImmersiveSpace = true
+                            }
+                        }
+                    
+                    HStack {
+                        Text("Auto start Screen Saver when inactive for")
+                        Picker("Screen Saver Inactivity", selection: $selectedIncrement) {
+                            ForEach(0..<increments.count) {
+                                Text(self.increments[$0].0).tag($0)
+                            }
                         }
                     }
-                    
-                    Toggle(showImmersiveSpace ? "Stop Preview" : "Start Preview", isOn: $showImmersiveSpace)
-                        .toggleStyle(.button)
-                        .padding()
-                        .help("Start or stop preview of the screensaver")
-                    
                     
                     // Display the number of toasters
                     @Bindable var screenSaverModel = screenSaverModel
@@ -119,7 +219,24 @@ struct ContentView: View {
                     }
                     .padding()
                     
+                    Toggle(showImmersiveSpace ? "Stop Preview" : "Start Preview", isOn: $showImmersiveSpace)
+                        .toggleStyle(.button)
+                        .padding()
+                        .help("Start or stop preview of the screensaver")
                     
+                    Button(action: {
+                        self.showingCredits = true
+                    }) {
+                        Text("Screen Saver Settings")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .cornerRadius(10)
+                            .shadow(radius: 5)
+                    }
+                    .sheet(isPresented: $showingCredits) {
+                        AnimConfigView()
+                    }
                     
                     Button(action: {
                         self.showingCredits = true
@@ -141,34 +258,7 @@ struct ContentView: View {
                 .frame(width: geometry.size.width)
                 .padding()
                 .onChange(of: showImmersiveSpace) { _, newValue in
-                    Task {
-                        if newValue {
-                            // If the immersive space is started
-                            if wasAudioPlayingBeforeStop {
-                                // Resume audio only if it was playing before stopping
-                                isMusicPlaying = true
-                                self.audioPlayer?.play() // Ensure this function starts playing the audio
-                            } else {
-                                // If the immersive space is stopped
-                                wasAudioPlayingBeforeStop = isMusicPlaying // Remember if audio was playing
-                                self.audioPlayer?.stop() // Ensure this function stops the audio
-                            }
-                            switch await openImmersiveSpace(id: "ImmersiveSpace") {
-                            case .opened:
-                                immersiveSpaceIsShown = true
-                            case .error, .userCancelled:
-                                fallthrough
-                            @unknown default:
-                                immersiveSpaceIsShown = false
-                                showImmersiveSpace = false
-                            }
-                        } else if immersiveSpaceIsShown {
-                            wasAudioPlayingBeforeStop = isMusicPlaying
-                            self.audioPlayer?.stop() // Ensure this function stops the audio
-                            await dismissImmersiveSpace()
-                            immersiveSpaceIsShown = false
-                        }
-                    }
+                    handleImmersiveSpaceChange(newValue: newValue)
                 }
             }
         }
