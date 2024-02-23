@@ -17,7 +17,7 @@ struct ContentView: View {
     @State private var showingCredits = false
     @State private var wasAudioPlayingBeforeStop = false
     @State private var isJiggling = false
-    
+    @State private var timerString = ""
     
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
@@ -40,59 +40,65 @@ struct ContentView: View {
                         .shadow(radius: 5) // Adds a shadow for a 3D effect
                         .help("A screensaver")
                     
-                    Image("flying_toasters_splashscreen")
-                        .resizable()
-                        .frame(width: 180, height: 180).help("Tap on me to reset the screensaver timer!")
-                        .rotationEffect(.degrees(isJiggling ? 3 : -3), anchor: .center)
-                        .animation(isJiggling ? .linear(duration: 0.1).repeatForever(autoreverses: true) : .default, value: isJiggling)
-                        .onTapGesture {
-                            isJiggling.toggle()
-                            
-                            // Optionally, stop the jiggle after some time
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                isJiggling = false
+                    VStack{
+
+                        Image("flying_toasters_splashscreen")
+                            .resizable()
+                            .frame(width: 256, height: 256).help("Tap on me to reset the screensaver timer!")
+                            .rotationEffect(.degrees(isJiggling ? 4 : -4), anchor: .center)
+                            .animation(isJiggling ? .linear(duration: 0.1).repeatForever(autoreverses: true) : .default, value: isJiggling)
+                            .onTapGesture {
+                                isJiggling.toggle()
+                                
+                                // Optionally, stop the jiggle after some time
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                    isJiggling = false
+                                }
+                                
+                                screenSaverModel.secondsElapsed = 0
                             }
-                            
-                            screenSaverModel.secondsElapsed = 0
+                            .opacity(0.9)
+                        
+                        // Countdown Timer Display
+                        Text(screenSaverModel.getTimerString())
+                            .font(.largeTitle)
+                            .padding()
+                            .background(Color.black.opacity(1.0))
+                            .foregroundColor(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .onChange(of: screenSaverModel.secondsLeft, {timerString = screenSaverModel.getTimerString()})
+                        
+                    }
+                    
+                    HStack{
+                        // Settings Button
+                        Button(action: {
+                            showSettings.toggle()
+                        }) {
+                            Image(systemName: "gear")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 32, height: 32) // Specify the frame to increase the size
+                                .clipShape(Circle())
                         }
-                    
-                    // Countdown Timer Display
-                    Text(screenSaverModel.getTimerString())
-                        .font(.largeTitle)
                         .padding()
-                        .background(Color.black.opacity(0.5))
-                        .foregroundColor(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                    
-                    
-                    // Settings Button
-                    Button(action: {
-                        showSettings.toggle()
-                    }) {
-                        Image(systemName: "gear")
-                            .padding()
-                            .background(Color.gray.opacity(0.7))
-                            .clipShape(Circle())
-                            .foregroundColor(.white)
-                    }
-                    .padding()
-                    .sheet(isPresented: $showSettings) {
-                        SettingsView()
-                    }
-                    
-                    
-                    Button(action: {
-                        self.showingCredits = true
-                    }) {
-                        Text("Show Credits")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding()
-                            .cornerRadius(10)
-                            .shadow(radius: 5)
-                    }
-                    .sheet(isPresented: $showingCredits) {
-                        CreditsView()
+                        .sheet(isPresented: $showSettings) {
+                            SettingsView()
+                        }
+                        
+                        
+                        Button(action: {
+                            self.showingCredits = true
+                        }) {
+                            Image(systemName: "info.circle")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 32, height: 32) // Specify the frame to increase the size
+                                .clipShape(Circle())
+                        }
+                        .sheet(isPresented: $showingCredits) {
+                            CreditsView()
+                        }
                     }
                     
                     Spacer()
@@ -120,8 +126,8 @@ struct SettingsView: View {
         @Bindable var screenSaverModel = screenSaverModel
         NavigationView {
             Form {
-                Section(header: Text("General Settings").font(.headline)) {
-                    Picker("Screen Saver Inactivity", selection: $screenSaverModel.selectedTimeout) {
+                Section(header: Text("").font(.headline)) {
+                    Picker("Start Screen Saver when inactive ", selection: $screenSaverModel.selectedTimeout) {
                         ForEach(0..<screenSaverModel.timeouts.count, id: \.self) { index in
                             Text(screenSaverModel.timeouts[index].0).tag(index)
                         }
@@ -158,18 +164,30 @@ struct SettingsView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     HStack {
-                        Toggle(showImmersiveSpace ? "Stop Preview" : "Start Preview", isOn: $showImmersiveSpace)
-                                .toggleStyle(.button)
-                                .padding()
-                                .help("Start or stop preview of the screensaver")
-                                .onChange(of: showImmersiveSpace) { _, newValue in
-                                    screenSaverModel.handleImmersiveSpaceChange(newValue: newValue)
-                                }
+                        Toggle(isOn: $showImmersiveSpace) {
+                            Image(systemName: showImmersiveSpace ? "eye.slash" : "eye")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 32, height: 32) // Specify the frame to increase the size
+                                .clipShape(Circle())
+                        }
+                        .toggleStyle(.button)
+                        .help("Start or stop preview of the screensaver")
+                        .onChange(of: showImmersiveSpace) { _, newValue in
+                            screenSaverModel.handleImmersiveSpaceChange(newValue: newValue)
+                        }
                         Spacer()
                         
-                        Button("Save & Dismiss") {
+                        
+                        Button(action: {
                             screenSaverModel.handleImmersiveSpaceChange(newValue: false)
                             dismiss()
+                        }) {
+                            Image(systemName: "checkmark")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 32, height: 32) // Specify the frame to increase the size
+                                .clipShape(Circle())
                         }
                     }
                 }
@@ -182,5 +200,5 @@ struct SettingsView: View {
 
 
 #Preview(windowStyle: .automatic) {
-    ContentView()
+    SettingsView()
 }

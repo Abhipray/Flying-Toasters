@@ -47,7 +47,7 @@ class ScreenSaverModel {
     var musicEnabled = false
     var selectedTimeout = 1
     
-    let timeouts = [("1 Minute", 1), ("5 Minutes", 5), ("15 Minutes", 15), ("30 Minutes", 30), ("1 Hour", 60), ("2 Hours", 120), ("Never", -1)]
+    let timeouts = [("For 1 Minute", 1), ("For 5 Minutes", 5), ("For 15 Minutes", 15), ("For 30 Minutes", 30), ("For 1 Hour", 60), ("For 2 Hours", 120), ("Never", -1)]
     
     var immersiveSpaceIsShown = false
     
@@ -78,8 +78,11 @@ class ScreenSaverModel {
         cancellable = Timer.publish(every: 1, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
+                print("timer")
                 guard let strongSelf = self else { return }
-                strongSelf.secondsLeft = strongSelf.timeouts[strongSelf.selectedTimeout].1 - strongSelf.secondsElapsed
+                print("\(strongSelf.secondsElapsed)")
+                strongSelf.secondsElapsed += 1
+                strongSelf.secondsLeft = strongSelf.timeouts[strongSelf.selectedTimeout].1*60 - strongSelf.secondsElapsed
                 
                 if strongSelf.secondsLeft <= 0 {
                     strongSelf.handleImmersiveSpaceChange(newValue: true)
@@ -102,10 +105,7 @@ class ScreenSaverModel {
     }
     
     func getTimerString() -> String {
-        if let timer = timer, timer.isValid {
-            return timeString(from: self.secondsLeft)
-        }
-        return ""
+        return timeString(from: self.secondsLeft)
     }
     
     // Clean up
@@ -187,6 +187,7 @@ class ScreenSaverModel {
             }
             
             self.readyToStart = true
+            self.startTimer()
             
             
         }
