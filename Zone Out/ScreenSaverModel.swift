@@ -10,6 +10,8 @@ import RealityKit
 import RealityKitContent
 import SwiftUI
 import GameplayKit
+import AVFoundation
+import Combine
 
 func calculateRotationAngle(from startPoint: SIMD3<Double>, to endPoint: SIMD3<Double>) -> Double {
     let directionVector = endPoint - startPoint
@@ -42,10 +44,108 @@ class ScreenSaverModel {
     
     var currentNumberOfToasters: Int = 0
     
+    var musicEnabled = false
+    var selectedTimeout = 1
+    
+    let timeouts = [("1 Minute", 1), ("5 Minutes", 5), ("15 Minutes", 15), ("30 Minutes", 30), ("1 Hour", 60), ("2 Hours", 120), ("Never", -1)]
+    
+    var immersiveSpaceIsShown = false
+    
+    var audioPlayer: AVAudioPlayer? = nil
+    
+    var secondsElapsed = 0
+    var secondsLeft = Int.max
+    
+    var timer: Timer?
+    var cancellable: AnyCancellable?
+    
+    // Set externally
+    var openImmersiveSpace: OpenImmersiveSpaceAction?
+    var dismissImmersiveSpace: DismissImmersiveSpaceAction?
+    
     /// Resets game state information.
     func reset() {
         isPlaying = false
         readyToStart = false
+    }
+    
+    // Initialize and start the timer
+    func startTimer() {
+        timer?.invalidate() // Invalidate any existing timer
+        secondsElapsed = 0 // Reset the counter
+        
+        // Using a Combine publisher to update the @Published property
+        cancellable = Timer.publish(every: 1, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                guard let strongSelf = self else { return }
+                strongSelf.secondsLeft = strongSelf.timeouts[strongSelf.selectedTimeout].1 - strongSelf.secondsElapsed
+                
+                if strongSelf.secondsLeft <= 0 {
+                    strongSelf.handleImmersiveSpaceChange(newValue: true)
+                    strongSelf.stopTimer()
+                }
+            }
+    }
+    
+    func timeString(from totalSeconds: Int) -> String {
+        let minutes = totalSeconds / 60
+        let seconds = totalSeconds % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
+    
+    // Stop the timer
+    func stopTimer() {
+        cancellable?.cancel() // Stop the Combine publisher
+        timer?.invalidate() // Invalidate the timer
+        timer = nil // Set the timer to nil
+    }
+    
+    func getTimerString() -> String {
+        if let timer = timer, timer.isValid {
+            return timeString(from: self.secondsLeft)
+        }
+        return ""
+    }
+    
+    // Clean up
+    deinit {
+        stopTimer()
+    }
+
+    
+    func handleImmersiveSpaceChange(newValue: Bool) {
+        Task {
+            if newValue {
+                // If the immersive space is started
+                if  musicEnabled {
+                    audioPlayer?.play() // Ensure this function starts playing the audio
+                } else {
+                    audioPlayer?.stop() // Ensure this function stops the audio
+                }
+                guard let openSpace = openImmersiveSpace else {
+                    print("openImmersiveSpace is not available.")
+                    return
+                }
+                switch await openSpace(id: "ImmersiveSpace") {
+                case .opened:
+                    immersiveSpaceIsShown = true
+                case .error, .userCancelled:
+                    fallthrough
+                @unknown default:
+                    immersiveSpaceIsShown = false
+                }
+            } else if immersiveSpaceIsShown {
+                audioPlayer?.stop() // Ensure this function stops the audio
+                guard let dismissSpace = dismissImmersiveSpace else {
+                    print("openImmersiveSpace is not available.")
+                    return
+                }
+                await dismissSpace()
+                immersiveSpaceIsShown = false
+                secondsElapsed = 0
+            }
+        }
     }
     
     /// Preload assets when the app launches to avoid pop-in during the game.
@@ -71,62 +171,25 @@ class ScreenSaverModel {
             // Generate animations inside the toaster models.
             let def = toasterTemplate!.availableAnimations[0].definition
             toasterAnimations[.flapWings] = try .generate(with: AnimationView(source: def, speed: 5.0))
-            
-//            generateToasterMovementAnimations()
+
         
+            // Check if the audio player is already initialized
+            if self.audioPlayer == nil {
+                // Initialize the audio player
+                if let audioURL = Bundle.main.url(forResource: "Flying-Toasters-HD", withExtension: "mp3") {
+                    do {
+                        self.audioPlayer = try AVAudioPlayer(contentsOf: audioURL)
+                        self.audioPlayer?.prepareToPlay()
+                    } catch {
+                        print("Failed to initialize AVAudioPlayer: \(error)")
+                    }
+                }
+            }
             
             self.readyToStart = true
+            
+            
         }
     }
-    
-//    /// Preload animation assets.
-//    func generateToasterMovementAnimations() {
-//        let centralPoint = (x: 3.0, y: 3.0, z: -6.0)
-//        let range: Double = 1
-//        
-//        for _ in 1...15 { // Generate 15 sample points
-//            let x = Double.random(in: (centralPoint.x - range)...(centralPoint.x + range))
-//            let y = Double.random(in: (centralPoint.y - range)...(centralPoint.y + range))
-//            let z = Double.random(in: (centralPoint.z - range)...(centralPoint.z + range))
-//            toasterPaths.append((Double(x), Double(y), Double(z)))
-//        }
-//        
-//        
-//        for index in (0..<toasterPaths.count) {
-//            let start = Point3D(
-//                x: toasterPaths[index].0,
-//                y: toasterPaths[index].1,
-//                z: toasterPaths[index].2
-//            )
-//            let end = Point3D(
-//                x: start.x + ToasterSpawnParameters.deltaX,
-//                y: start.y + ToasterSpawnParameters.deltaY,
-//                z: start.z + ToasterSpawnParameters.deltaZ
-//            )
-//            let duration = ToasterSpawnParameters.duration
-//            
-//            // Rotation correction
-//            // Calculate the rotation in radians (RealityKit uses radians, not degrees)
-//            let degrees: Double = calculateRotationAngle(from: start.toSIMD3(), to: end.toSIMD3())
-//            let radians = Float(degrees) * (Float.pi / 180)
-//
-//            // Create a quaternion for the rotation around the y-axis
-//            let rotationQuaternion = simd_quatf(angle: radians, axis: [0, 1, 0])
-//
-//            
-//            let line = FromToByAnimation<Transform>(
-//                name: "line",
-//                from: .init(scale: .init(repeating: toasterScale),  rotation: rotationQuaternion, translation: simd_float(start.vector)),
-//                to: .init(scale: .init(repeating: toasterScale), rotation: rotationQuaternion, translation: simd_float(end.vector)),
-//                duration: duration,
-//                bindTarget: .transform
-//            )
-//            
-//            let animation = try! AnimationResource
-//                .generate(with: line)
-//            
-//            toasterMovementAnimations.append(animation)
-//        }
-//    }
     
 }

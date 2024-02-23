@@ -11,11 +11,9 @@ import RealityKitContent
 import AVFoundation
 
 struct ContentView: View {
-
-    @State private var showImmersiveSpace = false
+    
+    @State private var showSettings = false
     @State private var immersiveSpaceIsShown = false
-    @State private var isMusicPlaying = false
-    @State private var audioPlayer: AVAudioPlayer?
     @State private var showingCredits = false
     @State private var wasAudioPlayingBeforeStop = false
     @State private var isJiggling = false
@@ -25,83 +23,7 @@ struct ContentView: View {
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
     @Environment(ScreenSaverModel.self) var screenSaverModel
     
-    @State private var secondsElapsed = 0
-    @State private var minutesLeft = Int.max
     
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    @State private var selectedIncrement = 1 // Default to 15 minutes
-    
-    let increments = [("1 Minute", 1), ("5 Minutes", 5), ("15 Minutes", 15), ("30 Minutes", 30), ("1 Hour", 60), ("2 Hours", 120), ("Never", -1)]
-
-    func handleImmersiveSpaceChange(newValue: Bool) {
-        Task {
-            if newValue {
-                // If the immersive space is started
-                if wasAudioPlayingBeforeStop {
-                    // Resume audio only if it was playing before stopping
-                    isMusicPlaying = true
-                    self.audioPlayer?.play() // Ensure this function starts playing the audio
-                } else {
-                    // If the immersive space is stopped
-                    wasAudioPlayingBeforeStop = isMusicPlaying // Remember if audio was playing
-                    self.audioPlayer?.stop() // Ensure this function stops the audio
-                }
-                switch await openImmersiveSpace(id: "ImmersiveSpace") {
-                case .opened:
-                    immersiveSpaceIsShown = true
-                case .error, .userCancelled:
-                    fallthrough
-                @unknown default:
-                    immersiveSpaceIsShown = false
-                    showImmersiveSpace = false
-                }
-            } else if immersiveSpaceIsShown {
-                wasAudioPlayingBeforeStop = isMusicPlaying
-                self.audioPlayer?.stop() // Ensure this function stops the audio
-                await dismissImmersiveSpace()
-                immersiveSpaceIsShown = false
-                secondsElapsed = 0
-            }
-        }
-    }
-    
-    struct AnimConfigView: View {
-        @Environment(\.dismiss) var dismiss
-        
-        var body: some View {
-            VStack(alignment: .center, spacing: 20) {
-                Text("Credits")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(.black) // Ensure text color contrasts with background
-
-                Text("App developed by Your Name")
-                    .foregroundColor(.black) // Change text color
-
-                Text("Icons and graphics provided by Designer Name")
-                    .foregroundColor(.black) // Change text color
-
-                Text("Special thanks to...")
-                    .foregroundColor(.black) // Change text color
-
-                Button("Dismiss") {
-                    dismiss() // Dismiss the credits sheet
-                }
-                .foregroundColor(.blue) // Button text color
-                .padding()
-                .cornerRadius(10)
-
-                Spacer()
-            }
-            .padding()
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.white) // Background color of the entire view
-            .cornerRadius(20)
-            .shadow(radius: 10)
-            .padding()
-        }
-    }
-
     var body: some View {
         GeometryReader {geometry in
             ScrollView {
@@ -131,112 +53,33 @@ struct ContentView: View {
                                 isJiggling = false
                             }
                             
-                            secondsElapsed = 0
-                        }
-
-                    
-                    Text("\(self.minutesLeft) minutes left until Screen Saver")
-                        .onReceive(timer) { _ in
-                            if minutesLeft != 0 {
-                                secondsElapsed += 1
-                            }
-                        }
-                        .font(.title)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                        .onChange(of: secondsElapsed) {_,newValue in
-                            self.minutesLeft = increments[selectedIncrement].1 - secondsElapsed/60
-                            
-                            if (minutesLeft == 0) {
-//                                handleImmersiveSpaceChange(newValue:true)
-                                self.showImmersiveSpace = true
-                            }
+                            screenSaverModel.secondsElapsed = 0
                         }
                     
-                    HStack {
-                        Text("Auto start Screen Saver when inactive for")
-                        Picker("Screen Saver Inactivity", selection: $selectedIncrement) {
-                            ForEach(0..<increments.count) {
-                                Text(self.increments[$0].0).tag($0)
-                            }
-                        }
-                    }
-                    
-                    // Display the number of toasters
-                    @Bindable var screenSaverModel = screenSaverModel
-                    Text("Number of toasters: \(Int(screenSaverModel.numberOfToastersConfig))")
-                        .help("Number of toasters flying at any given time")
-                    
-                    // Slider for choosing the number of toasters
-                    Slider(value: $screenSaverModel.numberOfToastersConfig, in: 10...20, step: 1)
+                    // Countdown Timer Display
+                    Text(screenSaverModel.getTimerString())
+                        .font(.largeTitle)
                         .padding()
-                        .frame(maxWidth:300)
-                    
-                    let toastLevels : Array = ["Light", "Medium", "Dark"]
-                    
-                    // Display the toast level
-                    Text("Toast level: \(toastLevels[screenSaverModel.toastLevelConfig])")
-                    
-                    // Dial (Picker) for choosing the toast level
-                    Picker("Toast Level", selection: $screenSaverModel.toastLevelConfig) {
-                        ForEach(toastLevels, id: \.self) { toastLevel in
-                            Text(toastLevel).tag(toastLevel)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    .frame(maxWidth:300)
+                        .background(Color.black.opacity(0.5))
+                        .foregroundColor(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
                     
                     
-                    // Music controls
+                    // Settings Button
                     Button(action: {
-                        // Toggle music state
-                        self.isMusicPlaying.toggle()
-                        
-                        // Check if the audio player is already initialized
-                        if self.audioPlayer == nil {
-                            // Initialize the audio player
-                            if let audioURL = Bundle.main.url(forResource: "Flying-Toasters-HD", withExtension: "mp3") {
-                                do {
-                                    self.audioPlayer = try AVAudioPlayer(contentsOf: audioURL)
-                                    self.audioPlayer?.prepareToPlay()
-                                } catch {
-                                    print("Failed to initialize AVAudioPlayer: \(error)")
-                                }
-                            }
-                        }
-                        
-                        // Play or pause the music based on the toggle state
-                        if self.isMusicPlaying {
-                            self.audioPlayer?.volume = 0.1
-                            self.audioPlayer?.play()
-                        } else {
-                            self.audioPlayer?.pause()
-                        }
+                        showSettings.toggle()
                     }) {
-                        Image(systemName: isMusicPlaying ? "speaker.wave.3.fill" : "speaker.slash.fill")
-                            .font(.largeTitle) // Adjust size as needed
-                            .foregroundColor(isMusicPlaying ? .green : .red) // Optional color change
+                        Image(systemName: "gear")
+                            .padding()
+                            .background(Color.gray.opacity(0.7))
+                            .clipShape(Circle())
+                            .foregroundColor(.white)
                     }
                     .padding()
-                    
-                    Toggle(showImmersiveSpace ? "Stop Preview" : "Start Preview", isOn: $showImmersiveSpace)
-                        .toggleStyle(.button)
-                        .padding()
-                        .help("Start or stop preview of the screensaver")
-                    
-                    Button(action: {
-                        self.showingCredits = true
-                    }) {
-                        Text("Screen Saver Settings")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding()
-                            .cornerRadius(10)
-                            .shadow(radius: 5)
+                    .sheet(isPresented: $showSettings) {
+                        SettingsView()
                     }
-                    .sheet(isPresented: $showingCredits) {
-                        AnimConfigView()
-                    }
+                    
                     
                     Button(action: {
                         self.showingCredits = true
@@ -257,13 +100,86 @@ struct ContentView: View {
                 }
                 .frame(width: geometry.size.width)
                 .padding()
-                .onChange(of: showImmersiveSpace) { _, newValue in
-                    handleImmersiveSpaceChange(newValue: newValue)
-                }
+            }
+            .onAppear {
+                screenSaverModel.openImmersiveSpace = openImmersiveSpace
+                screenSaverModel.dismissImmersiveSpace = dismissImmersiveSpace
             }
         }
     }
 }
+
+struct SettingsView: View {
+
+    @Environment(\.dismiss) var dismiss
+    @Environment(ScreenSaverModel.self) var screenSaverModel
+    
+    @State private var showImmersiveSpace = false
+
+    var body: some View {
+        @Bindable var screenSaverModel = screenSaverModel
+        NavigationView {
+            Form {
+                Section(header: Text("General Settings").font(.headline)) {
+                    Picker("Screen Saver Inactivity", selection: $screenSaverModel.selectedTimeout) {
+                        ForEach(0..<screenSaverModel.timeouts.count, id: \.self) { index in
+                            Text(screenSaverModel.timeouts[index].0).tag(index)
+                        }
+                    }
+                    .help("Choose the duration of inactivity before the screensaver starts.")
+                }
+
+                Section(header: Text("Toaster Settings").font(.headline)) {
+                    VStack {
+                        Text("Number of toasters: \(Int(screenSaverModel.numberOfToastersConfig))")
+                        Slider(value: $screenSaverModel.numberOfToastersConfig, in: 10...20, step: 1)
+                            .padding(.horizontal)
+                            .help("Set the number of flying toasters displayed.")
+                    }
+
+                    VStack{
+                        Text("Toast Level:")
+                        Picker("Toast Level", selection: $screenSaverModel.toastLevelConfig) {
+                            ForEach(["Light", "Medium", "Dark"], id: \.self) { toastLevel in
+                                Text(toastLevel).tag(toastLevel)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .help("Adjust how toasted you like your toasts.")
+                    }
+                    Toggle(isOn: $screenSaverModel.musicEnabled) {
+                        Label("Music", systemImage: screenSaverModel.musicEnabled ? "speaker.wave.3.fill" : "speaker.slash.fill")
+                            .foregroundColor(screenSaverModel.musicEnabled ? .green : .red)
+                    }
+                    .help("Enable or disable background music for the screensaver.")
+                }
+                
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    HStack {
+                        Toggle(showImmersiveSpace ? "Stop Preview" : "Start Preview", isOn: $showImmersiveSpace)
+                                .toggleStyle(.button)
+                                .padding()
+                                .help("Start or stop preview of the screensaver")
+                                .onChange(of: showImmersiveSpace) { _, newValue in
+                                    screenSaverModel.handleImmersiveSpaceChange(newValue: newValue)
+                                }
+                        Spacer()
+                        
+                        Button("Save & Dismiss") {
+                            screenSaverModel.handleImmersiveSpaceChange(newValue: false)
+                            dismiss()
+                        }
+                    }
+                }
+            }
+            .padding()
+        }
+    }
+}
+    
+
 
 #Preview(windowStyle: .automatic) {
     ContentView()
