@@ -45,9 +45,27 @@ class ScreenSaverModel {
     var currentNumberOfToasters: Int = 0
     
     var musicEnabled = false
-    var selectedTimeout = 1
     
-    let timeouts = [("For 1 Minute", 1), ("For 5 Minutes", 5), ("For 15 Minutes", 15), ("For 30 Minutes", 30), ("For 1 Hour", 60), ("For 2 Hours", 120), ("Never", -1)]
+    
+    private var _currentCountdown: Int = 0
+    
+    var selectedCountdownSecs : Int {
+        get {
+            return _currentCountdown
+        }
+        set(newVal) {
+            print("Setting new val")
+            if newVal > 0 && _currentCountdown == 0 {
+                secondsElapsed = 0
+                
+                // Start the timer
+                startTimer()
+            } else if newVal <= 0 {
+                stopTimer()
+            }
+            _currentCountdown = newVal
+        }
+    }
     
     var immersiveSpaceIsShown = false
     
@@ -71,6 +89,7 @@ class ScreenSaverModel {
     
     // Initialize and start the timer
     func startTimer() {
+        print("startTimer")
         timer?.invalidate() // Invalidate any existing timer
         secondsElapsed = 0 // Reset the counter
         
@@ -82,7 +101,7 @@ class ScreenSaverModel {
                 guard let strongSelf = self else { return }
                 print("\(strongSelf.secondsElapsed)")
                 strongSelf.secondsElapsed += 1
-                strongSelf.secondsLeft = strongSelf.timeouts[strongSelf.selectedTimeout].1*60 - strongSelf.secondsElapsed
+                strongSelf.secondsLeft = strongSelf.selectedCountdownSecs - strongSelf.secondsElapsed
                 
                 if strongSelf.secondsLeft <= 0 {
                     strongSelf.handleImmersiveSpaceChange(newValue: true)
@@ -105,7 +124,10 @@ class ScreenSaverModel {
     }
     
     func getTimerString() -> String {
-        return timeString(from: self.secondsLeft)
+        if selectedCountdownSecs > 0 {
+            return timeString(from: self.secondsLeft)
+        }
+        return "Screen Saver disabled"
     }
     
     // Clean up
@@ -185,10 +207,6 @@ class ScreenSaverModel {
                     }
                 }
             }
-            
-            self.readyToStart = true
-            self.startTimer()
-            
             
         }
     }

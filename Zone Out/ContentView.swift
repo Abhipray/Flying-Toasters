@@ -121,19 +121,72 @@ struct SettingsView: View {
     @Environment(ScreenSaverModel.self) var screenSaverModel
     
     @State private var showImmersiveSpace = false
+    @State private var selectedTimeout : Int = 1
+    @State private var useCustomTimeout = false
+    @State private var customTimeout = 15
+    @State private var hours = 0
+    @State private var minutes = 0
+    @State private var seconds = 0
+    
+    // Arrays to hold the values for hours, minutes, and seconds
+    let hoursRange = Array(0...23)
+    let minutesAndSecondsRange = Array(0...59)
+    
+    let timeouts = [("For 1 Minute", 1), ("For 5 Minutes", 5), ("For 15 Minutes", 15), ("For 30 Minutes", 30), ("For 1 Hour", 60), ("For 2 Hours", 120), ("Never", 0), ("Custom", -1)]
 
     var body: some View {
         @Bindable var screenSaverModel = screenSaverModel
         NavigationView {
             Form {
                 Section(header: Text("").font(.headline)) {
-                    Picker("Start Screen Saver when inactive ", selection: $screenSaverModel.selectedTimeout) {
-                        ForEach(0..<screenSaverModel.timeouts.count, id: \.self) { index in
-                            Text(screenSaverModel.timeouts[index].0).tag(index)
+                    Picker("Start Screen Saver when inactive ", selection: $selectedTimeout) {
+                        ForEach(0..<timeouts.count, id: \.self) { index in
+                            Text(timeouts[index].0).tag(index)
                         }
                     }
+                    .onAppear {
+                        let countdownSecs = timeouts[selectedTimeout].1 * 60
+                        screenSaverModel.selectedCountdownSecs = countdownSecs
+                    }
                     .help("Choose the duration of inactivity before the screensaver starts.")
+                    .onChange(of: selectedTimeout) { _, newVal in
+                        let countdownSecs = timeouts[newVal].1 * 60
+                        if countdownSecs >= 0 {
+                            screenSaverModel.selectedCountdownSecs = countdownSecs
+                            useCustomTimeout = false
+                        } else if newVal == timeouts.count - 1 {
+                            // Use the custom setting
+                            useCustomTimeout = true
+                        }
+                    }
+                    
+                    if useCustomTimeout {
+                        HStack {
+                                            Picker("Hrs", selection: $hours) {
+                                                ForEach(hoursRange, id: \.self) {
+                                                    Text("\($0)")
+                                                }
+                                            }
+                                            .pickerStyle(.menu)
+                                            
+                                            Picker("Mins", selection: $minutes) {
+                                                ForEach(minutesAndSecondsRange, id: \.self) {
+                                                    Text("\($0)")
+                                                }
+                                            }
+                                            .pickerStyle(.menu)
+                                            
+                                            Picker("Secs", selection: $seconds) {
+                                                ForEach(minutesAndSecondsRange, id: \.self) {
+                                                    Text("\($0)")
+                                                }
+                                            }
+                                            .pickerStyle(.menu)
+                                        }
+                    }
                 }
+                
+                
 
                 Section(header: Text("Toaster Settings").font(.headline)) {
                     VStack {
