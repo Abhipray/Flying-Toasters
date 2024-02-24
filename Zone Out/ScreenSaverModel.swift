@@ -35,18 +35,15 @@ func calculateRotationAngle(from startPoint: SIMD3<Double>, to endPoint: SIMD3<D
 /// State that drives the different screens of the game and options that players select.
 @Observable
 class ScreenSaverModel {
-    var isPlaying = false
-    /// A Boolean value that indicates that game assets have loaded.
-    var readyToStart = false
-    
+   
+    // Toaster config
     var numberOfToastersConfig: Double = 10
     var toastLevelConfig: Int = 1
-    
-    var currentNumberOfToasters: Int = 0
-    
     var musicEnabled = false
     
     
+    // State variables
+    var currentNumberOfToasters: Int = 0
     private var _currentCountdown: Int = 0
     
     var selectedCountdownSecs : Int {
@@ -54,7 +51,6 @@ class ScreenSaverModel {
             return _currentCountdown
         }
         set(newVal) {
-            print("Setting new val")
             if newVal > 0 && _currentCountdown == 0 {
                 secondsElapsed = 0
                 
@@ -67,7 +63,7 @@ class ScreenSaverModel {
         }
     }
     
-    var immersiveSpaceIsShown = false
+    var isScreenSaverRunning = false
     
     var audioPlayer: AVAudioPlayer? = nil
     
@@ -75,17 +71,13 @@ class ScreenSaverModel {
     var secondsLeft = Int.max
     
     var timer: Timer?
+    var isTimerActive: Bool = false
     var cancellable: AnyCancellable?
     
     // Set externally
     var openImmersiveSpace: OpenImmersiveSpaceAction?
     var dismissImmersiveSpace: DismissImmersiveSpaceAction?
     
-    /// Resets game state information.
-    func reset() {
-        isPlaying = false
-        readyToStart = false
-    }
     
     // Initialize and start the timer
     func startTimer() {
@@ -108,12 +100,7 @@ class ScreenSaverModel {
                     strongSelf.stopTimer()
                 }
             }
-    }
-    
-    func timeString(from totalSeconds: Int) -> String {
-        let minutes = totalSeconds / 60
-        let seconds = totalSeconds % 60
-        return String(format: "%02d:%02d", minutes, seconds)
+        isTimerActive = true
     }
     
     // Stop the timer
@@ -121,14 +108,9 @@ class ScreenSaverModel {
         cancellable?.cancel() // Stop the Combine publisher
         timer?.invalidate() // Invalidate the timer
         timer = nil // Set the timer to nil
+        isTimerActive = false
     }
     
-    func getTimerString() -> String {
-        if selectedCountdownSecs > 0 {
-            return timeString(from: self.secondsLeft)
-        }
-        return "Screen Saver disabled"
-    }
     
     // Clean up
     deinit {
@@ -151,20 +133,20 @@ class ScreenSaverModel {
                 }
                 switch await openSpace(id: "ImmersiveSpace") {
                 case .opened:
-                    immersiveSpaceIsShown = true
+                    isScreenSaverRunning = true
                 case .error, .userCancelled:
                     fallthrough
                 @unknown default:
-                    immersiveSpaceIsShown = false
+                    isScreenSaverRunning = false
                 }
-            } else if immersiveSpaceIsShown {
+            } else if isScreenSaverRunning {
                 audioPlayer?.stop() // Ensure this function stops the audio
                 guard let dismissSpace = dismissImmersiveSpace else {
                     print("openImmersiveSpace is not available.")
                     return
                 }
                 await dismissSpace()
-                immersiveSpaceIsShown = false
+                isScreenSaverRunning = false
                 secondsElapsed = 0
             }
         }

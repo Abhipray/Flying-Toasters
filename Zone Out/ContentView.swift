@@ -23,18 +23,21 @@ struct ContentView: View {
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
     @Environment(ScreenSaverModel.self) var screenSaverModel
     
+    func timeString(from totalSeconds: Int) -> String {
+        let minutes = totalSeconds / 60
+        let seconds = totalSeconds % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
     
     var body: some View {
-        GeometryReader {geometry in
             ScrollView {
-                VStack(alignment: .center, spacing: 20) {
+                VStack(alignment: .center) {
                     Spacer()
                     
                     Text("Flying Toasters")
                         .font(.title) // Makes the font size much larger
                         .fontWeight(.bold) // Makes the text bold
                         .foregroundColor(.primary) // Uses the primary color, which adapts to light/dark mode
-                        .padding() // Adds some padding around the text
                         .background(Color.blue.opacity(0.05)) // Adds a light blue background with some transparency
                         .cornerRadius(20) // Rounds the corners of the background
                         .shadow(radius: 5) // Adds a shadow for a 3D effect
@@ -44,7 +47,7 @@ struct ContentView: View {
 
                         Image("flying_toasters_splashscreen")
                             .resizable()
-                            .frame(width: 256, height: 256).help("Tap on me to reset the screensaver timer!")
+                            .frame(width: 256, height: 256).help("Tap on me to reset the Screen Saver timer!")
                             .rotationEffect(.degrees(isJiggling ? 4 : -4), anchor: .center)
                             .animation(isJiggling ? .linear(duration: 0.1).repeatForever(autoreverses: true) : .default, value: isJiggling)
                             .onTapGesture {
@@ -60,13 +63,35 @@ struct ContentView: View {
                             .opacity(0.9)
                         
                         // Countdown Timer Display
-                        Text(screenSaverModel.getTimerString())
-                            .font(.largeTitle)
-                            .padding()
-                            .background(Color.black.opacity(1.0))
-                            .foregroundColor(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .onChange(of: screenSaverModel.secondsLeft, {timerString = screenSaverModel.getTimerString()})
+                        if screenSaverModel.isScreenSaverRunning {
+                            Button(action: {
+                                screenSaverModel.handleImmersiveSpaceChange(newValue: false)
+                            }) {
+                                Image(systemName: "pause")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 32, height: 32) // Specify the frame to increase the size
+                                    .clipShape(Circle())
+                            }
+                            .toggleStyle(.button)
+                            .help("Stop Screen Saver")
+                        } else {
+                            if(screenSaverModel.isTimerActive) {
+                                Text(timerString)
+                                    .font(.title3)
+                                    .padding()
+                                    .background(Color.black.opacity(0.6))
+                                    .foregroundColor(.white)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    .onChange(of: screenSaverModel.secondsLeft, {timerString = timeString(from: screenSaverModel.secondsLeft)})
+                            } else {
+                                Text("Screen Saver is disabled")
+                                    .font(.title3)
+                                    .padding()
+                                    .background(Color.black.opacity(0.6))
+                            }
+                        }
+
                         
                     }
                     
@@ -100,18 +125,17 @@ struct ContentView: View {
                             CreditsView()
                         }
                     }
+                    .padding()
                     
                     Spacer()
                     
                 }
-                .frame(width: geometry.size.width)
                 .padding()
             }
             .onAppear {
                 screenSaverModel.openImmersiveSpace = openImmersiveSpace
                 screenSaverModel.dismissImmersiveSpace = dismissImmersiveSpace
             }
-        }
     }
 }
 
@@ -160,29 +184,29 @@ struct SettingsView: View {
                         }
                     }
                     
-                    if useCustomTimeout {
-                        HStack {
-                                            Picker("Hrs", selection: $hours) {
-                                                ForEach(hoursRange, id: \.self) {
-                                                    Text("\($0)")
-                                                }
-                                            }
-                                            .pickerStyle(.menu)
-                                            
-                                            Picker("Mins", selection: $minutes) {
-                                                ForEach(minutesAndSecondsRange, id: \.self) {
-                                                    Text("\($0)")
-                                                }
-                                            }
-                                            .pickerStyle(.menu)
-                                            
-                                            Picker("Secs", selection: $seconds) {
-                                                ForEach(minutesAndSecondsRange, id: \.self) {
-                                                    Text("\($0)")
-                                                }
-                                            }
-                                            .pickerStyle(.menu)
-                                        }
+                if useCustomTimeout {
+                    HStack {
+                            Picker("Hrs", selection: $hours) {
+                                ForEach(hoursRange, id: \.self) {
+                                    Text("\($0)")
+                                }
+                            }
+                            .pickerStyle(.menu)
+                            
+                            Picker("Mins", selection: $minutes) {
+                                ForEach(minutesAndSecondsRange, id: \.self) {
+                                    Text("\($0)")
+                                }
+                            }
+                            .pickerStyle(.menu)
+                            
+                            Picker("Secs", selection: $seconds) {
+                                ForEach(minutesAndSecondsRange, id: \.self) {
+                                    Text("\($0)")
+                                }
+                            }
+                            .pickerStyle(.menu)
+                        }
                     }
                 }
                 
