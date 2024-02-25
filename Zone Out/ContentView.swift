@@ -119,16 +119,13 @@ struct ContentView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 32, height: 32) // Specify the frame to increase the size
-                                .clipShape(Circle())
+                                .foregroundColor(.primary)
                         }
                         .sheet(isPresented: $showingCredits) {
                             CreditsView()
                         }
                     }
                     .padding()
-                    
-                    Spacer()
-                    
                 }
                 .padding()
             }
@@ -145,7 +142,6 @@ struct SettingsView: View {
     @Environment(ScreenSaverModel.self) var screenSaverModel
     
     @State private var showImmersiveSpace = false
-    @State private var selectedTimeout : Int = 1
     @State private var useCustomTimeout = false
     @State private var customTimeout = 15
     @State private var hours = 0
@@ -155,33 +151,34 @@ struct SettingsView: View {
     // Arrays to hold the values for hours, minutes, and seconds
     let hoursRange = Array(0...23)
     let minutesAndSecondsRange = Array(0...59)
-    
-    let timeouts = [("For 1 Minute", 1), ("For 5 Minutes", 5), ("For 15 Minutes", 15), ("For 30 Minutes", 30), ("For 1 Hour", 60), ("For 2 Hours", 120), ("Never", 0), ("Custom", -1)]
 
+    func configTimer() {
+        let countdownSecs = screenSaverModel.timeouts[screenSaverModel.selectedTimeout].1 * 60
+        if countdownSecs >= 0 {
+            screenSaverModel.selectedCountdownSecs = countdownSecs
+            useCustomTimeout = false
+        } else if screenSaverModel.selectedTimeout == screenSaverModel.timeouts.count - 1 {
+            // Use the custom setting
+            useCustomTimeout = true
+        }
+    }
+    
     var body: some View {
         @Bindable var screenSaverModel = screenSaverModel
         NavigationView {
             Form {
                 Section(header: Text("").font(.headline)) {
-                    Picker("Start Screen Saver when inactive ", selection: $selectedTimeout) {
-                        ForEach(0..<timeouts.count, id: \.self) { index in
-                            Text(timeouts[index].0).tag(index)
+                    Picker("Start Screen Saver when inactive ", selection: $screenSaverModel.selectedTimeout) {
+                        ForEach(0..<screenSaverModel.timeouts.count, id: \.self) { index in
+                            Text(screenSaverModel.timeouts[index].0).tag(index)
                         }
                     }
                     .onAppear {
-                        let countdownSecs = timeouts[selectedTimeout].1 * 60
-                        screenSaverModel.selectedCountdownSecs = countdownSecs
+                        configTimer()
                     }
                     .help("Choose the duration of inactivity before the screensaver starts.")
-                    .onChange(of: selectedTimeout) { _, newVal in
-                        let countdownSecs = timeouts[newVal].1 * 60
-                        if countdownSecs >= 0 {
-                            screenSaverModel.selectedCountdownSecs = countdownSecs
-                            useCustomTimeout = false
-                        } else if newVal == timeouts.count - 1 {
-                            // Use the custom setting
-                            useCustomTimeout = true
-                        }
+                    .onChange(of: screenSaverModel.selectedTimeout) { _, newVal in
+                        screenSaverModel.selectedCountdownSecs
                     }
                     
                 if useCustomTimeout {
@@ -206,6 +203,18 @@ struct SettingsView: View {
                                 }
                             }
                             .pickerStyle(.menu)
+                        }
+                        .onChange(of: hours) {
+                            let totalSeconds = hours*360 + minutes*60 + seconds
+                            screenSaverModel.selectedCountdownSecs = totalSeconds
+                        }
+                        .onChange(of: minutes) {
+                            let totalSeconds = hours*360 + minutes*60 + seconds
+                            screenSaverModel.selectedCountdownSecs = totalSeconds
+                        }
+                        .onChange(of: seconds) {
+                            let totalSeconds = hours*360 + minutes*60 + seconds
+                            screenSaverModel.selectedCountdownSecs = totalSeconds
                         }
                     }
                 }

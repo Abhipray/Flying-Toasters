@@ -46,6 +46,19 @@ class ScreenSaverModel {
     var currentNumberOfToasters: Int = 0
     private var _currentCountdown: Int = 0
     
+    var _selectedTimeout : Int = 1
+    
+    var selectedTimeout : Int {
+        get {
+            return _selectedTimeout
+        }
+        set(newVal) {
+            
+        }
+    }
+    
+    let timeouts = [("For 1 Minute", 1), ("For 5 Minutes", 5), ("For 15 Minutes", 15), ("For 30 Minutes", 30), ("For 1 Hour", 60), ("For 2 Hours", 120), ("Never", 0), ("Custom", -1)]
+    
     var selectedCountdownSecs : Int {
         get {
             return _currentCountdown

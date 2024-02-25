@@ -17,13 +17,10 @@ struct CreditsView: View {
                 .fontWeight(.bold)
                 .foregroundColor(.black) // Ensure text color contrasts with background
 
-            Text("App developed by Your Name")
+            Text("Music by Melissa Elliott, 0xabad1dea, soundcloud.com")
                 .foregroundColor(.black) // Change text color
 
-            Text("Icons and graphics provided by Designer Name")
-                .foregroundColor(.black) // Change text color
-
-            Text("Special thanks to...")
+            Text("Toaster 3D model based on Flying Toaster by @fiveiron, printables.com")
                 .foregroundColor(.black) // Change text color
 
             Button("Dismiss") {
