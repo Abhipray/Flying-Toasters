@@ -218,39 +218,41 @@ struct SettingsView: View {
                 
             }
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    HStack {
-                        Toggle(isOn: $showImmersiveSpace) {
-                            Image(systemName: showImmersiveSpace ? "eye.slash" : "eye")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 32, height: 32) // Specify the frame to increase the size
-                                .clipShape(Circle())
-                        }
-                        .onAppear {
-                            showImmersiveSpace = screenSaverModel.isScreenSaverRunning
-                        }
-                        .toggleStyle(.button)
-                        .help("Start or stop preview of the screensaver")
-                        .onChange(of: showImmersiveSpace) { _, newValue in
-                            screenSaverModel.handleImmersiveSpaceChange(newValue: newValue)
-                        }
-                        Spacer()
-                        
-                        
-                        Button(action: {
-                            screenSaverModel.handleImmersiveSpaceChange(newValue: false)
-                            dismiss()
-                            screenSaverModel.startTimer()
-                        }) {
-                            Image(systemName: "checkmark")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 32, height: 32) // Specify the frame to increase the size
-                                .clipShape(Circle())
-                        }
+                ToolbarItem(placement: .automatic) {
+                    
+                    Toggle(isOn: $showImmersiveSpace) {
+                        Image(systemName: showImmersiveSpace ? "eye.slash" : "eye")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 32, height: 32) // Specify the frame to increase the size
+                            .clipShape(Circle())
+                    }
+                    .onAppear {
+                        showImmersiveSpace = screenSaverModel.isScreenSaverRunning
+                    }
+                    .toggleStyle(.button)
+                    .help("Start or stop preview of the screensaver")
+                    .onChange(of: showImmersiveSpace) { _, newValue in
+                        screenSaverModel.handleImmersiveSpaceChange(newValue: newValue)
+                    }
+                    Spacer()
+                }
+                ToolbarItem(placement: .automatic) {
+                    
+                    Button(action: {
+                        screenSaverModel.handleImmersiveSpaceChange(newValue: false)
+                        dismiss()
+                        screenSaverModel.startTimer()
+                    }) {
+                        Image(systemName: "checkmark")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 32, height: 32) // Specify the frame to increase the size
+                            .clipShape(Circle())
                     }
                 }
+                    
+                
             }
             .padding()
         }
