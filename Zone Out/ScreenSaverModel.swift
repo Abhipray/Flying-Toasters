@@ -36,46 +36,6 @@ func calculateRotationAngle(from startPoint: SIMD3<Double>, to endPoint: SIMD3<D
 @Observable
 class ScreenSaverModel {
    
-    // Toaster config
-    var numberOfToastersConfig: Double = 10
-    var toastLevelConfig: Int = 1
-    var musicEnabled = false
-    
-    
-    // State variables
-    var currentNumberOfToasters: Int = 0
-    private var _currentCountdown: Int = 0
-    
-    var _selectedTimeout : Int = 1
-    
-    var selectedTimeout : Int {
-        get {
-            return _selectedTimeout
-        }
-        set(newVal) {
-            
-        }
-    }
-    
-    let timeouts = [("For 1 Minute", 1), ("For 5 Minutes", 5), ("For 15 Minutes", 15), ("For 30 Minutes", 30), ("For 1 Hour", 60), ("For 2 Hours", 120), ("Never", 0), ("Custom", -1)]
-    
-    var selectedCountdownSecs : Int {
-        get {
-            return _currentCountdown
-        }
-        set(newVal) {
-            if newVal > 0 && _currentCountdown == 0 {
-                secondsElapsed = 0
-                
-                // Start the timer
-                startTimer()
-            } else if newVal <= 0 {
-                stopTimer()
-            }
-            _currentCountdown = newVal
-        }
-    }
-    
     var isScreenSaverRunning = false
     
     var audioPlayer: AVAudioPlayer? = nil
@@ -84,7 +44,6 @@ class ScreenSaverModel {
     var secondsLeft = Int.max
     
     var timer: Timer?
-    var isTimerActive: Bool = false
     var cancellable: AnyCancellable?
     
     // Set externally
@@ -92,9 +51,64 @@ class ScreenSaverModel {
     var dismissImmersiveSpace: DismissImmersiveSpaceAction?
     
     
+    // Toaster config
+    var numberOfToastersConfig: Double = 10
+    var toastLevelConfig: Int = 1
+    var musicEnabled = false
+    
+    
+    // State variables
+    var currentNumberOfToasters: Int = 0
+    var currentCountdownSecs: Int = 0
+    
+    var useCustomTimeout = false
+    var hours = 0 {
+        didSet {
+            currentCountdownSecs = hours * 60 * 60 + minutes * 60 + seconds
+        }
+    }
+    var minutes = 0 {
+        didSet {
+            currentCountdownSecs = hours * 60 * 60 + minutes * 60 + seconds
+        }
+    }
+    var seconds = 0 {
+        didSet {
+            currentCountdownSecs = hours * 60 * 60 + minutes * 60 + seconds
+        }
+    }
+    
+    // Timer variables
+    var isTimerActive: Bool = false
+    
+    let timeouts = [("For 1 Minute", 1), ("For 5 Minutes", 5), ("For 15 Minutes", 15), ("For 30 Minutes", 30), ("For 1 Hour", 60), ("For 2 Hours", 120), ("Never", 0), ("Custom", -1), ("For 10 seconds", 0.1)]
+    
+    var selectedTimeout : Int = 6 {
+        didSet {
+            let timeoutLabel = timeouts[selectedTimeout].0
+            useCustomTimeout = false
+            if timeoutLabel == "Never" {
+                stopTimer()
+            } else if timeoutLabel == "Custom" {
+                useCustomTimeout = true
+                currentCountdownSecs = Int(hours * 60 * 60 + minutes * 60 + seconds)
+                startTimer()
+            } else {
+                useCustomTimeout = false
+                currentCountdownSecs = Int(timeouts[selectedTimeout].1 * 60)
+                startTimer()
+            }
+        }
+    }
+    
+    
+    
     // Initialize and start the timer
     func startTimer() {
-        print("startTimer")
+        if isTimerActive {
+            return
+        }
+        isTimerActive = true
         timer?.invalidate() // Invalidate any existing timer
         secondsElapsed = 0 // Reset the counter
         
@@ -102,39 +116,36 @@ class ScreenSaverModel {
         cancellable = Timer.publish(every: 1, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
-                print("timer")
                 guard let strongSelf = self else { return }
                 print("\(strongSelf.secondsElapsed)")
                 strongSelf.secondsElapsed += 1
-                strongSelf.secondsLeft = strongSelf.selectedCountdownSecs - strongSelf.secondsElapsed
+                strongSelf.secondsLeft = strongSelf.currentCountdownSecs - strongSelf.secondsElapsed
                 
                 if strongSelf.secondsLeft <= 0 {
                     strongSelf.handleImmersiveSpaceChange(newValue: true)
-                    strongSelf.stopTimer()
                 }
             }
-        isTimerActive = true
     }
     
     // Stop the timer
     func stopTimer() {
+        if !isTimerActive {
+            return
+        }
         cancellable?.cancel() // Stop the Combine publisher
         timer?.invalidate() // Invalidate the timer
         timer = nil // Set the timer to nil
         isTimerActive = false
     }
     
-    
     // Clean up
     deinit {
         stopTimer()
     }
 
-    
     func handleImmersiveSpaceChange(newValue: Bool) {
         Task {
-            if newValue {
-                // If the immersive space is started
+            if newValue && !isScreenSaverRunning {
                 if  musicEnabled {
                     audioPlayer?.play() // Ensure this function starts playing the audio
                 } else {
@@ -147,20 +158,22 @@ class ScreenSaverModel {
                 switch await openSpace(id: "ImmersiveSpace") {
                 case .opened:
                     isScreenSaverRunning = true
+                    stopTimer()
                 case .error, .userCancelled:
                     fallthrough
                 @unknown default:
                     isScreenSaverRunning = false
                 }
-            } else if isScreenSaverRunning {
+            } else if !newValue && isScreenSaverRunning {
+                print("Disabling screen saver")
+                isScreenSaverRunning = false
+                secondsElapsed = 0
                 audioPlayer?.stop() // Ensure this function stops the audio
                 guard let dismissSpace = dismissImmersiveSpace else {
                     print("openImmersiveSpace is not available.")
                     return
                 }
                 await dismissSpace()
-                isScreenSaverRunning = false
-                secondsElapsed = 0
             }
         }
     }

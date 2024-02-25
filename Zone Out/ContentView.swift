@@ -59,24 +59,27 @@ struct ContentView: View {
                                 }
                                 
                                 screenSaverModel.secondsElapsed = 0
+                                screenSaverModel.startTimer()
                             }
                             .opacity(0.9)
                         
                         // Countdown Timer Display
                         if screenSaverModel.isScreenSaverRunning {
                             Button(action: {
+                                // Reset the timer
+                                screenSaverModel.startTimer()
                                 screenSaverModel.handleImmersiveSpaceChange(newValue: false)
+                                screenSaverModel.secondsElapsed = 0
                             }) {
-                                Image(systemName: "pause")
+                                Image(systemName: "stop")
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 32, height: 32) // Specify the frame to increase the size
-                                    .clipShape(Circle())
                             }
                             .toggleStyle(.button)
                             .help("Stop Screen Saver")
                         } else {
-                            if(screenSaverModel.isTimerActive) {
+                            if(screenSaverModel.isTimerActive ) {
                                 Text(timerString)
                                     .font(.title3)
                                     .padding()
@@ -142,26 +145,12 @@ struct SettingsView: View {
     @Environment(ScreenSaverModel.self) var screenSaverModel
     
     @State private var showImmersiveSpace = false
-    @State private var useCustomTimeout = false
-    @State private var customTimeout = 15
-    @State private var hours = 0
-    @State private var minutes = 0
-    @State private var seconds = 0
+
     
     // Arrays to hold the values for hours, minutes, and seconds
     let hoursRange = Array(0...23)
     let minutesAndSecondsRange = Array(0...59)
 
-    func configTimer() {
-        let countdownSecs = screenSaverModel.timeouts[screenSaverModel.selectedTimeout].1 * 60
-        if countdownSecs >= 0 {
-            screenSaverModel.selectedCountdownSecs = countdownSecs
-            useCustomTimeout = false
-        } else if screenSaverModel.selectedTimeout == screenSaverModel.timeouts.count - 1 {
-            // Use the custom setting
-            useCustomTimeout = true
-        }
-    }
     
     var body: some View {
         @Bindable var screenSaverModel = screenSaverModel
@@ -173,52 +162,33 @@ struct SettingsView: View {
                             Text(screenSaverModel.timeouts[index].0).tag(index)
                         }
                     }
-                    .onAppear {
-                        configTimer()
-                    }
                     .help("Choose the duration of inactivity before the screensaver starts.")
-                    .onChange(of: screenSaverModel.selectedTimeout) { _, newVal in
-                        screenSaverModel.selectedCountdownSecs
-                    }
                     
-                if useCustomTimeout {
-                    HStack {
-                            Picker("Hrs", selection: $hours) {
+                    if screenSaverModel.useCustomTimeout {
+                        HStack {
+                            Picker("Hrs", selection: $screenSaverModel.hours) {
                                 ForEach(hoursRange, id: \.self) {
                                     Text("\($0)")
                                 }
                             }
                             .pickerStyle(.menu)
                             
-                            Picker("Mins", selection: $minutes) {
+                            Picker("Mins", selection: $screenSaverModel.minutes) {
                                 ForEach(minutesAndSecondsRange, id: \.self) {
                                     Text("\($0)")
                                 }
                             }
                             .pickerStyle(.menu)
                             
-                            Picker("Secs", selection: $seconds) {
+                            Picker("Secs", selection: $screenSaverModel.seconds) {
                                 ForEach(minutesAndSecondsRange, id: \.self) {
                                     Text("\($0)")
                                 }
                             }
                             .pickerStyle(.menu)
                         }
-                        .onChange(of: hours) {
-                            let totalSeconds = hours*360 + minutes*60 + seconds
-                            screenSaverModel.selectedCountdownSecs = totalSeconds
-                        }
-                        .onChange(of: minutes) {
-                            let totalSeconds = hours*360 + minutes*60 + seconds
-                            screenSaverModel.selectedCountdownSecs = totalSeconds
-                        }
-                        .onChange(of: seconds) {
-                            let totalSeconds = hours*360 + minutes*60 + seconds
-                            screenSaverModel.selectedCountdownSecs = totalSeconds
-                        }
                     }
                 }
-                
                 
 
                 Section(header: Text("Toaster Settings").font(.headline)) {
@@ -257,6 +227,9 @@ struct SettingsView: View {
                                 .frame(width: 32, height: 32) // Specify the frame to increase the size
                                 .clipShape(Circle())
                         }
+                        .onAppear {
+                            showImmersiveSpace = screenSaverModel.isScreenSaverRunning
+                        }
                         .toggleStyle(.button)
                         .help("Start or stop preview of the screensaver")
                         .onChange(of: showImmersiveSpace) { _, newValue in
@@ -268,6 +241,7 @@ struct SettingsView: View {
                         Button(action: {
                             screenSaverModel.handleImmersiveSpaceChange(newValue: false)
                             dismiss()
+                            screenSaverModel.startTimer()
                         }) {
                             Image(systemName: "checkmark")
                                 .resizable()
@@ -286,5 +260,5 @@ struct SettingsView: View {
 
 
 #Preview(windowStyle: .automatic) {
-    SettingsView()
+    ContentView()
 }

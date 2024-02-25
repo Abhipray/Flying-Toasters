@@ -35,7 +35,7 @@ struct ImmersiveView: View {
             toasterPortal = portal
         }
         .onReceive(timer) { _ in
-            var maxNumToSpawn = Int(screenSaverModel.numberOfToastersConfig) - screenSaverModel.currentNumberOfToasters
+            let maxNumToSpawn = Int(screenSaverModel.numberOfToastersConfig) - screenSaverModel.currentNumberOfToasters
             if maxNumToSpawn > 1 {
                 Task { @MainActor () -> Void in
                     do {
