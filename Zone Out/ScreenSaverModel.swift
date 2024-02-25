@@ -40,8 +40,15 @@ class ScreenSaverModel {
     
     var audioPlayer: AVAudioPlayer? = nil
     
-    var secondsElapsed = 0
+    
     var secondsLeft = Int.max
+    
+    var secondsElapsed = 0 {
+        didSet {
+            print("Setting secondsElapsed", secondsLeft, secondsElapsed)
+            secondsLeft = currentCountdownSecs - secondsElapsed
+        }
+    }
     
     var timer: Timer?
     var cancellable: AnyCancellable?
@@ -81,7 +88,7 @@ class ScreenSaverModel {
     // Timer variables
     var isTimerActive: Bool = false
     
-    let timeouts = [("For 1 Minute", 1), ("For 5 Minutes", 5), ("For 15 Minutes", 15), ("For 30 Minutes", 30), ("For 1 Hour", 60), ("For 2 Hours", 120), ("Never", 0), ("Custom", -1), ("For 10 seconds", 0.1)]
+    let timeouts = [("For 1 Minute", 1), ("For 5 Minutes", 5), ("For 15 Minutes", 15), ("For 30 Minutes", 30), ("For 1 Hour", 60), ("For 2 Hours", 120), ("Never", 0), ("Custom", -1), ("For 6 seconds", 0.1)]
     
     var selectedTimeout : Int = 6 {
         didSet {
@@ -100,17 +107,16 @@ class ScreenSaverModel {
             }
         }
     }
-    
-    
+
     
     // Initialize and start the timer
     func startTimer() {
         if isTimerActive {
             return
         }
+        secondsElapsed = 0 // Reset the counter
         isTimerActive = true
         timer?.invalidate() // Invalidate any existing timer
-        secondsElapsed = 0 // Reset the counter
         
         // Using a Combine publisher to update the @Published property
         cancellable = Timer.publish(every: 1, on: .main, in: .common)
@@ -119,7 +125,6 @@ class ScreenSaverModel {
                 guard let strongSelf = self else { return }
                 print("\(strongSelf.secondsElapsed)")
                 strongSelf.secondsElapsed += 1
-                strongSelf.secondsLeft = strongSelf.currentCountdownSecs - strongSelf.secondsElapsed
                 
                 if strongSelf.secondsLeft <= 0 {
                     strongSelf.handleImmersiveSpaceChange(newValue: true)
@@ -166,14 +171,20 @@ class ScreenSaverModel {
                 }
             } else if !newValue && isScreenSaverRunning {
                 print("Disabling screen saver")
-                isScreenSaverRunning = false
-                secondsElapsed = 0
+                
                 audioPlayer?.stop() // Ensure this function stops the audio
                 guard let dismissSpace = dismissImmersiveSpace else {
                     print("openImmersiveSpace is not available.")
                     return
                 }
                 await dismissSpace()
+                
+                let timeoutLabel = timeouts[selectedTimeout].0
+                if timeoutLabel != "Never" {
+                    startTimer()
+                }
+                isScreenSaverRunning = false
+                secondsElapsed = 0
             }
         }
     }

@@ -66,10 +66,11 @@ struct ContentView: View {
                         // Countdown Timer Display
                         if screenSaverModel.isScreenSaverRunning {
                             Button(action: {
-                                // Reset the timer
-                                screenSaverModel.startTimer()
-                                screenSaverModel.handleImmersiveSpaceChange(newValue: false)
                                 screenSaverModel.secondsElapsed = 0
+                                timerString = timeString(from: screenSaverModel.secondsLeft)
+                                // Reset the timer
+                                screenSaverModel.handleImmersiveSpaceChange(newValue: false)
+                                
                             }) {
                                 Image(systemName: "stop")
                                     .resizable()
@@ -86,7 +87,10 @@ struct ContentView: View {
                                     .background(Color.black.opacity(0.6))
                                     .foregroundColor(.white)
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
-                                    .onChange(of: screenSaverModel.secondsLeft, {timerString = timeString(from: screenSaverModel.secondsLeft)})
+                                    .onChange(of: screenSaverModel.secondsLeft, {
+                                        timerString = timeString(from: screenSaverModel.secondsLeft)
+                                        print("Updating timerstring to ", screenSaverModel.secondsLeft)
+                                    })
                             } else {
                                 Text("Screen Saver is disabled")
                                     .font(.title3)
