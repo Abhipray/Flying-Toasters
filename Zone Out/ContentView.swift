@@ -24,9 +24,10 @@ struct ContentView: View {
     @Environment(ScreenSaverModel.self) var screenSaverModel
     
     func timeString(from totalSeconds: Int) -> String {
-        let minutes = totalSeconds / 60
-        let seconds = totalSeconds % 60
-        return String(format: "%02d:%02d", minutes, seconds)
+        let hours = totalSeconds / 3600
+        let minutes = (totalSeconds % 3600) / 60
+        let seconds = (totalSeconds % 3600) % 60
+        return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
     }
     
     var body: some View {
@@ -82,7 +83,7 @@ struct ContentView: View {
                         } else {
                             if(screenSaverModel.isTimerActive ) {
                                 Text(timerString)
-                                    .font(.title3)
+                                    .font(.system(size: 24, weight: .medium, design: .monospaced))
                                     .padding()
                                     .background(Color.black.opacity(0.6))
                                     .foregroundColor(.white)
