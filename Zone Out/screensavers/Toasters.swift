@@ -12,7 +12,9 @@ import RealityKitContent
 
 /// The main toaster model; it's cloned when a new toaster spawns.
 var toasterTemplate: Entity? = nil
+var toastTemplate: Entity? = nil
 var toasterNumber = 0
+var toastNumber = 0
 var toasterSrcPoint = (x: 4.0, y: 4.0, z: -6.0)
 
 var toasterPortal : Entity? = nil
@@ -143,6 +145,76 @@ func spawnToaster(screenSaverModel: ScreenSaverModel) async throws -> Entity {
     return toaster
 }
 
+@MainActor
+func spawnToast(screenSaverModel: ScreenSaverModel) async throws -> Entity {
+    print("Spawning a new toast")
+    
+    let (start, end, _) = generateToasterStartEndRotation()
+    let rotationQuaternion = simd_quatf(angle: Float.pi/4, axis: [0, 1, 0])
+    
+    // Randomize speed/duration of animation
+    let mean_dur = ToasterSpawnParameters.average_anim_duration
+    let range_dur = ToasterSpawnParameters.range_anim_duration
+    let anim_duration = Double.random(in: (mean_dur-range_dur)...(mean_dur+range_dur))
+    
+    // Setup initial toast spot
+    if toastTemplate == nil {
+        guard let toast = await loadFromRealityComposerPro(
+            named: "bread",
+            fromSceneNamed: "flying_toasters"
+        ) else {
+            fatalError("Error loading toast from Reality Composer Pro project.")
+        }
+        toastTemplate = toast
+    }
+    guard let toastTemplate = toastTemplate else {
+        fatalError("Toast template is nil.")
+    }
+    
+    let toast = toastTemplate.clone(recursive: true)
+    toast.generateCollisionShapes(recursive: true)
+    toast.name = "CToast\(toastNumber)"
+    toastNumber += 1
+    
+    toast.components[PhysicsBodyComponent.self] = PhysicsBodyComponent()
+    toast.scale = SIMD3<Float>(x: toastScale, y: toastScale, z: toastScale)
+    toast.position = simd_float(start.vector + .init(x: 0, y: 0, z: -0.0))
+    toast.transform.rotation = rotationQuaternion
+    
+    
+    // Generate animation
+    let line = FromToByAnimation<Transform>(
+        name: "line",
+        from: .init(scale: .init(repeating: toastScale),  rotation: rotationQuaternion, translation: simd_float(start.vector)),
+        to: .init(scale: .init(repeating: toastScale), rotation: rotationQuaternion, translation: simd_float(end.vector)),
+        duration: anim_duration,
+        bindTarget: .transform
+    )
+    
+    let animation = try! AnimationResource
+        .generate(with: line)
+    
+
+    toast.playAnimation(animation, transitionDuration: 1.0, startsPaused: false)
+    toast.setMaterialParameterValues(parameter: "saturation", value: .float(0.0))
+    toast.setMaterialParameterValues(parameter: "animate_texture", value: .bool(false))
+    
+    spaceOrigin.addChild(toast)
+
+    
+    // Schedule the removal of the entity after the animation completes
+    DispatchQueue.main.asyncAfter(deadline: .now() + anim_duration) {
+        toast.removeFromParent()
+        screenSaverModel.currentNumberOfToasters -= 1
+    }
+    
+    // Block portal
+    blinkPortal(duration: 0.2, blinkTimes: 1)
+    
+    return toast
+}
+
+
 
 /// Plays one of the toaster animations on the toaster you specify.
 @MainActor func toasterAnimate(_ toaster: Entity, kind: ToasterAnimations, shouldRepeat: Bool) {
@@ -176,6 +248,7 @@ struct ToasterSpawnParameters {
 }
 
 var toasterScale : Float = 0.005
+var toastScale : Float = 0.5
 
 /// A counter that advances to the next toaster path.
 var toasterPathsIndex = 0

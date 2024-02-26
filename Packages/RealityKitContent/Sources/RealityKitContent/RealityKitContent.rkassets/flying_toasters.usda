@@ -232,5 +232,15 @@ def Xform "Root"
             float opacity = 1
         }
     }
+
+    def "bread" (
+        active = true
+        prepend references = @bread.usdz@
+    )
+    {
+        float3 xformOp:scale = (1, 1, 1)
+        float3 xformOp:translate = (-2.0332837, -1.1920929e-7, -1.8835784)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
 }
 

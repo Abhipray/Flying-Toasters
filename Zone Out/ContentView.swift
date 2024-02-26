@@ -62,7 +62,6 @@ struct ContentView: View {
                                 screenSaverModel.secondsElapsed = 0
                                 screenSaverModel.startTimer()
                             }
-                            .opacity(0.9)
                         
                         // Countdown Timer Display
                         if screenSaverModel.isScreenSaverRunning {
@@ -90,8 +89,10 @@ struct ContentView: View {
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
                                     .onChange(of: screenSaverModel.secondsLeft, {
                                         timerString = timeString(from: screenSaverModel.secondsLeft)
-                                        print("Updating timerstring to ", screenSaverModel.secondsLeft)
                                     })
+                                    .onAppear {
+                                        timerString = timeString(from: screenSaverModel.secondsLeft)
+                                    }
                             } else {
                                 Text("Screen Saver is disabled")
                                     .font(.title3)
