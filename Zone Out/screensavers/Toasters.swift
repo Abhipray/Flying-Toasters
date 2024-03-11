@@ -238,12 +238,12 @@ enum ToasterAnimations {
 
 /// Toaster spawn parameters (in meters).
 struct ToasterSpawnParameters {
-    static var deltaX = -12.0
-    static var deltaY = -9.0
-    static var deltaZ = 12.1
+    static var deltaX = -12.0*0.4
+    static var deltaY = -9.0*0.4
+    static var deltaZ = 12.1*0.4
     
-    static var average_anim_duration = 10.0
-    static var range_anim_duration = 6.0 // +/- average
+    static var average_anim_duration = 5.0
+    static var range_anim_duration = 5.0 // +/- average
 }
 
 var toasterScale : Float = 0.005
