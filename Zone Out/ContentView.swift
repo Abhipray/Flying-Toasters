@@ -37,7 +37,7 @@ struct ContentView: View {
                     Spacer()
                     
                     Text("Flying Toasters")
-                        .font(.title) // Makes the font size much larger
+                        .font(.system(size: 24, weight: .bold, design: .monospaced))
                         .fontWeight(.bold) // Makes the text bold
                         .foregroundColor(.primary) // Uses the primary color, which adapts to light/dark mode
                         .background(Color.blue.opacity(0.05)) // Adds a light blue background with some transparency
@@ -49,7 +49,7 @@ struct ContentView: View {
 
                         Image("flying_toasters_splashscreen")
                             .resizable()
-                            .frame(width: 128, height: 128).help("Tap on me to reset the Screen Saver timer!")
+                            .frame(width: 128, height: 128).help("Tap on me to reset the Screen Saver timer")
                             .rotationEffect(.degrees(isJiggling ? 4 : -4), anchor: .center)
                             .animation(isJiggling ? .linear(duration: 0.1).repeatForever(autoreverses: true) : .default, value: isJiggling)
                             .onTapGesture {
@@ -62,12 +62,13 @@ struct ContentView: View {
                                 
                                 screenSaverModel.secondsElapsed = 0
                             }
+                            .padding(-30)
                         
                         Toggle(isOn: $showImmersiveSpace) {
                             Image(systemName: showImmersiveSpace ? "eye.slash" : "eye")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 50, height: 50) // Specify the frame to increase the size
+                                .frame(width: 36, height: 36) // Specify the frame to increase the size
                                 .clipShape(Circle())
                         }
                         .onAppear {
@@ -88,7 +89,7 @@ struct ContentView: View {
                         // Countdown Timer Display
                         if(screenSaverModel.isTimerActive ) {
                             Text(timerString)
-                                .font(.system(size: 24, weight: .medium, design: .monospaced))
+                                .font(.system(size: 18, weight: .medium, design: .monospaced))
                                 .padding()
                                 .background(Color.black.opacity(0.6))
                                 .foregroundColor(.white)
@@ -101,7 +102,7 @@ struct ContentView: View {
                                 }
                         } else {
                             Text("Timer disabled")
-                                .font(.title3)
+                                .font(.system(size: 18, weight: .medium, design: .monospaced))
                                 .padding()
                                 .background(Color.black.opacity(0.6))
                         }
@@ -115,10 +116,10 @@ struct ContentView: View {
                             Image(systemName: "gear")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 32, height: 32) // Specify the frame to increase the size
+                                .frame(width: 24, height: 24) // Specify the frame to increase the size
                                 .clipShape(Circle())
                         }
-                        .padding()
+                        .clipShape(Circle()) // Ensure the entire button is clipped to a circle shape.
                         .sheet(isPresented: $showSettings) {
                             SettingsView()
                         }
@@ -130,12 +131,13 @@ struct ContentView: View {
                             Image(systemName: "info.circle")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 32, height: 32) // Specify the frame to increase the size
+                                .frame(width: 24, height: 24) // Specify the frame to increase the size
                                 .foregroundColor(.primary)
                         }
                         .sheet(isPresented: $showingCredits) {
                             CreditsView()
                         }
+                        .clipShape(Circle()) // Ensure the entire button is clipped to a circle shape.
                     }
                     .padding()
                 }
@@ -204,7 +206,7 @@ struct SettingsView: View {
                 Section(header: Text("Toaster Settings").font(.headline)) {
                     VStack {
                         Text("Number of toasters: \(Int(screenSaverModel.numberOfToastersConfig))")
-                        Slider(value: $screenSaverModel.numberOfToastersConfig, in: 10...20, step: 1)
+                        Slider(value: $screenSaverModel.numberOfToastersConfig, in: 5...20, step: 1)
                             .padding(.horizontal)
                             .help("Set the number of flying toasters displayed.")
                     }
@@ -235,12 +237,13 @@ struct SettingsView: View {
                         Image(systemName: "checkmark")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 32, height: 32) // Specify the frame to increase the size
-                            .clipShape(Circle())
+                            .foregroundColor(.white) // Change the icon color to white for better contrast
+                            .frame(width: 32, height: 32) // Control the image size
+                            .padding(8) // Add some padding to make the button larger and easier to tap
+                            .clipShape(Circle()) // Ensure the button's background is also clipped to a circle
+                            .shadow(radius: 5) // Add a shadow for a lifted effect
                     }
                 }
-                    
-                
             }
             .padding()
         }

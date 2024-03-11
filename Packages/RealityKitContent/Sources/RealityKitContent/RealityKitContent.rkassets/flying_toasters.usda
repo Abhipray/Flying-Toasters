@@ -28,7 +28,9 @@ def Xform "Root"
         float3 xformOp:translate = (0, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
-        def RealityKitComponent "RigidBody"
+        def RealityKitComponent "RigidBody" (
+            active = false
+        )
         {
             bool gravityEnabled = 0
             uniform token info:id = "RealityKit.RigidBody"
@@ -56,9 +58,7 @@ def Xform "Root"
             uniform token info:id = "RealityKit.InputTarget"
         }
 
-        def RealityKitComponent "Collider" (
-            active = false
-        )
+        def RealityKitComponent "Collider"
         {
             uint group = 1
             uniform token info:id = "RealityKit.Collider"

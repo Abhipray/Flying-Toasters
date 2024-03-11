@@ -247,7 +247,7 @@ struct ToasterSpawnParameters {
 }
 
 var toasterScale : Float = 0.005
-var toastScales : [String: Float] = [ "light": 2.0, "medium" : 2.0, "dark" : 1.0]
+var toastScales : [String: Float] = [ "light": 1.5, "medium" : 1.5, "dark" : 0.5]
 
 /// A counter that advances to the next toaster.
 var toasterIndex = 0
