@@ -15,7 +15,6 @@ var toasterTemplate: Entity? = nil
 var toastLightTemplate: Entity? = nil
 var toastMediumTemplate: Entity? = nil
 var toastDarkTemplate: Entity? = nil
-var toasterNumber = 0
 var toastNumber = 0
 var toasterSrcPoint = (x: 4.0, y: 4.0, z: -6.0)
 
@@ -88,30 +87,6 @@ func spawnToaster(screenSaverModel: ScreenSaverModel) async throws -> Entity {
     let range_dur = ToasterSpawnParameters.range_anim_duration
     let anim_duration = Double.random(in: (mean_dur-range_dur)...(mean_dur+range_dur))
     
-    // Setup initial toaster spot
-    if toasterTemplate == nil {
-        guard let toaster = await loadFromRealityComposerPro(
-            named: "toaster",
-            fromSceneNamed: "flying_toasters"
-        ) else {
-            fatalError("Error loading toaster from Reality Composer Pro project.")
-        }
-        toasterTemplate = toaster
-    }
-    guard let toasterTemplate = toasterTemplate else {
-        fatalError("Toaster template is nil.")
-    }
-    
-    let toaster = toasterTemplate.clone(recursive: true)
-    toaster.generateCollisionShapes(recursive: true)
-    toaster.name = "CToaster\(toasterNumber)"
-    toasterNumber += 1
-    
-    toaster.components[PhysicsBodyComponent.self] = PhysicsBodyComponent()
-    toaster.scale = SIMD3<Float>(x: toasterScale, y: toasterScale, z: toasterScale)
-    toaster.position = simd_float(start.vector + .init(x: 0, y: 0, z: -0.0))
-    toaster.transform.rotation = rotationQuaternion
-    
     
     // Generate animation
     let line = FromToByAnimation<Transform>(
@@ -125,6 +100,11 @@ func spawnToaster(screenSaverModel: ScreenSaverModel) async throws -> Entity {
     let animation = try! AnimationResource
         .generate(with: line)
     
+    let toaster = toasters[toastIndex % toasters.count];
+    toastIndex += 1;
+    
+    toaster.position = simd_float(start.vector + .init(x: 0, y: 0, z: -0.0))
+    toaster.transform.rotation = rotationQuaternion
 
     toaster.playAnimation(animation, transitionDuration: 1.0, startsPaused: false)
     toaster.setMaterialParameterValues(parameter: "saturation", value: .float(0.0))
@@ -133,11 +113,10 @@ func spawnToaster(screenSaverModel: ScreenSaverModel) async throws -> Entity {
     toasterAnimate(toaster, kind: .flapWings, shouldRepeat: true)
     
     spaceOrigin.addChild(toaster)
-
     
     // Schedule the removal of the entity after the animation completes
-    DispatchQueue.main.asyncAfter(deadline: .now() + anim_duration) {
-        toaster.removeFromParent()
+    DispatchQueue.main.asyncAfter(deadline: .now() + anim_duration) { [weak toaster] in
+        toaster?.removeFromParent()
         screenSaverModel.currentNumberOfToasters -= 1
     }
     
@@ -172,6 +151,7 @@ func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String) async thr
     }
     
     if toastTemplate == nil {
+        print("loading toast template")
         guard let toast = await loadFromRealityComposerPro(
             named: toastObjName,
             fromSceneNamed: "flying_toasters"
@@ -179,6 +159,7 @@ func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String) async thr
             fatalError("Error loading toast from Reality Composer Pro project.")
         }
         toastTemplate = toast
+        
     }
     guard let toastTemplate = toastTemplate else {
         fatalError("Toast template is nil.")
@@ -217,8 +198,8 @@ func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String) async thr
 
     
     // Schedule the removal of the entity after the animation completes
-    DispatchQueue.main.asyncAfter(deadline: .now() + anim_duration) {
-        toast.removeFromParent()
+    DispatchQueue.main.asyncAfter(deadline: .now() + anim_duration) { [weak toast] in
+        toast?.removeFromParent()
         screenSaverModel.currentNumberOfToasters -= 1
     }
     
@@ -245,6 +226,10 @@ func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String) async thr
 
 /// A map from a kind of animation to the animation resource that contains that animation.
 var toasterAnimations: [ToasterAnimations: AnimationResource] = [:]
+var toasters: [Entity] = []
+var toasts: [Entity] = []
+
+var toastMempoolLen = 30
 
 /// The available animations inside the toaster asset.
 enum ToasterAnimations {
@@ -264,8 +249,9 @@ struct ToasterSpawnParameters {
 var toasterScale : Float = 0.005
 var toastScales : [String: Float] = [ "light": 2.0, "medium" : 2.0, "dark" : 1.0]
 
-/// A counter that advances to the next toaster path.
-var toasterPathsIndex = 0
+/// A counter that advances to the next toaster.
+var toasterIndex = 0
+var toastIndex = 0
 
 /// A hand-picked selection of random starting parameters for the motion of the toasters.
 var toasterPaths: [(Double, Double, Double)] = []

@@ -191,10 +191,21 @@ class ScreenSaverModel {
         }
     }
     
+    func load_toast(toastObjName: String)  async throws -> Entity {
+            guard let toast = await loadFromRealityComposerPro(
+                named: toastObjName,
+                fromSceneNamed: "flying_toasters"
+            ) else {
+                fatalError("Error loading toast from Reality Composer Pro project.")
+            }
+        return toast;
+    }
+    
     /// Preload assets when the app launches to avoid pop-in during the game.
     init() {
         Task { @MainActor in
         
+            // Pre-load toasters
             var entity: Entity? = nil
             do {
                 let scene = try await Entity(named: "flying_toasters", in: realityKitContentBundle)
@@ -210,11 +221,41 @@ class ScreenSaverModel {
                 fatalError("Error loading assets.")
             }
             
+            guard let toasterTemplate = toasterTemplate else {
+                fatalError("Toaster template is nil.")
+            }
             
+            for i in 1...toastMempoolLen {
+                let toaster = toasterTemplate.clone(recursive: true)
+                toaster.generateCollisionShapes(recursive: true)
+                toaster.name = "CToaster\(i)"
+                
+                toaster.components[PhysicsBodyComponent.self] = PhysicsBodyComponent()
+                toaster.scale = SIMD3<Float>(x: toasterScale, y: toasterScale, z: toasterScale)
+                
+                toasters.append(toaster)
+            }
+            
+            // Pre-load toast
+            do {
+                toastLightTemplate = try await load_toast(toastObjName: "toast_light")
+            } catch {
+                print("Failed to load toast:", error.localizedDescription)
+            }
+            do {
+                toastMediumTemplate = try await load_toast(toastObjName: "toast_med")
+            } catch {
+                print("Failed to load toast:", error.localizedDescription)
+            }
+            do {
+                toastDarkTemplate = try await load_toast(toastObjName: "toast_dark")
+            } catch {
+                print("Failed to load toast:", error.localizedDescription)
+            }
+                       
             // Generate animations inside the toaster models.
-            let def = toasterTemplate!.availableAnimations[0].definition
+            let def = toasterTemplate.availableAnimations[0].definition
             toasterAnimations[.flapWings] = try .generate(with: AnimationView(source: def, speed: 5.0))
-
         
             // Check if the audio player is already initialized
             if self.audioPlayer == nil {

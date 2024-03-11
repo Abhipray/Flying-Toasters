@@ -18,6 +18,7 @@ struct ContentView: View {
     @State private var wasAudioPlayingBeforeStop = false
     @State private var isJiggling = false
     @State private var timerString = ""
+    @State private var showImmersiveSpace = false
     
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
@@ -48,7 +49,7 @@ struct ContentView: View {
 
                         Image("flying_toasters_splashscreen")
                             .resizable()
-                            .frame(width: 256, height: 256).help("Tap on me to reset the Screen Saver timer!")
+                            .frame(width: 128, height: 128).help("Tap on me to reset the Screen Saver timer!")
                             .rotationEffect(.degrees(isJiggling ? 4 : -4), anchor: .center)
                             .animation(isJiggling ? .linear(duration: 0.1).repeatForever(autoreverses: true) : .default, value: isJiggling)
                             .onTapGesture {
@@ -60,48 +61,50 @@ struct ContentView: View {
                                 }
                                 
                                 screenSaverModel.secondsElapsed = 0
-                                screenSaverModel.startTimer()
                             }
+                        
+                        Toggle(isOn: $showImmersiveSpace) {
+                            Image(systemName: showImmersiveSpace ? "eye.slash" : "eye")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 50, height: 50) // Specify the frame to increase the size
+                                .clipShape(Circle())
+                        }
+                        .onAppear {
+                            showImmersiveSpace = screenSaverModel.isScreenSaverRunning
+                        }
+                        .toggleStyle(.button)
+                        .help("Start or stop preview of the screensaver")
+                        .onChange(of: showImmersiveSpace) { _, newValue in
+                            screenSaverModel.handleImmersiveSpaceChange(newValue: newValue)
+                        }
+                        .onChange(of: screenSaverModel.isScreenSaverRunning) {_,newValue in
+                            showImmersiveSpace = newValue;
+                        }
+                        .padding()
+                        
+                        Spacer()
                         
                         // Countdown Timer Display
-                        if screenSaverModel.isScreenSaverRunning {
-                            Button(action: {
-                                screenSaverModel.secondsElapsed = 0
-                                timerString = timeString(from: screenSaverModel.secondsLeft)
-                                // Reset the timer
-                                screenSaverModel.handleImmersiveSpaceChange(newValue: false)
-                                
-                            }) {
-                                Image(systemName: "stop")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 32, height: 32) // Specify the frame to increase the size
-                            }
-                            .toggleStyle(.button)
-                            .help("Stop Screen Saver")
+                        if(screenSaverModel.isTimerActive ) {
+                            Text(timerString)
+                                .font(.system(size: 24, weight: .medium, design: .monospaced))
+                                .padding()
+                                .background(Color.black.opacity(0.6))
+                                .foregroundColor(.white)
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                .onChange(of: screenSaverModel.secondsLeft, {
+                                    timerString = timeString(from: screenSaverModel.secondsLeft)
+                                })
+                                .onAppear {
+                                    timerString = timeString(from: screenSaverModel.secondsLeft)
+                                }
                         } else {
-                            if(screenSaverModel.isTimerActive ) {
-                                Text(timerString)
-                                    .font(.system(size: 24, weight: .medium, design: .monospaced))
-                                    .padding()
-                                    .background(Color.black.opacity(0.6))
-                                    .foregroundColor(.white)
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                                    .onChange(of: screenSaverModel.secondsLeft, {
-                                        timerString = timeString(from: screenSaverModel.secondsLeft)
-                                    })
-                                    .onAppear {
-                                        timerString = timeString(from: screenSaverModel.secondsLeft)
-                                    }
-                            } else {
-                                Text("Screen Saver is disabled")
-                                    .font(.title3)
-                                    .padding()
-                                    .background(Color.black.opacity(0.6))
-                            }
+                            Text("Timer disabled")
+                                .font(.title3)
+                                .padding()
+                                .background(Color.black.opacity(0.6))
                         }
-
-                        
                     }
                     
                     HStack{
@@ -142,6 +145,9 @@ struct ContentView: View {
                 screenSaverModel.openImmersiveSpace = openImmersiveSpace
                 screenSaverModel.dismissImmersiveSpace = dismissImmersiveSpace
             }
+            .onDisappear {
+                screenSaverModel.handleImmersiveSpaceChange(newValue:false)
+            }
     }
 }
 
@@ -150,7 +156,6 @@ struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(ScreenSaverModel.self) var screenSaverModel
     
-    @State private var showImmersiveSpace = false
 
     
     // Arrays to hold the values for hours, minutes, and seconds
@@ -195,7 +200,6 @@ struct SettingsView: View {
                         }
                     }
                 }
-                
 
                 Section(header: Text("Toaster Settings").font(.headline)) {
                     VStack {
@@ -225,30 +229,8 @@ struct SettingsView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .automatic) {
-                    
-                    Toggle(isOn: $showImmersiveSpace) {
-                        Image(systemName: showImmersiveSpace ? "eye.slash" : "eye")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 32, height: 32) // Specify the frame to increase the size
-                            .clipShape(Circle())
-                    }
-                    .onAppear {
-                        showImmersiveSpace = screenSaverModel.isScreenSaverRunning
-                    }
-                    .toggleStyle(.button)
-                    .help("Start or stop preview of the screensaver")
-                    .onChange(of: showImmersiveSpace) { _, newValue in
-                        screenSaverModel.handleImmersiveSpaceChange(newValue: newValue)
-                    }
-                    Spacer()
-                }
-                ToolbarItem(placement: .automatic) {
-                    
                     Button(action: {
-                        screenSaverModel.handleImmersiveSpaceChange(newValue: false)
                         dismiss()
-                        screenSaverModel.startTimer()
                     }) {
                         Image(systemName: "checkmark")
                             .resizable()
