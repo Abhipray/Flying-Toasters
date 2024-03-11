@@ -60,7 +60,7 @@ class ScreenSaverModel {
     
     // Toaster config
     var numberOfToastersConfig: Double = 10
-    var toastLevelConfig: Int = 1
+    var toastLevelConfig: Int = 0
     var musicEnabled = false
     
     
@@ -89,6 +89,8 @@ class ScreenSaverModel {
     var isTimerActive: Bool = false
     
     let timeouts = [("For 1 Minute", 1), ("For 5 Minutes", 5), ("For 15 Minutes", 15), ("For 30 Minutes", 30), ("For 1 Hour", 60), ("For 2 Hours", 120), ("Never", 0), ("Custom", -1), ("For 6 seconds", 0.1)]
+    
+    let toastTypes = ["light", "medium", "dark"]
     
     var selectedTimeout : Int = 6 {
         didSet {

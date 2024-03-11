@@ -208,9 +208,9 @@ struct SettingsView: View {
                     VStack{
                         Text("Toast Level:")
                         Picker("Toast Level", selection: $screenSaverModel.toastLevelConfig) {
-                            ForEach(["Light", "Medium", "Dark"], id: \.self) { toastLevel in
-                                Text(toastLevel).tag(toastLevel)
-                            }
+                            Text("Light").tag(0) // Index for Light
+                            Text("Medium").tag(1) // Index for Medium
+                            Text("Dark").tag(2) // Index for Dark
                         }
                         .pickerStyle(.segmented)
                         .help("Adjust how toasted you like your toasts.")

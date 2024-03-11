@@ -12,7 +12,9 @@ import RealityKitContent
 
 /// The main toaster model; it's cloned when a new toaster spawns.
 var toasterTemplate: Entity? = nil
-var toastTemplate: Entity? = nil
+var toastLightTemplate: Entity? = nil
+var toastMediumTemplate: Entity? = nil
+var toastDarkTemplate: Entity? = nil
 var toasterNumber = 0
 var toastNumber = 0
 var toasterSrcPoint = (x: 4.0, y: 4.0, z: -6.0)
@@ -146,11 +148,11 @@ func spawnToaster(screenSaverModel: ScreenSaverModel) async throws -> Entity {
 }
 
 @MainActor
-func spawnToast(screenSaverModel: ScreenSaverModel) async throws -> Entity {
+func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String) async throws -> Entity {
     print("Spawning a new toast")
     
     let (start, end, _) = generateToasterStartEndRotation()
-    let rotationQuaternion = simd_quatf(angle: Float.pi/4, axis: [0, 1, 0])
+    let rotationQuaternion = simd_quatf(angle: Float.pi/4, axis: [1, 1, 0])
     
     // Randomize speed/duration of animation
     let mean_dur = ToasterSpawnParameters.average_anim_duration
@@ -158,9 +160,20 @@ func spawnToast(screenSaverModel: ScreenSaverModel) async throws -> Entity {
     let anim_duration = Double.random(in: (mean_dur-range_dur)...(mean_dur+range_dur))
     
     // Setup initial toast spot
+    var toastTemplate = toastLightTemplate
+    var toastObjName = "toast_light"
+    if toastType == "medium" {
+        toastTemplate = toastMediumTemplate
+        toastObjName = "toast_med"
+    }
+    if toastType == "dark" {
+        toastTemplate = toastDarkTemplate
+        toastObjName = "toast_dark"
+    }
+    
     if toastTemplate == nil {
         guard let toast = await loadFromRealityComposerPro(
-            named: "bread",
+            named: toastObjName,
             fromSceneNamed: "flying_toasters"
         ) else {
             fatalError("Error loading toast from Reality Composer Pro project.")
@@ -177,7 +190,8 @@ func spawnToast(screenSaverModel: ScreenSaverModel) async throws -> Entity {
     toastNumber += 1
     
     toast.components[PhysicsBodyComponent.self] = PhysicsBodyComponent()
-    toast.scale = SIMD3<Float>(x: toastScale, y: toastScale, z: toastScale)
+    let toastScale = toastScales[toastType]!
+    toast.scale = SIMD3<Float>(repeating: toastScale)
     toast.position = simd_float(start.vector + .init(x: 0, y: 0, z: -0.0))
     toast.transform.rotation = rotationQuaternion
     
@@ -186,7 +200,7 @@ func spawnToast(screenSaverModel: ScreenSaverModel) async throws -> Entity {
     let line = FromToByAnimation<Transform>(
         name: "line",
         from: .init(scale: .init(repeating: toastScale),  rotation: rotationQuaternion, translation: simd_float(start.vector)),
-        to: .init(scale: .init(repeating: toastScale), rotation: rotationQuaternion, translation: simd_float(end.vector)),
+        to: .init(scale: .init(repeating: toastScale),  rotation: rotationQuaternion, translation: simd_float(end.vector)),
         duration: anim_duration,
         bindTarget: .transform
     )
@@ -248,7 +262,7 @@ struct ToasterSpawnParameters {
 }
 
 var toasterScale : Float = 0.005
-var toastScale : Float = 0.5
+var toastScales : [String: Float] = [ "light": 2.0, "medium" : 2.0, "dark" : 1.0]
 
 /// A counter that advances to the next toaster path.
 var toasterPathsIndex = 0

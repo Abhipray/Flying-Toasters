@@ -11,6 +11,27 @@
       }
     ]
   },
+  "4E1A9229-6152-4687-A264-D44215C51618" : {
+    "objectMetadataList" : [
+      [
+        "4E1A9229-6152-4687-A264-D44215C51618",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "4E1A9229-6152-4687-A264-D44215C51618",
+        "Root",
+        "toast_light"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
   "65F6F990-A780-4474-B78B-572E0E4E273D" : {
     "objectMetadataList" : [
       [
@@ -28,8 +49,172 @@
       [
         "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
         "Root",
-        "Bread_Slice",
-        "Bread_Slice_Toast_0"
+        "portal"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "toast_lighter",
+        "scene",
+        "Meshes"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "bread_light",
+        "Toast_obj_cleaner_materialmerger_gles"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "toast_lighter",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "light",
+        "scene"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "toast_medium",
+        "Meshes",
+        "Sketchfab_model",
+        "Toast_obj_cleaner_materialmerger_gles"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "toaster_only"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "light",
+        "scene",
+        "Meshes"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "toast_medium_1",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "toast_dark"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "toast_medium",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "Bread_Toast_and_Grilled_Cheese_Game_Ready",
+        "Meshes"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "toast_lighter",
+        "scene",
+        "Meshes",
+        "Sketchfab_model"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "Bread_Toast_and_Grilled_Cheese_Game_Ready",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "toast_lighter",
+        "scene"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "toast_dark",
+        "Geom"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "Bread_Toast_and_Grilled_Cheese_Game_Ready",
+        "Meshes",
+        "Sketchfab_model"
       ],
       {
         "isExpanded" : true,
@@ -40,16 +225,6 @@
         "Root",
         "bread",
         "Geom"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
-        "toaster_template",
-        "Materials"
       ],
       {
         "isExpanded" : true,
@@ -71,73 +246,6 @@
       [
         "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
         "Root",
-        "Bread_Toast_and_Grilled_Cheese_Game_Ready",
-        "Meshes"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
-        "toaster",
-        "Materials"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
-        "toaster_only"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
-        "toaster",
-        "Geom"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
-        "Bread_Toast_and_Grilled_Cheese_Game_Ready",
-        "Materials"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
-        "bread",
-        "Materials"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
         "Bread_Toasted",
         "Bread_Toasted_Toast_0"
       ],
@@ -148,56 +256,29 @@
       [
         "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
         "Root",
-        "bread_dark",
+        "Bread_Slice",
+        "Bread_Slice_Toast_0"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "bread_light",
+        "Toast_obj_cleaner_materialmerger_gles",
+        "Object_4"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "toaster_template",
         "Materials"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
-        "bread_dark",
-        "Geom"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
-        "toaster"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
-        "left_wing"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
-        "Bread_Toast_and_Grilled_Cheese_Game_Ready",
-        "Meshes",
-        "Sketchfab_model"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
-        "Material"
       ],
       {
         "isExpanded" : true,
@@ -218,7 +299,105 @@
       [
         "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
         "Root",
-        "portal"
+        "bread",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "bread_dark",
+        "Geom"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "Material"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "toast_dark",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "toast_medium",
+        "Meshes",
+        "Sketchfab_model"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "left_wing"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "toast_medium",
+        "Meshes"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "bread_light",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "bread_light",
+        "Meshes"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "bread_dark",
+        "Materials"
       ],
       {
         "isExpanded" : true,
@@ -320,8 +499,7 @@
     "objectMetadataList" : [
       [
         "DE0B86DA-1C8D-4F4E-92F6-BD76BAD17A23",
-        "Bread_Toasted",
-        "Bread_Toasted_Toast_0"
+        "_materials"
       ],
       {
         "isExpanded" : true,
@@ -337,7 +515,8 @@
       },
       [
         "DE0B86DA-1C8D-4F4E-92F6-BD76BAD17A23",
-        "_materials"
+        "Bread_Toasted",
+        "Bread_Toasted_Toast_0"
       ],
       {
         "isExpanded" : true,
@@ -350,8 +529,9 @@
       [
         "E97B8253-420B-4156-8BD6-6EA01E3B4099",
         "Root",
-        "background",
-        "Materials"
+        "Fantasy_Sky_Background",
+        "Meshes",
+        "Sketchfab_model"
       ],
       {
         "isExpanded" : true,
@@ -368,19 +548,7 @@
       },
       [
         "E97B8253-420B-4156-8BD6-6EA01E3B4099",
-        "Root",
-        "background",
-        "Object001"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "E97B8253-420B-4156-8BD6-6EA01E3B4099",
-        "Root",
-        "Fantasy_Sky_Background",
-        "Materials"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -399,9 +567,8 @@
       [
         "E97B8253-420B-4156-8BD6-6EA01E3B4099",
         "Root",
-        "Fantasy_Sky_Background",
-        "Meshes",
-        "Sketchfab_model"
+        "background",
+        "Object001"
       ],
       {
         "isExpanded" : true,
@@ -409,7 +576,19 @@
       },
       [
         "E97B8253-420B-4156-8BD6-6EA01E3B4099",
-        "Root"
+        "Root",
+        "background",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "E97B8253-420B-4156-8BD6-6EA01E3B4099",
+        "Root",
+        "Fantasy_Sky_Background",
+        "Materials"
       ],
       {
         "isExpanded" : true,

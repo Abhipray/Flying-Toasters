@@ -10,7 +10,7 @@
 
 def Xform "Root"
 {
-    reorder nameChildren = ["toaster", "Material", "Material_wing", "portal"]
+    reorder nameChildren = ["toaster", "Material", "Material_wing", "portal", "toast_dark", "toast_light", "bread_light_1", "toast_medium"]
     def "toaster" (
         active = true
         prepend apiSchemas = ["MaterialBindingAPI"]
@@ -24,7 +24,7 @@ def Xform "Root"
             bindMaterialAs = "weakerThanDescendants"
         )
         quatf xformOp:orient = (1, 0, 0, 0)
-        float3 xformOp:scale = (0.01, 0.01, 0.01)
+        float3 xformOp:scale = (0.001, 0.001, 0.001)
         float3 xformOp:translate = (0, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -197,7 +197,7 @@ def Xform "Root"
     )
     {
         uniform token axis = "Y"
-        double height = 0.01
+        double height = 0.1
         rel material:binding = </Root/portal/DefaultMaterial>
         double radius = 0.1
         quatf xformOp:orient = (0.70710677, 0.70710677, 0, 0)
@@ -213,13 +213,17 @@ def Xform "Root"
             def Shader "DefaultSurfaceShader"
             {
                 uniform token info:id = "UsdPreviewSurface"
+                float inputs:clearcoat = 0.4
+                float inputs:clearcoatRoughness = 0.05
                 color3f inputs:diffuseColor = (0, 0, 0) (
                     colorSpace = "srgb_displayp3"
                 )
-                color3f inputs:emissiveColor = (0.12518525, 0.12644975, 0.12644975) (
+                color3f inputs:emissiveColor = (0.09416399, 0.096085705, 0.096085705) (
                     colorSpace = "srgb_displayp3"
                 )
+                float inputs:ior = 30
                 float inputs:metallic = 1
+                float inputs:occlusion = 0.3
                 float inputs:opacity = 1
                 float inputs:roughness = 0.75
                 token outputs:surface
@@ -229,17 +233,62 @@ def Xform "Root"
         def RealityKitComponent "HierarchicalFade"
         {
             uniform token info:id = "RealityKit.HierarchicalFade"
-            float opacity = 1
+            float opacity = 0.7388115
         }
     }
 
-    def "bread" (
+    def "toast_dark" (
         active = true
-        prepend references = @bread.usdz@
+        references = @bread.usdz@
+    )
+    {
+        float3 xformOp:scale = (0.1, 0.1, 0.1)
+        float3 xformOp:translate = (-0.08848316, 1.3969839e-8, -0.04418748)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        over "Materials"
+        {
+            over "Material"
+            {
+                token outputs:mtlx:surface
+                token outputs:realitykit:vertex
+            }
+        }
+
+        def RealityKitComponent "RigidBody"
+        {
+            uniform token info:id = "RealityKit.RigidBody"
+
+            def RealityKitStruct "massFrame"
+            {
+                def RealityKitStruct "m_pose"
+                {
+                }
+            }
+
+            def RealityKitStruct "material"
+            {
+            }
+        }
+    }
+
+    def "toast_light" (
+        active = true
+        prepend references = @toast_light.usdz@
     )
     {
         float3 xformOp:scale = (1, 1, 1)
-        float3 xformOp:translate = (-2.0332837, -1.1920929e-7, -1.8835784)
+        float3 xformOp:translate = (-0.33084172, 0, -0.04489048)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def "toast_med" (
+        active = true
+        prepend references = @toast_med.usdz@
+    )
+    {
+        float3 xformOp:scale = (1, 1, 1)
+        float3 xformOp:translate = (-0.40607792, -2.9802322e-8, 0.09613174)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
     }
 }

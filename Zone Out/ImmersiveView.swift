@@ -42,7 +42,9 @@ struct ImmersiveView: View {
                         let spawnAmount = Int.random(in: 1...maxNumToSpawn)
                         for _ in (0..<spawnAmount) {
                             var _ = try await spawnToaster(screenSaverModel:screenSaverModel)
-                            var _ = try await spawnToast(screenSaverModel:screenSaverModel)
+                            let toastType = screenSaverModel.toastTypes[screenSaverModel.toastLevelConfig]
+                            print(toastType)
+                            var _ = try await spawnToast(screenSaverModel:screenSaverModel, toastType: toastType)
                             screenSaverModel.currentNumberOfToasters += 2
                         }
                     } catch {
