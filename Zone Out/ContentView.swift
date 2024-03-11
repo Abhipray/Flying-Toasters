@@ -87,25 +87,37 @@ struct ContentView: View {
                         Spacer()
                         
                         // Countdown Timer Display
-                        if(screenSaverModel.isTimerActive ) {
-                            Text(timerString)
-                                .font(.system(size: 18, weight: .medium, design: .monospaced))
-                                .padding()
-                                .background(Color.black.opacity(0.6))
-                                .foregroundColor(.white)
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                                .onChange(of: screenSaverModel.secondsLeft, {
-                                    timerString = timeString(from: screenSaverModel.secondsLeft)
-                                })
-                                .onAppear {
+                        
+                        Text(timerString)
+                            .font(.system(size: 18, weight: .medium, design: .monospaced))
+                            .padding()
+                            .background(Color.black.opacity(0.6))
+                            .foregroundColor(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .onChange(of: screenSaverModel.secondsLeft, {
+                                if (screenSaverModel.isTimerActive) {
                                     timerString = timeString(from: screenSaverModel.secondsLeft)
                                 }
-                        } else {
-                            Text("Timer disabled")
-                                .font(.system(size: 18, weight: .medium, design: .monospaced))
-                                .padding()
-                                .background(Color.black.opacity(0.6))
-                        }
+                            })
+                            .onAppear {
+                                if (screenSaverModel.isScreenSaverRunning) {
+                                    timerString = "Timer paused"
+                                } else {
+                                    if (!screenSaverModel.isTimerActive) {
+                                        timerString = "Timer disabled"
+                                    }
+                                }
+                            }
+                            .onChange(of: screenSaverModel.isTimerActive, {
+                                if (screenSaverModel.isScreenSaverRunning) {
+                                    timerString = "Timer paused"
+                                } else {
+                                    if (!screenSaverModel.isTimerActive) {
+                                        timerString = "Timer disabled"
+                                    }
+                                }
+                            })
+                        
                     }
                     
                     HStack{
