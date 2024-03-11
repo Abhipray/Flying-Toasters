@@ -31,130 +31,126 @@ struct ContentView: View {
         return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
     }
     
+    func updateTimerString() {
+        if (screenSaverModel.isScreenSaverRunning) {
+            timerString = "Timer paused"
+        } else {
+            if (screenSaverModel.isTimerActive) {
+                timerString = timeString(from: screenSaverModel.secondsLeft)
+            } else {
+                timerString = "Timer disabled"
+            }
+        }
+    }
+    
     var body: some View {
-            ScrollView {
-                VStack(alignment: .center) {
-                    Spacer()
-                    
-                    Text("Flying Toasters")
-                        .font(.system(size: 24, weight: .bold, design: .monospaced))
-                        .fontWeight(.bold) // Makes the text bold
-                        .foregroundColor(.primary) // Uses the primary color, which adapts to light/dark mode
-                        .background(Color.blue.opacity(0.05)) // Adds a light blue background with some transparency
-                        .cornerRadius(20) // Rounds the corners of the background
-                        .shadow(radius: 5) // Adds a shadow for a 3D effect
-                        .help("A screensaver")
-                    
-                    VStack{
+            VStack(alignment: .center) {
+                Spacer()
+                
+                Text("Flying Toasters")
+                    .font(.system(size: 24, weight: .bold, design: .monospaced))
+                    .fontWeight(.bold) // Makes the text bold
+                    .foregroundColor(.primary) // Uses the primary color, which adapts to light/dark mode
+                    .background(Color.blue.opacity(0.05)) // Adds a light blue background with some transparency
+                    .cornerRadius(20) // Rounds the corners of the background
+                    .shadow(radius: 5) // Adds a shadow for a 3D effect
+                    .help("A screensaver")
+                
+                VStack{
 
-                        Image("flying_toasters_splashscreen")
-                            .resizable()
-                            .frame(width: 128, height: 128).help("Tap on me to reset the Screen Saver timer")
-                            .rotationEffect(.degrees(isJiggling ? 4 : -4), anchor: .center)
-                            .animation(isJiggling ? .linear(duration: 0.1).repeatForever(autoreverses: true) : .default, value: isJiggling)
-                            .onTapGesture {
-                                isJiggling.toggle()
-                                
-                                // Optionally, stop the jiggle after some time
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                    isJiggling = false
-                                }
-                                
-                                screenSaverModel.secondsElapsed = 0
+                    Image("flying_toasters_splashscreen")
+                        .resizable()
+                        .frame(width: 128, height: 128).help("Tap on me to reset the Screen Saver timer")
+                        .rotationEffect(.degrees(isJiggling ? 4 : -4), anchor: .center)
+                        .animation(isJiggling ? .linear(duration: 0.1).repeatForever(autoreverses: true) : .default, value: isJiggling)
+                        .onTapGesture {
+                            isJiggling.toggle()
+                            
+                            // Optionally, stop the jiggle after some time
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                isJiggling = false
                             }
-                            .padding(-30)
-                        
-                        Toggle(isOn: $showImmersiveSpace) {
-                            Image(systemName: showImmersiveSpace ? "eye.slash" : "eye")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 36, height: 36) // Specify the frame to increase the size
-                                .clipShape(Circle())
+                            
+                            screenSaverModel.secondsElapsed = 0
                         }
-                        .onAppear {
-                            showImmersiveSpace = screenSaverModel.isScreenSaverRunning
-                        }
-                        .toggleStyle(.button)
-                        .help("Start or stop preview of the screensaver")
-                        .onChange(of: showImmersiveSpace) { _, newValue in
-                            screenSaverModel.handleImmersiveSpaceChange(newValue: newValue)
-                        }
-                        .onChange(of: screenSaverModel.isScreenSaverRunning) {_,newValue in
-                            showImmersiveSpace = newValue;
-                        }
-                        .padding()
-                        
-                        Spacer()
-                        
-                        // Countdown Timer Display
-                        
-                        Text(timerString)
-                            .font(.system(size: 18, weight: .medium, design: .monospaced))
-                            .padding()
-                            .background(Color.black.opacity(0.6))
-                            .foregroundColor(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .onChange(of: screenSaverModel.secondsLeft, {
-                                if (screenSaverModel.isTimerActive) {
-                                    timerString = timeString(from: screenSaverModel.secondsLeft)
-                                }
-                            })
-                            .onAppear {
-                                if (screenSaverModel.isScreenSaverRunning) {
-                                    timerString = "Timer paused"
-                                } else {
-                                    if (!screenSaverModel.isTimerActive) {
-                                        timerString = "Timer disabled"
-                                    }
-                                }
-                            }
-                            .onChange(of: screenSaverModel.isTimerActive, {
-                                if (screenSaverModel.isScreenSaverRunning) {
-                                    timerString = "Timer paused"
-                                } else {
-                                    if (!screenSaverModel.isTimerActive) {
-                                        timerString = "Timer disabled"
-                                    }
-                                }
-                            })
-                        
-                    }
+                        .padding(-30)
                     
-                    HStack{
-                        // Settings Button
-                        Button(action: {
-                            showSettings.toggle()
-                        }) {
-                            Image(systemName: "gear")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 24, height: 24) // Specify the frame to increase the size
-                                .clipShape(Circle())
-                        }
-                        .clipShape(Circle()) // Ensure the entire button is clipped to a circle shape.
-                        .sheet(isPresented: $showSettings) {
-                            SettingsView()
-                        }
-                        
-                        
-                        Button(action: {
-                            self.showingCredits = true
-                        }) {
-                            Image(systemName: "info.circle")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 24, height: 24) // Specify the frame to increase the size
-                                .foregroundColor(.primary)
-                        }
-                        .sheet(isPresented: $showingCredits) {
-                            CreditsView()
-                        }
-                        .clipShape(Circle()) // Ensure the entire button is clipped to a circle shape.
+                    Toggle(isOn: $showImmersiveSpace) {
+                        Image(systemName: showImmersiveSpace ? "eye.slash" : "eye")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 36, height: 36) // Specify the frame to increase the size
+                            .clipShape(Circle())
+                    }
+                    .onAppear {
+                        showImmersiveSpace = screenSaverModel.isScreenSaverRunning
+                    }
+                    .toggleStyle(.button)
+                    .help("Start or stop preview of the screensaver")
+                    .onChange(of: showImmersiveSpace) { _, newValue in
+                        screenSaverModel.handleImmersiveSpaceChange(newValue: newValue)
+                    }
+                    .onChange(of: screenSaverModel.isScreenSaverRunning) {_,newValue in
+                        showImmersiveSpace = newValue;
                     }
                     .padding()
+                    
+                    Spacer()
+                    
+                    // Countdown Timer Display
+                    
+                    Text(timerString)
+                        .font(.system(size: 18, weight: .medium, design: .monospaced))
+                        .padding()
+                        .background(Color.black.opacity(0.6))
+                        .foregroundColor(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .onChange(of: screenSaverModel.secondsLeft, {
+                            updateTimerString()
+                        })
+                        .onAppear {
+                            updateTimerString()
+                        }
+                        .onChange(of: screenSaverModel.isTimerActive, {
+                            updateTimerString()
+                        })
+                    
+                }
+                
+                HStack{
+                    // Settings Button
+                    Button(action: {
+                        showSettings.toggle()
+                    }) {
+                        Image(systemName: "gear")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 24, height: 24) // Specify the frame to increase the size
+                            .clipShape(Circle())
+                    }
+                    .clipShape(Circle()) // Ensure the entire button is clipped to a circle shape.
+                    .sheet(isPresented: $showSettings) {
+                        SettingsView()
+                    }
+                    
+                    
+                    Button(action: {
+                        self.showingCredits = true
+                    }) {
+                        Image(systemName: "info.circle")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 24, height: 24) // Specify the frame to increase the size
+                            .foregroundColor(.primary)
+                    }
+                    .sheet(isPresented: $showingCredits) {
+                        CreditsView()
+                    }
+                    .clipShape(Circle()) // Ensure the entire button is clipped to a circle shape.
                 }
                 .padding()
             }
+            .padding()
             .onAppear {
                 screenSaverModel.openImmersiveSpace = openImmersiveSpace
                 screenSaverModel.dismissImmersiveSpace = dismissImmersiveSpace

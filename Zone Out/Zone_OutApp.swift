@@ -16,7 +16,9 @@ struct Zone_OutApp: App {
         WindowGroup("ScreenSavers", id: "main") {
             ContentView()
                 .environment(screenSaverModel)
+                .background(Color.black.opacity(0.8))
         }.defaultSize(width: 400, height:400)
+            
 
         ImmersiveSpace(id: "ImmersiveSpace") {
             ImmersiveView().environment(screenSaverModel)
