@@ -166,11 +166,11 @@ func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String) async thr
     }
     
     let toast = toastTemplate.clone(recursive: true)
-    toast.generateCollisionShapes(recursive: true)
+//    toast.generateCollisionShapes(recursive: true)
     toast.name = "CToast\(toastNumber)"
     toastNumber += 1
     
-    toast.components[PhysicsBodyComponent.self] = PhysicsBodyComponent()
+//    toast.components[PhysicsBodyComponent.self] = PhysicsBodyComponent()
     let toastScale = toastScales[toastType]!
     toast.scale = SIMD3<Float>(repeating: toastScale)
     toast.position = simd_float(start.vector + .init(x: 0, y: 0, z: -0.0))
@@ -243,11 +243,11 @@ struct ToasterSpawnParameters {
     static var deltaZ = 12.1*0.4
     
     static var average_anim_duration = 5.0
-    static var range_anim_duration = 5.0 // +/- average
+    static var range_anim_duration = 3.0 // +/- average
 }
 
 var toasterScale : Float = 0.005
-var toastScales : [String: Float] = [ "light": 1.5, "medium" : 1.5, "dark" : 0.5]
+var toastScales : [String: Float] = [ "light": 1.0, "medium" : 1.0, "dark" : 0.3]
 
 /// A counter that advances to the next toaster.
 var toasterIndex = 0

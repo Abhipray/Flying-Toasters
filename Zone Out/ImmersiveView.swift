@@ -43,7 +43,6 @@ struct ImmersiveView: View {
                         for _ in (0..<spawnAmount) {
                             var _ = try await spawnToaster(screenSaverModel:screenSaverModel)
                             let toastType = screenSaverModel.toastTypes[screenSaverModel.toastLevelConfig]
-                            print(toastType)
                             var _ = try await spawnToast(screenSaverModel:screenSaverModel, toastType: toastType)
                             screenSaverModel.currentNumberOfToasters += 2
                         }

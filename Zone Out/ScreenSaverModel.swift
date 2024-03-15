@@ -61,7 +61,7 @@ class ScreenSaverModel {
     // Toaster config
     var numberOfToastersConfig: Double = 10
     var toastLevelConfig: Int = 0
-    var musicEnabled = false
+    var musicEnabled = true
     
     
     // State variables
@@ -154,7 +154,9 @@ class ScreenSaverModel {
         Task {
             if newValue && !isScreenSaverRunning {
                 if  musicEnabled {
+                    audioPlayer?.volume = 0.01
                     audioPlayer?.play() // Ensure this function starts playing the audio
+                    audioPlayer?.setVolume(0.1, fadeDuration: 5)
                 } else {
                     audioPlayer?.stop() // Ensure this function stops the audio
                 }
@@ -255,7 +257,7 @@ class ScreenSaverModel {
                        
             // Generate animations inside the toaster models.
             let def = toasterTemplate.availableAnimations[0].definition
-            toasterAnimations[.flapWings] = try .generate(with: AnimationView(source: def, speed: 5.0))
+            toasterAnimations[.flapWings] = try .generate(with: AnimationView(source: def, speed: 3.0))
         
             // Check if the audio player is already initialized
             if self.audioPlayer == nil {

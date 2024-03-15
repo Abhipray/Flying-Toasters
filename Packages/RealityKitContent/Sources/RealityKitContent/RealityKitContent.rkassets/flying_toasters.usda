@@ -28,18 +28,16 @@ def Xform "Root"
         float3 xformOp:translate = (0, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
-        def RealityKitComponent "RigidBody" (
-            active = false
-        )
+        def RealityKitComponent "RigidBody"
         {
             bool gravityEnabled = 0
             uniform token info:id = "RealityKit.RigidBody"
             bool isCCDEnabled = 1
-            token motionType = "Kinematic"
+            token motionType = "Static"
 
             def RealityKitStruct "massFrame"
             {
-                float m_mass = 0.5
+                float m_mass = 10
 
                 def RealityKitStruct "m_pose"
                 {
@@ -48,6 +46,9 @@ def Xform "Root"
 
             def RealityKitStruct "material"
             {
+                double dynamicFriction = 0.1
+                double restitution = 0.1
+                double staticFriction = 0.1
             }
         }
 
@@ -67,10 +68,10 @@ def Xform "Root"
 
             def RealityKitStruct "Shape"
             {
-                float3 extent = (180.04044, 66.70497, 89.0094)
+                float3 extent = (200, 100, 100)
                 float height = 66.70497
                 float radius = 90.02022
-                token shapeType = "Capsule"
+                token shapeType = "Box"
 
                 def RealityKitStruct "pose"
                 {
@@ -91,7 +92,7 @@ def Xform "Root"
                     color3f inputs:diffuseColor = (0.9575176, 1, 0.081351794) (
                         colorSpace = "srgb_displayp3"
                     )
-                    color3f inputs:emissiveColor = (0.7066688, 0.7066688, 0.7066688) (
+                    color3f inputs:emissiveColor = (0.7066688, 0.2688082, 0.27007347) (
                         colorSpace = "srgb_displayp3"
                     )
                     float inputs:metallic = 0.8
@@ -255,7 +256,9 @@ def Xform "Root"
             }
         }
 
-        def RealityKitComponent "RigidBody"
+        def RealityKitComponent "RigidBody" (
+            active = false
+        )
         {
             uniform token info:id = "RealityKit.RigidBody"
 
@@ -270,6 +273,25 @@ def Xform "Root"
             {
             }
         }
+
+        def RealityKitComponent "Collider"
+        {
+            uint group = 1
+            uniform token info:id = "RealityKit.Collider"
+            uint mask = 4294967295
+            token type = "Default"
+
+            def RealityKitStruct "Shape"
+            {
+                float3 extent = (0.63899, 0.55094135, 0.18192063)
+                token shapeType = "Box"
+
+                def RealityKitStruct "pose"
+                {
+                    float3 position = (-0.000024408102, -0.0020103157, -0.00035206228)
+                }
+            }
+        }
     }
 
     def "toast_light" (
@@ -280,6 +302,43 @@ def Xform "Root"
         float3 xformOp:scale = (1, 1, 1)
         float3 xformOp:translate = (-0.33084172, 0, -0.04489048)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "Collider"
+        {
+            uint group = 1
+            uniform token info:id = "RealityKit.Collider"
+            uint mask = 4294967295
+            token type = "Default"
+
+            def RealityKitStruct "Shape"
+            {
+                float3 extent = (0.15727699, 0.010014024, 0.13946599)
+                token shapeType = "Box"
+
+                def RealityKitStruct "pose"
+                {
+                    float3 position = (0.0013714992, 0.000017999904, -0.00046300143)
+                }
+            }
+        }
+
+        def RealityKitComponent "RigidBody"
+        {
+            bool gravityEnabled = 0
+            uniform token info:id = "RealityKit.RigidBody"
+            bool isCCDEnabled = 1
+
+            def RealityKitStruct "massFrame"
+            {
+                def RealityKitStruct "m_pose"
+                {
+                }
+            }
+
+            def RealityKitStruct "material"
+            {
+            }
+        }
     }
 
     def "toast_med" (
@@ -290,6 +349,43 @@ def Xform "Root"
         float3 xformOp:scale = (1, 1, 1)
         float3 xformOp:translate = (-0.40607792, -2.9802322e-8, 0.09613174)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "Collider"
+        {
+            uint group = 1
+            uniform token info:id = "RealityKit.Collider"
+            uint mask = 4294967295
+            token type = "Default"
+
+            def RealityKitStruct "Shape"
+            {
+                float3 extent = (0.15727699, 0.010014024, 0.13946599)
+                token shapeType = "Box"
+
+                def RealityKitStruct "pose"
+                {
+                    float3 position = (0.0013714992, 0.000017999904, -0.00046300143)
+                }
+            }
+        }
+
+        def RealityKitComponent "RigidBody"
+        {
+            bool gravityEnabled = 0
+            uniform token info:id = "RealityKit.RigidBody"
+            bool isCCDEnabled = 1
+
+            def RealityKitStruct "massFrame"
+            {
+                def RealityKitStruct "m_pose"
+                {
+                }
+            }
+
+            def RealityKitStruct "material"
+            {
+            }
+        }
     }
 }
 
