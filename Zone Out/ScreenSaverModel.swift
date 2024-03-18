@@ -259,6 +259,42 @@ class ScreenSaverModel {
         return portal
     }
     
+    func preloadPortals() -> Void {
+        // Start portal
+        portalWorld = makeWorld()
+        startPortal = makePortal(world: portalWorld)
+        let translate = 0.0
+        let start_pos = simd_float(.init(x:toasterSrcPoint.x-translate, y:toasterSrcPoint.y-translate, z:toasterSrcPoint.z-translate))
+        startPortal.position = start_pos
+        
+        let end = simd_float(.init(
+            x: toasterSrcPoint.x + ToasterSpawnParameters.deltaX,
+            y: toasterSrcPoint.y + ToasterSpawnParameters.deltaY,
+            z: toasterSrcPoint.z + ToasterSpawnParameters.deltaZ
+        ))
+        let end_double = simd_double(.init(
+            x: toasterSrcPoint.x + ToasterSpawnParameters.deltaX,
+            y: toasterSrcPoint.y + ToasterSpawnParameters.deltaY,
+            z: toasterSrcPoint.z + ToasterSpawnParameters.deltaZ
+        ))
+        
+        let start = Point3D(x:toasterSrcPoint.x, y:toasterSrcPoint.y, z:toasterSrcPoint.z)
+        let degrees = calculateRotationAngle(from:start.toSIMD3(), to:end_double)
+        let radians = Float(degrees) * (Float.pi / 180)
+
+        // Create a quaternion for the rotation around the y-axis
+        let rotationQuaternion =  simd_quatf(angle: radians, axis: [0, 1, 0])
+        startPortal.transform.rotation = rotationQuaternion
+    
+        endPortal = makePortal(world: portalWorld)
+        endPortal.position = end + simd_float(.init(
+            x: ToasterSpawnParameters.deltaX*0.1,
+            y: ToasterSpawnParameters.deltaY*0.1,
+            z: ToasterSpawnParameters.deltaZ*0.1
+        ))
+        endPortal.transform.rotation = simd_quatf(angle: Float.pi/2-radians, axis: [0, 1, 0])
+    }
+    
     /// Preload assets when the app launches to avoid pop-in during the game.
     init() {
         Task { @MainActor in
@@ -327,6 +363,8 @@ class ScreenSaverModel {
                     }
                 }
             }
+            
+            preloadPortals()
             
         }
     }

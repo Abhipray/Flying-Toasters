@@ -15,9 +15,9 @@ var toasterTemplate: Entity? = nil
 var toastLightTemplate: Entity? = nil
 var toastMediumTemplate: Entity? = nil
 var toastDarkTemplate: Entity? = nil
-var startPortal: Entity? = nil
-var endPortal: Entity? = nil
-var portalWorld: Entity? = nil
+var startPortal = Entity()
+var endPortal = Entity()
+var portalWorld = Entity()
 var toastNumber = 0
 var toasterSrcPoint = (x: 4.0, y: 4.0, z: -6.0)
 
