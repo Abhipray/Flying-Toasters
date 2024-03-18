@@ -36,11 +36,8 @@ func calculateRotationAngle(from startPoint: SIMD3<Double>, to endPoint: SIMD3<D
 @Observable
 class ScreenSaverModel {
    
-    var isScreenSaverRunning = false
-    
+    var isScreenSaverRunning = false    
     var audioPlayer: AVAudioPlayer? = nil
-    
-    
     var secondsLeft = Int.max
     
     var secondsElapsed = 0 {
@@ -92,7 +89,7 @@ class ScreenSaverModel {
     
     let toastTypes = ["light", "medium", "dark"]
     
-    var selectedTimeout : Int = 6 {
+    var selectedTimeout : Int = 4 {
         didSet {
             let timeoutLabel = timeouts[selectedTimeout].0
             useCustomTimeout = false

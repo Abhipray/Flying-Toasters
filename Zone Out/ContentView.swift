@@ -54,7 +54,7 @@ struct ContentView: View {
                     .background(Color.blue.opacity(0.05)) // Adds a light blue background with some transparency
                     .cornerRadius(10) // Rounds the corners of the background
                     .shadow(radius: 2.5) // Adds a shadow for a 3D effect
-                    .help("A screensaver")
+                    .help("A Screen Saver")
                 
                 VStack{
 
@@ -73,7 +73,7 @@ struct ContentView: View {
                             
                             screenSaverModel.secondsElapsed = 0
                         }
-                        .padding(-10)
+                        .padding(-15)
                     
                     Toggle(isOn: $showImmersiveSpace) {
                         Image(systemName: showImmersiveSpace ? "eye.slash" : "eye")
