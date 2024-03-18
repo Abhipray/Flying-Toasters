@@ -61,7 +61,7 @@ class ScreenSaverModel {
     // Toaster config
     var numberOfToastersConfig: Double = 10
     var toastLevelConfig: Int = 0
-    var musicEnabled = true
+    var musicEnabled = false
     
     
     // State variables
@@ -201,6 +201,62 @@ class ScreenSaverModel {
                 fatalError("Error loading toast from Reality Composer Pro project.")
             }
         return toast;
+    }
+    
+    @MainActor
+    public func getStarfieldEntity() async throws -> Entity {
+        // Create a material with a star field on it.
+        guard let resource = try? await TextureResource(named: "Starfield") else {
+            // If the asset isn't available, something is wrong with the app.
+            fatalError("Unable to load starfield texture.")
+        }
+        var material = UnlitMaterial()
+        material.color = .init(texture: .init(resource))
+
+        // Attach the material to a large sphere.
+        let entity = Entity()
+        entity.components.set(ModelComponent(
+            mesh: .generateSphere(radius: 1000),
+            materials: [material]
+        ))
+
+        // Ensure the texture image points inward at the viewer.
+        entity.scale *= .init(x: -1, y: 1, z: 1)
+        return entity
+    }
+    
+    public func makeWorld() -> Entity {
+        let world = Entity()
+        world.components[WorldComponent.self] = .init()
+        
+        let environment = try! EnvironmentResource.load(named: "OuterSpace")
+        world.components[ImageBasedLightComponent.self] = .init(source: .single(environment), intensityExponent: 6)
+        world.components[ImageBasedLightReceiverComponent.self] = .init(imageBasedLight: world)
+        
+        Task { @MainActor in
+            let sky = try await getStarfieldEntity()
+            world.addChild(sky)
+        }
+        
+        return world
+    }
+    
+    public func makePortal(world: Entity) -> Entity {
+        let portal = Entity()
+        
+        portal.components[ModelComponent.self] = .init(mesh: .generatePlane(width: 2, height: 2, cornerRadius: 1), materials: [PortalMaterial()])
+        portal.components[PortalComponent.self] = .init(target: world)
+        let particleEntity = Entity()
+
+        var particles = ParticleEmitterComponent.Presets.magic
+        particles.mainEmitter.color = .evolving(start: .single(.white), end: .single(.blue))
+        particles.emitterShape = ParticleEmitterComponent.EmitterShape.plane
+        particles.emitterShapeSize = SIMD3<Float>(x: 2.0, y: 2.0, z: 2.0)
+        
+        particleEntity.components[ParticleEmitterComponent.self] = particles
+        portal.addChild(particleEntity)
+        
+        return portal
     }
     
     /// Preload assets when the app launches to avoid pop-in during the game.

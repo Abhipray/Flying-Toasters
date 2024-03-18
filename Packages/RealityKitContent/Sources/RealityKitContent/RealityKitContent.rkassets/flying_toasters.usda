@@ -33,7 +33,13 @@ def Xform "Root"
             bool gravityEnabled = 0
             uniform token info:id = "RealityKit.RigidBody"
             bool isCCDEnabled = 1
-            token motionType = "Static"
+            bool lockRotationX = 1
+            bool lockRotationY = 1
+            bool lockRotationZ = 1
+            bool lockTranslationX = 1
+            bool lockTranslationY = 1
+            bool lockTranslationZ = 1
+            token motionType = "Dynamic"
 
             def RealityKitStruct "massFrame"
             {
@@ -256,11 +262,16 @@ def Xform "Root"
             }
         }
 
-        def RealityKitComponent "RigidBody" (
-            active = false
-        )
+        def RealityKitComponent "RigidBody"
         {
             uniform token info:id = "RealityKit.RigidBody"
+            bool isCCDEnabled = 1
+            bool lockRotationX = 0
+            bool lockRotationY = 0
+            bool lockRotationZ = 0
+            bool lockTranslationX = 0
+            bool lockTranslationY = 0
+            bool lockTranslationZ = 0
 
             def RealityKitStruct "massFrame"
             {
@@ -312,7 +323,7 @@ def Xform "Root"
 
             def RealityKitStruct "Shape"
             {
-                float3 extent = (0.15727699, 0.010014024, 0.13946599)
+                float3 extent = (0.3, 0.02, 0.3)
                 token shapeType = "Box"
 
                 def RealityKitStruct "pose"
@@ -359,7 +370,7 @@ def Xform "Root"
 
             def RealityKitStruct "Shape"
             {
-                float3 extent = (0.15727699, 0.010014024, 0.13946599)
+                float3 extent = (0.3, 0.02, 0.3)
                 token shapeType = "Box"
 
                 def RealityKitStruct "pose"
@@ -384,6 +395,37 @@ def Xform "Root"
 
             def RealityKitStruct "material"
             {
+            }
+        }
+    }
+
+    def Xform "ParticleEmitter"
+    {
+        float3 xformOp:translate = (0.3535214, -0.19756469, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "VFXEmitter"
+        {
+            token info:id = "RealityKit.VFXEmitter"
+
+            def RealityKitStruct "currentState"
+            {
+                token birthDirection = "Normal"
+                token birthLocation = "Volume"
+                float3 birthLocationVertex = (6, 6, 6)
+                token emitterShape = "Torus"
+                bool isEmitting = 1
+                bool isLocal = 0
+                bool isLocalFields = 1
+                bool loops = 1
+
+                def RealityKitStruct "mainEmitter"
+                {
+                }
+
+                def RealityKitStruct "spawnedEmitter"
+                {
+                }
             }
         }
     }

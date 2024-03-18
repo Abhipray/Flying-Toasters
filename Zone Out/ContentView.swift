@@ -48,19 +48,19 @@ struct ContentView: View {
                 Spacer()
                 
                 Text("Flying Toasters")
-                    .font(.system(size: 24, weight: .bold, design: .monospaced))
+                    .font(.system(size: 12, weight: .bold, design: .monospaced))
                     .fontWeight(.bold) // Makes the text bold
                     .foregroundColor(.primary) // Uses the primary color, which adapts to light/dark mode
                     .background(Color.blue.opacity(0.05)) // Adds a light blue background with some transparency
-                    .cornerRadius(20) // Rounds the corners of the background
-                    .shadow(radius: 5) // Adds a shadow for a 3D effect
+                    .cornerRadius(10) // Rounds the corners of the background
+                    .shadow(radius: 2.5) // Adds a shadow for a 3D effect
                     .help("A screensaver")
                 
                 VStack{
 
                     Image("flying_toasters_splashscreen")
                         .resizable()
-                        .frame(width: 128, height: 128).help("Tap on me to reset the Screen Saver timer")
+                        .frame(width: 100, height: 100).help("Tap on me to reset the Screen Saver timer")
                         .rotationEffect(.degrees(isJiggling ? 4 : -4), anchor: .center)
                         .animation(isJiggling ? .linear(duration: 0.1).repeatForever(autoreverses: true) : .default, value: isJiggling)
                         .onTapGesture {
@@ -73,13 +73,13 @@ struct ContentView: View {
                             
                             screenSaverModel.secondsElapsed = 0
                         }
-                        .padding(-30)
+                        .padding(-15)
                     
                     Toggle(isOn: $showImmersiveSpace) {
                         Image(systemName: showImmersiveSpace ? "eye.slash" : "eye")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 36, height: 36) // Specify the frame to increase the size
+                            .frame(width: 18, height: 18) // Specify the frame to increase the size
                             .clipShape(Circle())
                     }
                     .onAppear {
@@ -95,16 +95,14 @@ struct ContentView: View {
                     }
                     .padding()
                     
-                    Spacer()
-                    
                     // Countdown Timer Display
                     
                     Text(timerString)
-                        .font(.system(size: 18, weight: .medium, design: .monospaced))
+                        .font(.system(size: 9, weight: .medium, design: .monospaced))
                         .padding()
                         .background(Color.black.opacity(0.6))
                         .foregroundColor(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .clipShape(RoundedRectangle(cornerRadius: 5))
                         .onChange(of: screenSaverModel.secondsLeft, {
                             updateTimerString()
                         })
@@ -125,7 +123,7 @@ struct ContentView: View {
                         Image(systemName: "gear")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 24, height: 24) // Specify the frame to increase the size
+                            .frame(width: 12, height: 12) // Specify the frame to increase the size
                             .clipShape(Circle())
                     }
                     .clipShape(Circle()) // Ensure the entire button is clipped to a circle shape.
@@ -140,7 +138,7 @@ struct ContentView: View {
                         Image(systemName: "info.circle")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 24, height: 24) // Specify the frame to increase the size
+                            .frame(width: 12, height: 12) // Specify the frame to increase the size
                             .foregroundColor(.primary)
                     }
                     .sheet(isPresented: $showingCredits) {

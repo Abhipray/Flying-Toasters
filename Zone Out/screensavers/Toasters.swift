@@ -15,6 +15,9 @@ var toasterTemplate: Entity? = nil
 var toastLightTemplate: Entity? = nil
 var toastMediumTemplate: Entity? = nil
 var toastDarkTemplate: Entity? = nil
+var startPortal: Entity? = nil
+var endPortal: Entity? = nil
+var portalWorld: Entity? = nil
 var toastNumber = 0
 var toasterSrcPoint = (x: 4.0, y: 4.0, z: -6.0)
 
@@ -47,7 +50,7 @@ func updatePortalOpacity(to: Float) {
 
 func generateToasterStartEndRotation() -> (Point3D, Point3D, simd_quatf) {
     let centralPoint = toasterSrcPoint
-    let range: Double = 1
+    let range: Double = 0.5
     
 
     let x = Double.random(in: (centralPoint.x - range)...(centralPoint.x + range))
@@ -238,9 +241,9 @@ enum ToasterAnimations {
 
 /// Toaster spawn parameters (in meters).
 struct ToasterSpawnParameters {
-    static var deltaX = -12.0*0.4
-    static var deltaY = -9.0*0.4
-    static var deltaZ = 12.1*0.4
+    static var deltaX = -12.0*0.5
+    static var deltaY = -9.0*0.5
+    static var deltaZ = 12.1*0.5
     
     static var average_anim_duration = 5.0
     static var range_anim_duration = 3.0 // +/- average
