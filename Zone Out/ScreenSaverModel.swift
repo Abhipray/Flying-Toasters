@@ -250,9 +250,12 @@ class ScreenSaverModel {
 
         var particles = ParticleEmitterComponent.Presets.magic
         particles.mainEmitter.color = .evolving(start: .single(.white), end: .single(.blue))
-        particles.emitterShape = ParticleEmitterComponent.EmitterShape.plane
-        particles.emitterShapeSize = SIMD3<Float>(x: 2.0, y: 2.0, z: 2.0)
-        
+        particles.emitterShape = ParticleEmitterComponent.EmitterShape.torus
+        particles.birthLocation = ParticleEmitterComponent.BirthLocation.surface
+        particles.birthDirection = ParticleEmitterComponent.BirthDirection.local
+        particles.emitterShapeSize = SIMD3<Float>(x: 0.8, y: 0.8, z: 0.8)
+        particles.particlesInheritTransform = true
+        particles.speed = 1.0
         particleEntity.components[ParticleEmitterComponent.self] = particles
         portal.addChild(particleEntity)
         

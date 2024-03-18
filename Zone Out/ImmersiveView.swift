@@ -28,14 +28,42 @@ struct ImmersiveView: View {
     @Environment(\.dismissWindow) var dismissWindow
     @Environment(ScreenSaverModel.self) var screenSaverModel
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var showImmersiveSpace = true
     
     var body: some View {
-        RealityView { content in
+        RealityView { content, attachments in
             content.add(portalWorld)
             content.add(endPortal)
             content.add(startPortal)
             content.add(spaceOrigin)
             content.add(cameraAnchor)
+            if let earthAttachment = attachments.entity(for: "h1") {
+                earthAttachment.position = [0, -1.5, 0]
+                startPortal.addChild(earthAttachment)
+            }
+        } attachments: {
+            Attachment(id: "h1") {
+                Text("Dismiss Screen Saver").font(.system(size: 60, weight: .bold, design: .monospaced))
+                Toggle(isOn: $showImmersiveSpace) {
+                    Image(systemName: showImmersiveSpace ? "eye.slash" : "eye")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 200, height: 200) // Specify the frame to increase the size
+                        .clipShape(Circle())
+                }
+                .onAppear {
+                    showImmersiveSpace = screenSaverModel.isScreenSaverRunning
+                }
+                .toggleStyle(.button)
+                .help("Start or stop preview of the Screen Saver")
+                .onChange(of: showImmersiveSpace) { _, newValue in
+                    screenSaverModel.handleImmersiveSpaceChange(newValue: newValue)
+                }
+                .onChange(of: screenSaverModel.isScreenSaverRunning) {_,newValue in
+                    showImmersiveSpace = newValue;
+                }
+                .padding()
+            }
         }
         .onReceive(timer) { _ in
             let maxAllowedToSpan = 4

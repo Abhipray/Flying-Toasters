@@ -23,31 +23,6 @@ var toasterSrcPoint = (x: 4.0, y: 4.0, z: -6.0)
 
 var toasterPortal : Entity? = nil
 
-
-// A function to blink the portal by updating its opacity
-func blinkPortal(duration: TimeInterval, blinkTimes: Int) {
-    var blinkCount = 0
-    let blinkInterval = duration / TimeInterval(blinkTimes * 2)
-    
-    Timer.scheduledTimer(withTimeInterval: blinkInterval, repeats: true) { timer in
-        // Update the opacity
-        updatePortalOpacity(to: blinkCount % 2 == 0 ? 1.0 : 0.0)
-        
-        // Increment the blink count and stop the timer if needed
-        blinkCount += 1
-        if blinkCount / 2 >= blinkTimes {
-            timer.invalidate()
-            // Make sure the portal is visible at the end of the blinking
-            updatePortalOpacity(to: 0.0)
-        }
-    }
-}
-
-func updatePortalOpacity(to: Float) {
-    // Change opacity of portal
-    toasterPortal?.components[OpacityComponent.self] = .init(opacity:to)
-}
-
 func generateToasterStartEndRotation() -> (Point3D, Point3D, simd_quatf) {
     let centralPoint = toasterSrcPoint
     let range: Double = 0.5
@@ -83,7 +58,6 @@ func spawnToaster(screenSaverModel: ScreenSaverModel) async throws -> Entity {
     print("Spawning a new toaster")
     
     let (start, end, rotationQuaternion) = generateToasterStartEndRotation()
-    
     
     // Randomize speed/duration of animation
     let mean_dur = ToasterSpawnParameters.average_anim_duration
@@ -122,9 +96,6 @@ func spawnToaster(screenSaverModel: ScreenSaverModel) async throws -> Entity {
         toaster?.removeFromParent()
         screenSaverModel.currentNumberOfToasters -= 1
     }
-    
-    // Block portal
-    blinkPortal(duration: 0.2, blinkTimes: 1)
     
     return toaster
 }
@@ -169,11 +140,10 @@ func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String) async thr
     }
     
     let toast = toastTemplate.clone(recursive: true)
-//    toast.generateCollisionShapes(recursive: true)
+    toast.generateCollisionShapes(recursive: true)
     toast.name = "CToast\(toastNumber)"
     toastNumber += 1
     
-//    toast.components[PhysicsBodyComponent.self] = PhysicsBodyComponent()
     let toastScale = toastScales[toastType]!
     toast.scale = SIMD3<Float>(repeating: toastScale)
     toast.position = simd_float(start.vector + .init(x: 0, y: 0, z: -0.0))
@@ -205,9 +175,6 @@ func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String) async thr
         toast?.removeFromParent()
         screenSaverModel.currentNumberOfToasters -= 1
     }
-    
-    // Block portal
-    blinkPortal(duration: 0.2, blinkTimes: 1)
     
     return toast
 }
