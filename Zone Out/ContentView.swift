@@ -73,7 +73,7 @@ struct ContentView: View {
                             
                             screenSaverModel.secondsElapsed = 0
                         }
-                        .padding(-15)
+                        .padding(-10)
                     
                     Toggle(isOn: $showImmersiveSpace) {
                         Image(systemName: showImmersiveSpace ? "eye.slash" : "eye")

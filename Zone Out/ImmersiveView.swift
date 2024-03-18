@@ -78,6 +78,7 @@ struct ImmersiveView: View {
                             let toastType = screenSaverModel.toastTypes[screenSaverModel.toastLevelConfig]
                             var _ = try await spawnToast(screenSaverModel:screenSaverModel, toastType: toastType)
                             screenSaverModel.currentNumberOfToasters += 2
+                            try await Task.sleep(nanoseconds: UInt64(0.2 * 1_000_000_000))
                         }
                     } catch {
                         print("Error spawning a toaster:", error)

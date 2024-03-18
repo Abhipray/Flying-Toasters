@@ -61,7 +61,7 @@ class ScreenSaverModel {
     // Toaster config
     var numberOfToastersConfig: Double = 10
     var toastLevelConfig: Int = 0
-    var musicEnabled = false
+    var musicEnabled = true
     
     
     // State variables
