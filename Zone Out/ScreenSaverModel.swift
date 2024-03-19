@@ -24,7 +24,6 @@ func calculateRotationAngle(from startPoint: SIMD3<Double>, to endPoint: SIMD3<D
     
     // Determine the direction of rotation
     let rotationAxis = cross(forwardVector, normalizedDirection)
-//    let angleSign = crossProduct.y.sign == .plus ? 1 : -
     let rotationAxisFloat = SIMD3<Float>(Float(rotationAxis.x), Float(rotationAxis.y), Float(rotationAxis.z))
 
     // Normalize the rotation axis (if not already normalized)
@@ -253,7 +252,8 @@ class ScreenSaverModel {
         particles.birthDirection = ParticleEmitterComponent.BirthDirection.local
         particles.emitterShapeSize = SIMD3<Float>(x: 0.8, y: 0.8, z: 0.8)
         particles.particlesInheritTransform = true
-        particles.speed = 1.0
+        particles.speed = 5.0
+        particles.burstCount = 400
         particleEntity.components[ParticleEmitterComponent.self] = particles
         portal.addChild(particleEntity)
         
