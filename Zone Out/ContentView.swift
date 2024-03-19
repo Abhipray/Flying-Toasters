@@ -107,6 +107,7 @@ struct ContentView: View {
                             updateTimerString()
                         })
                         .onAppear {
+                            screenSaverModel.selectedTimeout = screenSaverModel.selectedTimeout
                             updateTimerString()
                         }
                         .onChange(of: screenSaverModel.isTimerActive, {

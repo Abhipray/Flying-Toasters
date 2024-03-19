@@ -36,7 +36,7 @@ func calculateRotationAngle(from startPoint: SIMD3<Double>, to endPoint: SIMD3<D
 @Observable
 class ScreenSaverModel {
    
-    var isScreenSaverRunning = false    
+    var isScreenSaverRunning = false
     var audioPlayer: AVAudioPlayer? = nil
     var secondsLeft = Int.max
     
