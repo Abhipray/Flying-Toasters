@@ -43,11 +43,10 @@ func generateToasterStartEndRotation() -> (Point3D, Point3D, simd_quatf) {
     
     // Rotation correction
     // Calculate the rotation in radians (RealityKit uses radians, not degrees)
-    let degrees: Double = calculateRotationAngle(from: start.toSIMD3(), to: end.toSIMD3())
-    let radians = Float(degrees) * (Float.pi / 180)
+    let (rotationAxis, radians) = calculateRotationAngle(from: start.toSIMD3(), to: end.toSIMD3())
 
     // Create a quaternion for the rotation around the y-axis
-    let rotationQuaternion = simd_quatf(angle: radians, axis: [0, 1, 0])
+    let rotationQuaternion = simd_quatf(angle: radians, axis: rotationAxis)
     
     return (start, end, rotationQuaternion)
 }

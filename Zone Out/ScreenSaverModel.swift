@@ -13,23 +13,24 @@ import GameplayKit
 import AVFoundation
 import Combine
 
-func calculateRotationAngle(from startPoint: SIMD3<Double>, to endPoint: SIMD3<Double>) -> Double {
+func calculateRotationAngle(from startPoint: SIMD3<Double>, to endPoint: SIMD3<Double>) -> (axis: SIMD3<Float>, angle: Float) {
     let directionVector = endPoint - startPoint
     let normalizedDirection = normalize(directionVector)
     
-    let forwardVector = SIMD3<Double>(0, 0, 1) 
+    let forwardVector = SIMD3<Double>(0, 0, 1)
     let dotProduct = dot(normalize(forwardVector), normalizedDirection)
-    let angleCosine = acos(dotProduct)
-    
-    let angleDegrees = angleCosine * 180 / .pi
+    let angleRadians = acos(dotProduct)
+
     
     // Determine the direction of rotation
-    let crossProduct = cross(forwardVector, normalizedDirection)
-    let angleSign = crossProduct.y.sign == .plus ? 1 : -1
+    let rotationAxis = cross(forwardVector, normalizedDirection)
+//    let angleSign = crossProduct.y.sign == .plus ? 1 : -
+    let rotationAxisFloat = SIMD3<Float>(Float(rotationAxis.x), Float(rotationAxis.y), Float(rotationAxis.z))
+
+    // Normalize the rotation axis (if not already normalized)
+    let normalizedAxis = normalize(rotationAxisFloat)
     
-    let finalAngleDegrees = angleDegrees * Double(angleSign)
-    
-    return finalAngleDegrees
+    return (normalizedAxis, Float(angleRadians))
 }
 
 /// State that drives the different screens of the game and options that players select.
@@ -279,11 +280,12 @@ class ScreenSaverModel {
         ))
         
         let start = Point3D(x:toasterSrcPoint.x, y:toasterSrcPoint.y, z:toasterSrcPoint.z)
-        let degrees = calculateRotationAngle(from:start.toSIMD3(), to:end_double)
-        let radians = Float(degrees) * (Float.pi / 180)
+        let (rotationAxis, radians) = calculateRotationAngle(from:start.toSIMD3(), to:end_double)
 
         // Create a quaternion for the rotation around the y-axis
-        let rotationQuaternion =  simd_quatf(angle: radians, axis: [0, 1, 0])
+        // Convert rotation axis and angle to Float
+        
+        let rotationQuaternion =  simd_quatf(angle: radians, axis: rotationAxis)
         startPortal.transform.rotation = rotationQuaternion
     
         endPortal = makePortal(world: portalWorld)
@@ -292,7 +294,9 @@ class ScreenSaverModel {
             y: ToasterSpawnParameters.deltaY*0.1,
             z: ToasterSpawnParameters.deltaZ*0.1
         ))
-        endPortal.transform.rotation = simd_quatf(angle: Float.pi/2-radians, axis: [0, 1, 0])
+
+//        endPortal.transform.rotation = simd_quatf(angle: Float.pi/2-radians, axis: -rotationAxis)
+        endPortal.transform.rotation = simd_quatf(angle: Float.pi-radians, axis: -rotationAxis)
     }
     
     /// Preload assets when the app launches to avoid pop-in during the game.
