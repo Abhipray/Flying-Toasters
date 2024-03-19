@@ -7,10 +7,15 @@
 
 import SwiftUI
 import RealityKit
+import RealityKitContent
 
 @main
 struct Zone_OutApp: App {
     @State private var screenSaverModel = ScreenSaverModel()
+    
+    init() {
+        RealityKitContent.GestureComponent.registerComponent()
+    }
     
     var body: some SwiftUI.Scene {
         WindowGroup("ScreenSavers", id: "main") {

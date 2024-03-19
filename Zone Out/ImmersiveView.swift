@@ -65,6 +65,7 @@ struct ImmersiveView: View {
                 .padding()
             }
         }
+        .installGestures()
         .onReceive(timer) { _ in
             let maxAllowedToSpan = 4
             var maxNumToSpawn = Int(screenSaverModel.numberOfToastersConfig) - screenSaverModel.currentNumberOfToasters
