@@ -24,7 +24,7 @@ var toasterSrcPoint = (x: 4.0, y: 4.0, z: -6.0)
 var toasterPortal : Entity? = nil
 
 func generateToasterStartEndRotation() -> (Point3D, Point3D, simd_quatf) {
-    let centralPoint = toasterSrcPoint
+    let centralPoint = Point3D(x:startPortal.position.x, y:startPortal.position.y, z:startPortal.position.z)
     let range: Double = 0.5
     
 
@@ -35,11 +35,12 @@ func generateToasterStartEndRotation() -> (Point3D, Point3D, simd_quatf) {
     let start = Point3D(x:x, y:y, z:z)
     
     
-    let end = Point3D(
-        x: start.x + ToasterSpawnParameters.deltaX,
-        y: start.y + ToasterSpawnParameters.deltaY,
-        z: start.z + ToasterSpawnParameters.deltaZ
-    )
+//    let end = Point3D(
+//        x: start.x + ToasterSpawnParameters.deltaX,
+//        y: start.y + ToasterSpawnParameters.deltaY,
+//        z: start.z + ToasterSpawnParameters.deltaZ
+//    )
+    let end = Point3D(x: endPortal.position.x, y: endPortal.position.y, z: endPortal.position.z)
     
     // Rotation correction
     // Calculate the rotation in radians (RealityKit uses radians, not degrees)

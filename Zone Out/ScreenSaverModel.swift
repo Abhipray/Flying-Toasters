@@ -260,8 +260,8 @@ class ScreenSaverModel {
         particles.birthDirection = ParticleEmitterComponent.BirthDirection.local
         particles.emitterShapeSize = SIMD3<Float>(x: 0.8, y: 0.8, z: 0.8)
         particles.particlesInheritTransform = true
-        particles.speed = 5.0
-        particles.burstCount = 400
+        particles.speed = 3.0
+        particles.burstCount = 500
         particleEntity.components[ParticleEmitterComponent.self] = particles
         portal.addChild(particleEntity)
         
@@ -297,14 +297,8 @@ class ScreenSaverModel {
         startPortal.transform.rotation = rotationQuaternion
     
         endPortal = makePortal(world: portalWorld)
-        endPortal.position = end + simd_float(.init(
-            x: ToasterSpawnParameters.deltaX*0.1,
-            y: ToasterSpawnParameters.deltaY*0.1,
-            z: ToasterSpawnParameters.deltaZ*0.1
-        ))
-
-//        endPortal.transform.rotation = simd_quatf(angle: Float.pi/2-radians, axis: -rotationAxis)
-        endPortal.transform.rotation = simd_quatf(angle: Float.pi-radians, axis: -rotationAxis)
+        endPortal.position = end
+        endPortal.look(at:-start_pos, from: end, relativeTo: nil)
     }
     
     /// Preload assets when the app launches to avoid pop-in during the game.
