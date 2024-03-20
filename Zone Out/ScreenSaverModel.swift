@@ -247,7 +247,7 @@ class ScreenSaverModel {
         portal.components[InputTargetComponent.self]?.isEnabled = true
         portal.components[CollisionComponent.self] = CollisionComponent(shapes: [.generateSphere(radius: 1)], isStatic: false)
         
-        let component = GestureComponent(canDrag: true, pivotOnDrag: true, preserveOrientationOnPivotDrag: false, canScale: false, canRotate: false)
+        let component = GestureComponent(canDrag: true, pivotOnDrag: true, preserveOrientationOnPivotDrag: false, canScale: true, canRotate: false)
         portal.components.set(component)
         
         // Particle effects
@@ -261,17 +261,19 @@ class ScreenSaverModel {
         particles.emitterShapeSize = SIMD3<Float>(x: 0.8, y: 0.8, z: 0.8)
         particles.particlesInheritTransform = true
         particles.speed = 3.0
-        particles.burstCount = 500
+        particles.burstCount = 1000
         particleEntity.components[ParticleEmitterComponent.self] = particles
         portal.addChild(particleEntity)
         
         return portal
     }
     
-    func preloadPortals() -> Void {
+    func preloadPortals(init_entities: Bool) -> Void {
         // Start portal
-        portalWorld = makeWorld()
-        startPortal = makePortal(world: portalWorld)
+        if init_entities {
+            portalWorld = makeWorld()
+            startPortal = makePortal(world: portalWorld)
+        }
         let translate = 0.0
         let start_pos = simd_float(.init(x:toasterSrcPoint.x-translate, y:toasterSrcPoint.y-translate, z:toasterSrcPoint.z-translate))
         startPortal.position = start_pos
@@ -295,10 +297,14 @@ class ScreenSaverModel {
         
         let rotationQuaternion =  simd_quatf(angle: radians, axis: rotationAxis)
         startPortal.transform.rotation = rotationQuaternion
+        startPortal.scale = SIMD3<Float>(x: 1.0, y: 1.0, z: 1.0)
     
-        endPortal = makePortal(world: portalWorld)
+        if init_entities {
+            endPortal = makePortal(world: portalWorld)
+        }
         endPortal.position = end
         endPortal.look(at:-start_pos, from: end, relativeTo: nil)
+        endPortal.scale = SIMD3<Float>(x: 1.0, y: 1.0, z: 1.0)
     }
     
     /// Preload assets when the app launches to avoid pop-in during the game.
@@ -364,13 +370,14 @@ class ScreenSaverModel {
                     do {
                         self.audioPlayer = try AVAudioPlayer(contentsOf: audioURL)
                         self.audioPlayer?.prepareToPlay()
+                        self.audioPlayer?.numberOfLoops = -1 // Loop indefinetly
                     } catch {
                         print("Failed to initialize AVAudioPlayer: \(error)")
                     }
                 }
             }
             
-            preloadPortals()
+            preloadPortals(init_entities: true)
             
         }
     }

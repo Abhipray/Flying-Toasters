@@ -48,7 +48,7 @@ struct ContentView: View {
                 Spacer()
                 
                 Text("Flying Toasters")
-                    .font(.system(size: 12, weight: .bold, design: .monospaced))
+                    .font(.system(size: 14, weight: .bold, design: .monospaced))
                     .fontWeight(.bold) // Makes the text bold
                     .foregroundColor(.primary) // Uses the primary color, which adapts to light/dark mode
                     .background(Color.blue.opacity(0.05)) // Adds a light blue background with some transparency
@@ -86,7 +86,7 @@ struct ContentView: View {
                         showImmersiveSpace = screenSaverModel.isScreenSaverRunning
                     }
                     .toggleStyle(.button)
-                    .help("Start or stop preview of the screensaver")
+                    .help("Start or stop the Screen Saver")
                     .onChange(of: showImmersiveSpace) { _, newValue in
                         screenSaverModel.handleImmersiveSpaceChange(newValue: newValue)
                     }
@@ -98,7 +98,7 @@ struct ContentView: View {
                     // Countdown Timer Display
                     
                     Text(timerString)
-                        .font(.system(size: 9, weight: .medium, design: .monospaced))
+                        .font(.system(size: 10, weight: .medium, design: .monospaced))
                         .padding()
                         .background(Color.black.opacity(0.6))
                         .foregroundColor(.white)
@@ -113,10 +113,25 @@ struct ContentView: View {
                         .onChange(of: screenSaverModel.isTimerActive, {
                             updateTimerString()
                         })
+                        .help("Countdown until next Screen Saver start")
                     
                 }
                 
                 HStack{
+                    // Reset animation
+                    Button(action: {
+                        screenSaverModel.preloadPortals(init_entities: false)
+                    }) {
+                        Image(systemName: "arrow.clockwise")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16) // Specify the frame to increase the size
+                            .clipShape(Circle())
+                    }
+                    .clipShape(Circle())
+                    .help("Reset the Screen Saver to default portal positions")
+                    
+                    
                     // Settings Button
                     Button(action: {
                         showSettings.toggle()
@@ -124,13 +139,14 @@ struct ContentView: View {
                         Image(systemName: "gear")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 12, height: 12) // Specify the frame to increase the size
+                            .frame(width: 16, height: 16) // Specify the frame to increase the size
                             .clipShape(Circle())
                     }
                     .clipShape(Circle()) // Ensure the entire button is clipped to a circle shape.
                     .sheet(isPresented: $showSettings) {
                         SettingsView()
                     }
+                    .help("Settings")
                     
                     
                     Button(action: {
@@ -139,13 +155,14 @@ struct ContentView: View {
                         Image(systemName: "info.circle")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 12, height: 12) // Specify the frame to increase the size
+                            .frame(width: 16, height: 16) // Specify the frame to increase the size
                             .foregroundColor(.primary)
                     }
                     .sheet(isPresented: $showingCredits) {
                         CreditsView()
                     }
                     .clipShape(Circle()) // Ensure the entire button is clipped to a circle shape.
+                    .help("Credits")
                 }
                 .padding()
             }
@@ -241,7 +258,7 @@ struct SettingsView: View {
                     Button(action: {
                         dismiss()
                     }) {
-                        Image(systemName: "checkmark")
+                        Image(systemName: "checkmark.circle")
                             .resizable()
                             .scaledToFit()
                             .foregroundColor(.white) // Change the icon color to white for better contrast
@@ -250,6 +267,7 @@ struct SettingsView: View {
                             .clipShape(Circle()) // Ensure the button's background is also clipped to a circle
                             .shadow(radius: 5) // Add a shadow for a lifted effect
                     }
+                    .clipShape(Circle())
                 }
             }
             .padding()
