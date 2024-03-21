@@ -116,15 +116,6 @@
       [
         "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
         "Root",
-        "portal"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
         "toast_medium",
         "Materials"
       ],
@@ -145,36 +136,16 @@
       [
         "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
         "Root",
-        "toast_dark",
-        "Geom"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
-        "toaster"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
-        "toast_dark",
-        "Materials"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
         "left_wing"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
+        "Moon"
       ],
       {
         "isExpanded" : true,
@@ -246,6 +217,15 @@
       [
         "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
         "Root",
+        "Sun"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
+        "Root",
         "Material"
       ],
       {
@@ -305,15 +285,6 @@
       [
         "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
         "Root",
-        "toast_dark"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
         "Bread_Toast_and_Grilled_Cheese_Game_Ready",
         "Meshes",
         "Sketchfab_model"
@@ -358,16 +329,6 @@
         "Root",
         "bread_dark",
         "Geom"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "635BA9E0-2AC4-4ED5-921F-FAE3E5304E8E",
-        "Root",
-        "toaster",
-        "Materials"
       ],
       {
         "isExpanded" : true,

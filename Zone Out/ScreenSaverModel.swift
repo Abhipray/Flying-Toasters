@@ -227,12 +227,31 @@ class ScreenSaverModel {
         world.components[WorldComponent.self] = .init()
         
         let environment = try! EnvironmentResource.load(named: "OuterSpace")
-        world.components[ImageBasedLightComponent.self] = .init(source: .single(environment), intensityExponent: 6)
-        world.components[ImageBasedLightReceiverComponent.self] = .init(imageBasedLight: world)
+//        world.components[ImageBasedLightComponent.self] = .init(source: .single(environment), intensityExponent: 6)
+//        world.components[ImageBasedLightReceiverComponent.self] = .init(imageBasedLight: world)
         
         Task { @MainActor in
             let sky = try await getStarfieldEntity()
             world.addChild(sky)
+            guard let moon = await loadFromRealityComposerPro(
+                named: "Moon",
+                fromSceneNamed: "flying_toasters"
+            ) else {
+                fatalError("Error loading Moon from Reality Composer Pro project.")
+            }
+            moon.position = simd_float3(toasterEndPoint)
+            moon.position -= 0.2
+            
+            world.addChild(moon)
+            
+            guard let sun = await loadFromRealityComposerPro(
+                named: "Sun",
+                fromSceneNamed: "flying_toasters"
+            ) else {
+                fatalError("Error loading Moon from Reality Composer Pro project.")
+            }
+            sun.position = simd_float(.init(x:toasterSrcPoint.x-0.3, y:toasterSrcPoint.y, z:toasterSrcPoint.z))
+            world.addChild(sun)
         }
         
         return world

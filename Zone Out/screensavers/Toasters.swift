@@ -21,6 +21,22 @@ var portalWorld = Entity()
 var toastNumber = 0
 var toasterSrcPoint = (x: 4.0, y: 4.0, z: -6.0)
 
+/// Toaster spawn parameters (in meters).
+struct ToasterSpawnParameters {
+    static var deltaX = -12.0*0.5
+    static var deltaY = -9.0*0.5
+    static var deltaZ = 12.1*0.5
+    
+    static var average_anim_duration = 5.0
+    static var range_anim_duration = 3.0 // +/- average
+}
+
+var toasterEndPoint = simd_double(.init(
+    x: toasterSrcPoint.x + ToasterSpawnParameters.deltaX,
+    y: toasterSrcPoint.y + ToasterSpawnParameters.deltaY,
+    z: toasterSrcPoint.z + ToasterSpawnParameters.deltaZ
+))
+
 var toasterPortal : Entity? = nil
 
 func generateToasterStartEndRotation() -> (Point3D, Point3D, simd_quatf) {
@@ -206,15 +222,7 @@ enum ToasterAnimations {
     case flapWings
 }
 
-/// Toaster spawn parameters (in meters).
-struct ToasterSpawnParameters {
-    static var deltaX = -12.0*0.5
-    static var deltaY = -9.0*0.5
-    static var deltaZ = 12.1*0.5
-    
-    static var average_anim_duration = 5.0
-    static var range_anim_duration = 3.0 // +/- average
-}
+
 
 var toasterScale : Float = 0.005
 var toastScales : [String: Float] = [ "light": 1.0, "medium" : 1.0, "dark" : 0.3]

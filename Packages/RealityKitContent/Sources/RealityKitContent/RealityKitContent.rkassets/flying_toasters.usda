@@ -45,7 +45,7 @@ def Xform "Root"
 
             def RealityKitStruct "massFrame"
             {
-                float3 m_inertia = (40, 40, 20)
+                float3 m_inertia = (40, 40, 40)
                 float m_mass = 10
 
                 def RealityKitStruct "m_pose"
@@ -195,55 +195,6 @@ def Xform "Root"
                 colorSpace = "srgb_displayp3"
             )
             token outputs:surface
-        }
-    }
-
-    def Cylinder "portal" (
-        active = true
-        prepend apiSchemas = ["MaterialBindingAPI"]
-        customData = {
-            float3 rotationEulerHint = (1.5707964, 0, 0)
-        }
-    )
-    {
-        uniform token axis = "Y"
-        double height = 0.1
-        rel material:binding = </Root/portal/DefaultMaterial>
-        double radius = 0.1
-        quatf xformOp:orient = (0.70710677, 0.70710677, 0, 0)
-        float3 xformOp:translate = (-0.648456, 1.7433527, 0.14439286)
-        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-
-        def Material "DefaultMaterial"
-        {
-            token outputs:mtlx:surface
-            token outputs:realitykit:vertex
-            prepend token outputs:surface.connect = </Root/portal/DefaultMaterial/DefaultSurfaceShader.outputs:surface>
-
-            def Shader "DefaultSurfaceShader"
-            {
-                uniform token info:id = "UsdPreviewSurface"
-                float inputs:clearcoat = 0.4
-                float inputs:clearcoatRoughness = 0.05
-                color3f inputs:diffuseColor = (0, 0, 0) (
-                    colorSpace = "srgb_displayp3"
-                )
-                color3f inputs:emissiveColor = (0.09416399, 0.096085705, 0.096085705) (
-                    colorSpace = "srgb_displayp3"
-                )
-                float inputs:ior = 30
-                float inputs:metallic = 1
-                float inputs:occlusion = 0.3
-                float inputs:opacity = 1
-                float inputs:roughness = 0.75
-                token outputs:surface
-            }
-        }
-
-        def RealityKitComponent "HierarchicalFade"
-        {
-            uniform token info:id = "RealityKit.HierarchicalFade"
-            float opacity = 0.7388115
         }
     }
 
@@ -407,35 +358,41 @@ def Xform "Root"
         }
     }
 
-    def Xform "ParticleEmitter"
+    def "Moon" (
+        active = true
+        prepend references = @Moon.usda@
+    )
     {
-        float3 xformOp:translate = (0.3535214, -0.19756469, 0)
+        float3 xformOp:scale = (1, 1, 1)
+        float3 xformOp:translate = (-0.09086025, 0, 0.74026144)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def "Sun" (
+        active = true
+        prepend references = @Sun.usda@
+    )
+    {
+        float3 xformOp:scale = (1, 1, 1)
+        float3 xformOp:translate = (0.8608642, 0, 0.55647236)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
-        def RealityKitComponent "VFXEmitter"
+        over "Sun"
         {
-            token info:id = "RealityKit.VFXEmitter"
-
-            def RealityKitStruct "currentState"
+            over "Materials"
             {
-                token birthDirection = "Local"
-                token birthLocation = "Surface"
-                float3 emissionDirection = (1, 1, 1)
-                token emitterShape = "Torus"
-                bool isEmitting = 1
-                bool isLocal = 0
-                bool isLocalFields = 0
-                bool loops = 1
-                bool spawnInheritParentColor = 1
-                token spawnOccasion = "OnUpdate"
-
-                def RealityKitStruct "mainEmitter"
+                over "M_sun"
                 {
+                    token outputs:mtlx:surface
+                    token outputs:realitykit:vertex
                 }
+            }
 
-                def RealityKitStruct "spawnedEmitter"
-                {
-                }
+            over "Accessibility" (
+                active = false
+            )
+            {
+                bool isEnabled = 0
             }
         }
     }
