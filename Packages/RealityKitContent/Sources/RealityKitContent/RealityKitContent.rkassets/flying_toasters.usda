@@ -30,23 +30,23 @@ def Xform "Root"
 
         def RealityKitComponent "RigidBody"
         {
-            float angularDamping = 1
+            float angularDamping = 100
             bool gravityEnabled = 0
             uniform token info:id = "RealityKit.RigidBody"
-            bool isCCDEnabled = 0
-            float linearDamping = 1
-            bool lockRotationX = 1
-            bool lockRotationY = 1
+            bool isCCDEnabled = 1
+            float linearDamping = 1000
+            bool lockRotationX = 0
+            bool lockRotationY = 0
             bool lockRotationZ = 0
-            bool lockTranslationX = 1
-            bool lockTranslationY = 1
+            bool lockTranslationX = 0
+            bool lockTranslationY = 0
             bool lockTranslationZ = 0
-            token motionType = "Kinematic"
+            token motionType = "Dynamic"
 
             def RealityKitStruct "massFrame"
             {
                 float3 m_inertia = (40, 40, 40)
-                float m_mass = 10
+                float m_mass = 5
 
                 def RealityKitStruct "m_pose"
                 {
@@ -220,7 +220,7 @@ def Xform "Root"
         {
             bool gravityEnabled = 0
             uniform token info:id = "RealityKit.RigidBody"
-            bool isCCDEnabled = 0
+            bool isCCDEnabled = 1
             bool lockRotationX = 0
             bool lockRotationY = 0
             bool lockRotationZ = 1
@@ -230,6 +230,8 @@ def Xform "Root"
 
             def RealityKitStruct "massFrame"
             {
+                float m_mass = 0.1
+
                 def RealityKitStruct "m_pose"
                 {
                 }
@@ -292,12 +294,14 @@ def Xform "Root"
         {
             bool gravityEnabled = 0
             uniform token info:id = "RealityKit.RigidBody"
-            bool isCCDEnabled = 0
+            bool isCCDEnabled = 1
             bool lockRotationZ = 1
             bool lockTranslationZ = 1
 
             def RealityKitStruct "massFrame"
             {
+                float m_mass = 0.1
+
                 def RealityKitStruct "m_pose"
                 {
                 }
@@ -341,12 +345,14 @@ def Xform "Root"
         {
             bool gravityEnabled = 0
             uniform token info:id = "RealityKit.RigidBody"
-            bool isCCDEnabled = 0
+            bool isCCDEnabled = 1
             bool lockRotationZ = 1
             bool lockTranslationZ = 1
 
             def RealityKitStruct "massFrame"
             {
+                float m_mass = 0.1
+
                 def RealityKitStruct "m_pose"
                 {
                 }

@@ -9,6 +9,8 @@ import Accessibility
 import Spatial
 import RealityKit
 import RealityKitContent
+import UIKit
+
 
 /// The main toaster model; it's cloned when a new toaster spawns.
 var toasterTemplate: Entity? = nil
@@ -98,10 +100,61 @@ func spawnToaster(screenSaverModel: ScreenSaverModel) async throws -> Entity {
     
     toaster.position = simd_float(start.vector + .init(x: 0, y: 0, z: -0.0))
     toaster.transform.rotation = rotationQuaternion
+//    var material = toaster.modelComponent?.materials.first as? PhysicallyBasedMaterial
+//    material?.emissiveColor = PhysicallyBasedMaterial.EmissiveColor(color:.green)
+//    toaster.modelComponent?.materials[0] = material
+//    if var material = toaster.modelComponent?.materials.first as? PhysicallyBasedMaterial {
+//        // Update the emissive color of the material
+//        material.emissiveColor =  PhysicallyBasedMaterial.EmissiveColor(color:.green)
+//        
+//        // Create a new array of materials with the updated material
+//        var updatedMaterials = toaster.modelComponent?.materials ?? []
+//        updatedMaterials[0] = material
+//        
+//        // Re-assign the updated materials array back to the modelComponent
+//        toaster.modelComponent?.materials = updatedMaterials
+//    }
+    if let flyingToasterEntity = toaster.findEntity(named: "Flying_Toaster") as? ModelEntity {
+        // Accessing ModelComponent
+        if var modelComponent = flyingToasterEntity.components[ModelComponent.self] as? ModelComponent {
+            // Iterate and modify materials
+            for (index, material) in modelComponent.materials.enumerated() {
+                if var physMaterial = material as? PhysicallyBasedMaterial {
+                    // Example modification: changing the base color
+//                    physMaterial.baseColor = PhysicallyBasedMaterial.BaseColor(tint: .green)
+                    physMaterial.emissiveColor =  PhysicallyBasedMaterial.EmissiveColor(color: UIColor(screenSaverModel.toasterColor))
+                    // Assign the modified material back
+                    modelComponent.materials[index] = physMaterial
+                }
+            }
+            // Since materials array is a struct (value type), reassign the modified array back to the component
+            flyingToasterEntity.modelComponent?.materials = modelComponent.materials
+        }
+    }
+//    // Check if the entity has model components
+//    if let modelComponent = toaster.components[ModelComponent.self] as? ModelComponent {
+//        // Iterate over each material in the model's materials
+//        var updatedMaterials: [Material] = []
+//        for material in modelComponent.materials {
+//            // Attempt to cast the material to SimpleMaterial, which supports emissive color
+//            if var simpleMaterial = material as? PhysicallyBasedMaterial {
+//                // Update the emissive color
+//                simpleMaterial.emissiveColor = PhysicallyBasedMaterial.EmissiveColor(color:.green)
+//                // Append the updated material to the array
+//                updatedMaterials.append(simpleMaterial)
+//            } else {
+//                // If the material isn't a SimpleMaterial, just append it without changes
+//                updatedMaterials.append(material)
+//            }
+//        }
+//        // Assign the updated materials back to the model component
+//        toaster.components[ModelComponent.self]?.materials = updatedMaterials
+//        print("YAA")
+//    }
 
     toaster.playAnimation(animation, transitionDuration: 1.0, startsPaused: false)
-    toaster.setMaterialParameterValues(parameter: "saturation", value: .float(0.0))
-    toaster.setMaterialParameterValues(parameter: "animate_texture", value: .bool(false))
+//    toaster.setMaterialParameterValues(parameter: "saturation", value: .float(0.0))
+//    toaster.setMaterialParameterValues(parameter: "animate_texture", value: .bool(false))
     
     toasterAnimate(toaster, kind: .flapWings, shouldRepeat: true)
     

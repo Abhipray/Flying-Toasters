@@ -40,6 +40,8 @@ class ScreenSaverModel {
     var audioPlayer: AVAudioPlayer? = nil
     var secondsLeft = Int.max
     
+    var toasterColor = Color(.sRGB, red: 0.98, green: 0.9, blue: 0.2)
+    
     var secondsElapsed = 0 {
         didSet {
             print("Setting secondsElapsed", secondsLeft, secondsElapsed)
@@ -361,7 +363,7 @@ class ScreenSaverModel {
                 toaster.generateCollisionShapes(recursive: true)
                 toaster.name = "CToaster\(i)"
                 
-                toaster.components[PhysicsBodyComponent.self] = PhysicsBodyComponent()
+//                toaster.components[PhysicsBodyComponent.self] = PhysicsBodyComponent()
                 toaster.scale = SIMD3<Float>(x: toasterScale, y: toasterScale, z: toasterScale)
                 
                 toasters.append(toaster)

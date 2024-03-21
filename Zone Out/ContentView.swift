@@ -229,7 +229,7 @@ struct SettingsView: View {
 
                 Section(header: Text("Toaster Settings").font(.headline)) {
                     VStack {
-                        Text("Number of toasters: \(Int(screenSaverModel.numberOfToastersConfig))")
+                        Text("Number of toasts and toasters: \(Int(screenSaverModel.numberOfToastersConfig))")
                         Slider(value: $screenSaverModel.numberOfToastersConfig, in: 5...20, step: 1)
                             .padding(.horizontal)
                             .help("Set the number of flying toasters displayed.")
@@ -245,11 +245,15 @@ struct SettingsView: View {
                         .pickerStyle(.segmented)
                         .help("Adjust how toasted you like your toasts.")
                     }
+                    
                     Toggle(isOn: $screenSaverModel.musicEnabled) {
                         Label("Music", systemImage: screenSaverModel.musicEnabled ? "speaker.wave.3.fill" : "speaker.slash.fill")
                             .foregroundColor(screenSaverModel.musicEnabled ? .green : .red)
                     }
                     .help("Enable or disable background music for the screensaver.")
+                    
+                    ColorPicker("Toaster Color", selection: $screenSaverModel.toasterColor)
+                    
                 }
                 
             }
