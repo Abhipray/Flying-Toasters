@@ -226,7 +226,7 @@ class ScreenSaverModel {
         let world = Entity()
         world.components[WorldComponent.self] = .init()
         
-        let environment = try! EnvironmentResource.load(named: "OuterSpace")
+//        let environment = try! EnvironmentResource.load(named: "OuterSpace")
 //        world.components[ImageBasedLightComponent.self] = .init(source: .single(environment), intensityExponent: 6)
 //        world.components[ImageBasedLightReceiverComponent.self] = .init(imageBasedLight: world)
         
@@ -241,6 +241,7 @@ class ScreenSaverModel {
             }
             moon.position = simd_float3(toasterEndPoint)
             moon.position -= 0.2
+            moon.scale = simd_float3(repeating: 0.75)
             
             world.addChild(moon)
             
@@ -250,7 +251,9 @@ class ScreenSaverModel {
             ) else {
                 fatalError("Error loading Moon from Reality Composer Pro project.")
             }
-            sun.position = simd_float(.init(x:toasterSrcPoint.x-0.3, y:toasterSrcPoint.y, z:toasterSrcPoint.z))
+            sun.position = simd_float(.init(x:toasterSrcPoint.x, y:toasterSrcPoint.y, z:toasterSrcPoint.z))
+            sun.position += 0.2
+            sun.scale = simd_float3(repeating: 1.0)
             world.addChild(sun)
         }
         
