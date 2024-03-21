@@ -245,9 +245,12 @@ class ScreenSaverModel {
         portal.components[PortalComponent.self] = .init(target: world)
         portal.components[InputTargetComponent.self] = .init(allowedInputTypes: .all)
         portal.components[InputTargetComponent.self]?.isEnabled = true
-        portal.components[CollisionComponent.self] = CollisionComponent(shapes: [.generateSphere(radius: 1)], isStatic: false)
+        portal.components[CollisionComponent.self] = CollisionComponent(shapes: [.generateBox(width: 2, height: 2, depth: 0.1)], isStatic: false)
         
-        let component = GestureComponent(canDrag: true, pivotOnDrag: true, preserveOrientationOnPivotDrag: false, canScale: true, canRotate: false)
+        var component = GestureComponent(canDrag: true, pivotOnDrag: true, preserveOrientationOnPivotDrag: false, canScale: true, canRotate: false)
+        component.scaleMaxMag = 100
+        component.scaleMinMag = 0.75
+        component.initialScaleXVal = portal.scale.x
         portal.components.set(component)
         
         // Particle effects

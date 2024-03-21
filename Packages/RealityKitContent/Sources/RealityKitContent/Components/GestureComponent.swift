@@ -71,6 +71,10 @@ public struct GestureComponent: Component, Codable {
     /// A Boolean value that indicates whether a gesture can rotate the entity.
     public var canRotate: Bool = true
     
+    public var scaleMaxMag: Float = Float.infinity
+    public var scaleMinMag: Float = -Float.infinity
+    public var initialScaleXVal: Float = 1.0
+    
     public init(canDrag: Bool , pivotOnDrag: Bool , preserveOrientationOnPivotDrag: Bool , canScale: Bool , canRotate: Bool ) {
         self.canDrag = canDrag
         self.pivotOnDrag = pivotOnDrag
@@ -204,7 +208,11 @@ public struct GestureComponent: Component, Codable {
         }
         
         let magnification = Float(value.magnification)
-        entity.scale = state.startScale * magnification
+        
+        let totalMag = magnification * entity.scale.x/self.initialScaleXVal
+        if totalMag < self.scaleMaxMag && totalMag > self.scaleMinMag {
+            entity.scale = state.startScale * magnification
+        }
     }
     
     /// Handle `.onEnded` actions for magnify (scale)  gestures
