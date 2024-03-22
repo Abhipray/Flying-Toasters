@@ -76,11 +76,10 @@ struct ContentView: View {
                         .padding(-15)
                     
                     Toggle(isOn: $showImmersiveSpace) {
-                        Image(systemName: showImmersiveSpace ? "eye.slash" : "eye")
+                        Image(systemName: showImmersiveSpace ? "pause.fill" : "play.fill")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 18, height: 18) // Specify the frame to increase the size
-                            .clipShape(Circle())
                     }
                     .onAppear {
                         showImmersiveSpace = screenSaverModel.isScreenSaverRunning
