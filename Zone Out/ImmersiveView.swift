@@ -30,6 +30,33 @@ struct ImmersiveView: View {
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var showImmersiveSpace = true
     
+    var tap: some Gesture {
+        TapGesture()
+            .targetedToAnyEntity()
+            .onEnded { value in
+                // Access the tapped entity here.
+                if value.entity.name.starts(with: "CToast") {
+                    let toaster = value.entity
+                    if toaster.children.first(where: { $0.name == "speech" }) != nil {
+                        return
+                    }
+                    let idx = Int.random(in: 0...toasterPhrashes.count-1)
+                    let text = ModelEntity(mesh: .generateText(toasterPhrashes[idx],
+                                                               extrusionDepth: 4,
+                                                               font: .boldSystemFont(ofSize: 12)))
+                    text.model?.materials = [UnlitMaterial()]
+                    text.name = "speech"
+                    
+                    let toasterHeight = value.entity.visualBounds(relativeTo: nil).extents.y * 100 + 5 // in cm
+                    let toasterWidth = value.entity.visualBounds(relativeTo: nil).extents.x * 100/2 + 5 // in cm
+                    text.position = [toasterWidth, toasterHeight, 0.0]
+                    print(text.position)
+                    value.entity.addChild(text)
+                    print(text.position)
+                }
+            }
+    }
+    
     var body: some View {
         RealityView { content, attachments in
             content.add(portalWorld)
@@ -41,6 +68,7 @@ struct ImmersiveView: View {
                 earthAttachment.position = [0, -1.5, 0]
                 startPortal.addChild(earthAttachment)
             }
+            
         } attachments: {
             Attachment(id: "h1") {
                 Text("Dismiss Screen Saver").font(.system(size: 60, weight: .bold, design: .monospaced))
@@ -66,6 +94,7 @@ struct ImmersiveView: View {
             }
         }
         .installGestures()
+        .gesture(tap)
         .onReceive(timer) { _ in
             
             let probFamily = 0.3

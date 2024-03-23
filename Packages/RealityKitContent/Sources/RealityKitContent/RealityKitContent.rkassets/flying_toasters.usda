@@ -45,7 +45,7 @@ def Xform "Root"
 
             def RealityKitStruct "massFrame"
             {
-                float3 m_inertia = (400, 400, 40)
+                float3 m_inertia = (400, 400, 400)
                 float m_mass = 5
 
                 def RealityKitStruct "m_pose"
@@ -61,9 +61,7 @@ def Xform "Root"
             }
         }
 
-        def RealityKitComponent "InputTarget" (
-            active = false
-        )
+        def RealityKitComponent "InputTarget"
         {
             uniform token info:id = "RealityKit.InputTarget"
         }

@@ -20,6 +20,7 @@ var toastDarkTemplate: Entity? = nil
 var startPortal = Entity()
 var endPortal = Entity()
 var portalWorld = Entity()
+var poemAttachment = Entity()
 var toastNumber = 0
 var toasterSrcPoint = (x: 4.0, y: 4.0, z: -6.0)
 
@@ -29,7 +30,7 @@ struct ToasterSpawnParameters {
     static var deltaY = -9.0*0.5
     static var deltaZ = 12.1*0.5
     
-    static var average_anim_duration = 5.0
+    static var average_anim_duration = 9.0
     static var range_anim_duration = 3.0 // +/- average
 }
 
@@ -128,9 +129,13 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
     
     // Schedule the removal of the entity after the animation completes
     DispatchQueue.main.asyncAfter(deadline: .now() + anim_duration) { [weak toaster] in
+        if let childToRemove = toaster?.children.first(where: { $0.name == "speech" }) {
+            childToRemove.removeFromParent()
+        }
         toaster?.removeFromParent()
         screenSaverModel.currentNumberOfToasters -= 1
     }
+    
     
     return toaster
 }
@@ -259,3 +264,4 @@ var toastIndex = 0
 /// A hand-picked selection of random starting parameters for the motion of the toasters.
 var toasterPaths: [(Double, Double, Double)] = []
 
+var toasterPhrashes: [String] = ["Crust me, I'm flying!", "Bread to be wild!", "I'm on a roll!", "Toasty skies ahead!", "Butter believe it!", "Leaven the dream!", "Flour power!", "Born to be bread!", "Flying on yeast wings!", "Bun voyage!", "Spread the joy!", "Crumb and get it!", "Loafing around!", "A toast to you!", "Breadwinner in the sky!", "Sky's the limit!", "Yeasty rider!", "Seize the baguette!", "Sourdough solo!", "High in fiber!", "Rising high!", "Wheat me up!", "Grainiac in flight!", "Flap like a flapjack!", "Let's get this bread!", "Doughn't stop me now!", "Muffin compares to you!", "Gluten tag!", "Crumb believe in yourself!", "Pita patter, let's get at 'er!", "Bready for anything!", "Loaf is all you knead!", "In crust we trust!", "This is un-bread-able!", "A toastmaster!", "Biscuit in the basket!", "Roll with it!", "Donut worry, be happy!", "Egg-cited to fly!", "Pan-demonium!", "Bake my day!", "Rye so serious?", "A slice of heaven!", "Ciabatta believe it!", "Flour child!", "Bagel in the sky!", "Jumpin' jam!", "Croissant the skies!", "Bread head!", "Toast of the town!", "Sizzle with pizzazz!", "Sky-high ciabatta!", "Jam-packed flight!", "Rising above clouds!", "I knead speed!", "Butter up, buttercup!", "Dough-lightful heights!", "Fueled by crumbs!", "Bready for lift-off!", "Toasting new heights!", "Crumb-coated dreams!", "Fluffy cloud rider!", "Wheat's up, sky?", "Soaring on sourdough!", "Crusty but gusty!", "Aerodynamic baguette!", "Sky's the yeast limit!", "Biscotti in the jet stream!", "Crouton cruisin'!", "Brioche breeze!", "Bagel balloon!", "Glaze the trail!", "Pumpernickel propeller!", "Muffin much, just flying!", "Toast taking off!", "Pastry pilot!", "Sky scraping crêpes!", "Scone into the blue!", "Airborne and cornbread!", "Naan stop fun!", "Croissant the skies!", "Bread blimp!", "Flying focaccia!", "Pretzel propeller!", "Rolling in the dough!", "Eclairs in the air!", "Baking altitude!", "Panini planes!", "High-altitude hoagie!", "Donut drop me!", "Chapati charters!", "Flight of the flatbreads!", "Aloft on a loaf!", "Swift as a scone!", "Bun, two, three, lift!", "Toast and coast!", "Baguette brigade!", "Danish daredevil!", "Angel food flight!", "Cloudy with a chance of bread!", "Seize the crumb!", "Rise, shine, and bake!", "Knead to focus!", "Chill like dough", "Sourdough & unwind", "Proofing patience", "Bake, break, repeat", "Flourish in the slow", "Mix well, live well", "Rest, then zest", "Dough not hurry", "Crust your process", "Breathe & bake", "Loaf & learn", "Pace your bake", "Yeast of efforts", "Crumb together", "Sift through priorities", "Mold your day", "Toast to tranquility", "Layer your tasks", "Sprinkle joy", "Whisk away worries", "Batter up for success", "Cool on the rack", "Rising routine", "Spread calm", "Fold in fun", "Grain of motivation", "Slice of serenity", "Bun-dle tasks", "Roll out plans", "Proof of progress", "Rest the dough, rest the mind", "Knead, then knead not", "Flake off stress", "Savor the moment", "Glaze goals gently", "Dust off doubts", "Crumble concerns", "Butter up your brain", "Preserve peace", "Measure, mix, meditate", "Pan out smoothly", "Stir in positivity", "Balance the batch", "Align the almonds", "Pitcher of possibilities", "Temper tasks", "Whip up wellness"]
