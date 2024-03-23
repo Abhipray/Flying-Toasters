@@ -51,13 +51,6 @@ func generateToasterStartEndRotation() -> (Point3D, Point3D, simd_quatf) {
     let z = Double.random(in: (centralPoint.z - range)...(centralPoint.z + range))
     
     let start = Point3D(x:x, y:y, z:z)
-    
-    
-//    let end = Point3D(
-//        x: start.x + ToasterSpawnParameters.deltaX,
-//        y: start.y + ToasterSpawnParameters.deltaY,
-//        z: start.z + ToasterSpawnParameters.deltaZ
-//    )
     let end = Point3D(x: endPortal.position.x, y: endPortal.position.y, z: endPortal.position.z)
     
     // Rotation correction
@@ -72,10 +65,16 @@ func generateToasterStartEndRotation() -> (Point3D, Point3D, simd_quatf) {
 
 /// Creates a toaster and places it in the space.
 @MainActor
-func spawnToaster(screenSaverModel: ScreenSaverModel) async throws -> Entity {
+func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3?, endLocation: simd_float3?, scale: Float) async throws -> Entity {
     print("Spawning a new toaster")
     
-    let (start, end, rotationQuaternion) = generateToasterStartEndRotation()
+    var (start, end, rotationQuaternion) = generateToasterStartEndRotation()
+    if startLocation != nil {
+        start = Point3D(startLocation!)
+    }
+    if endLocation != nil {
+        end = Point3D(endLocation!)
+    }
     
     // Randomize speed/duration of animation
     let mean_dur = ToasterSpawnParameters.average_anim_duration
@@ -86,8 +85,8 @@ func spawnToaster(screenSaverModel: ScreenSaverModel) async throws -> Entity {
     // Generate animation
     let line = FromToByAnimation<Transform>(
         name: "line",
-        from: .init(scale: .init(repeating: toasterScale),  rotation: rotationQuaternion, translation: simd_float(start.vector)),
-        to: .init(scale: .init(repeating: toasterScale), rotation: rotationQuaternion, translation: simd_float(end.vector)),
+        from: .init(scale: .init(repeating: scale),  rotation: rotationQuaternion, translation: simd_float(start.vector)),
+        to: .init(scale: .init(repeating: scale), rotation: rotationQuaternion, translation: simd_float(end.vector)),
         duration: anim_duration,
         bindTarget: .transform
     )
@@ -100,23 +99,10 @@ func spawnToaster(screenSaverModel: ScreenSaverModel) async throws -> Entity {
     
     toaster.position = simd_float(start.vector + .init(x: 0, y: 0, z: -0.0))
     toaster.transform.rotation = rotationQuaternion
-//    var material = toaster.modelComponent?.materials.first as? PhysicallyBasedMaterial
-//    material?.emissiveColor = PhysicallyBasedMaterial.EmissiveColor(color:.green)
-//    toaster.modelComponent?.materials[0] = material
-//    if var material = toaster.modelComponent?.materials.first as? PhysicallyBasedMaterial {
-//        // Update the emissive color of the material
-//        material.emissiveColor =  PhysicallyBasedMaterial.EmissiveColor(color:.green)
-//        
-//        // Create a new array of materials with the updated material
-//        var updatedMaterials = toaster.modelComponent?.materials ?? []
-//        updatedMaterials[0] = material
-//        
-//        // Re-assign the updated materials array back to the modelComponent
-//        toaster.modelComponent?.materials = updatedMaterials
-//    }
+
     if let flyingToasterEntity = toaster.findEntity(named: "Flying_Toaster") as? ModelEntity {
         // Accessing ModelComponent
-        if var modelComponent = flyingToasterEntity.components[ModelComponent.self] as? ModelComponent {
+        if var modelComponent = flyingToasterEntity.components[ModelComponent.self] {
             // Iterate and modify materials
             for (index, material) in modelComponent.materials.enumerated() {
                 if var physMaterial = material as? PhysicallyBasedMaterial {
@@ -131,30 +117,10 @@ func spawnToaster(screenSaverModel: ScreenSaverModel) async throws -> Entity {
             flyingToasterEntity.modelComponent?.materials = modelComponent.materials
         }
     }
-//    // Check if the entity has model components
-//    if let modelComponent = toaster.components[ModelComponent.self] as? ModelComponent {
-//        // Iterate over each material in the model's materials
-//        var updatedMaterials: [Material] = []
-//        for material in modelComponent.materials {
-//            // Attempt to cast the material to SimpleMaterial, which supports emissive color
-//            if var simpleMaterial = material as? PhysicallyBasedMaterial {
-//                // Update the emissive color
-//                simpleMaterial.emissiveColor = PhysicallyBasedMaterial.EmissiveColor(color:.green)
-//                // Append the updated material to the array
-//                updatedMaterials.append(simpleMaterial)
-//            } else {
-//                // If the material isn't a SimpleMaterial, just append it without changes
-//                updatedMaterials.append(material)
-//            }
-//        }
-//        // Assign the updated materials back to the model component
-//        toaster.components[ModelComponent.self]?.materials = updatedMaterials
-//        print("YAA")
-//    }
 
     toaster.playAnimation(animation, transitionDuration: 1.0, startsPaused: false)
-//    toaster.setMaterialParameterValues(parameter: "saturation", value: .float(0.0))
-//    toaster.setMaterialParameterValues(parameter: "animate_texture", value: .bool(false))
+    toaster.setMaterialParameterValues(parameter: "saturation", value: .float(0.0))
+    toaster.setMaterialParameterValues(parameter: "animate_texture", value: .bool(true))
     
     toasterAnimate(toaster, kind: .flapWings, shouldRepeat: true)
     
@@ -170,10 +136,16 @@ func spawnToaster(screenSaverModel: ScreenSaverModel) async throws -> Entity {
 }
 
 @MainActor
-func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String) async throws -> Entity {
+func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String, startLocation: simd_float3?, endLocation: simd_float3?) async throws -> Entity {
     print("Spawning a new toast")
     
-    let (start, end, _) = generateToasterStartEndRotation()
+    var (start, end, _) = generateToasterStartEndRotation()
+    if startLocation != nil {
+        start = Point3D(startLocation!)
+    }
+    if endLocation != nil {
+        end = Point3D(endLocation!)
+    }
     let rotationQuaternion = simd_quatf(angle: Float.pi/4, axis: [1, 1, 0])
     
     // Randomize speed/duration of animation
@@ -217,7 +189,7 @@ func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String) async thr
     toast.scale = SIMD3<Float>(repeating: toastScale)
     toast.position = simd_float(start.vector + .init(x: 0, y: 0, z: -0.0))
     toast.transform.rotation = rotationQuaternion
-    
+    toast.look(at:endPortal.position, from:startPortal.position, relativeTo: nil)
     
     // Generate animation
     let line = FromToByAnimation<Transform>(

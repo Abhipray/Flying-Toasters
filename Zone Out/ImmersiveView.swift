@@ -67,18 +67,37 @@ struct ImmersiveView: View {
         }
         .installGestures()
         .onReceive(timer) { _ in
+            
+            let probFamily = 0.3
             let maxAllowedToSpan = 4
+            let numBabies = 3
             var maxNumToSpawn = Int(screenSaverModel.numberOfToastersConfig) - screenSaverModel.currentNumberOfToasters
             maxNumToSpawn = min(maxNumToSpawn, maxAllowedToSpan)
+            
+            var family = false
+            let randomValue = Double.random(in: 0...1)
+            if randomValue < probFamily {
+                family = true
+            }
             if maxNumToSpawn > 1 {
                 Task { @MainActor () -> Void in
                     do {
                         let spawnAmount = Int.random(in: 1...maxNumToSpawn)
                         for _ in (0..<spawnAmount) {
-                            var _ = try await spawnToaster(screenSaverModel:screenSaverModel)
+                            let mother = try await spawnToaster(screenSaverModel:screenSaverModel,  startLocation: nil, endLocation: nil, scale:toasterScale)
                             try await Task.sleep(nanoseconds: UInt64(0.15 * 1_000_000_000))
+                            
+                            if family {
+                                for _ in 1...numBabies {
+                                    let _ = try await spawnToaster(screenSaverModel:screenSaverModel, startLocation: mother.position, endLocation: endPortal.position, scale: toasterScale*0.4)
+                                    try await Task.sleep(nanoseconds: UInt64(0.05 * 1_000_000_000))
+                                }
+                                screenSaverModel.currentNumberOfToasters += numBabies
+                                family = false
+                            }
+                            
                             let toastType = screenSaverModel.toastTypes[screenSaverModel.toastLevelConfig]
-                            var _ = try await spawnToast(screenSaverModel:screenSaverModel, toastType: toastType)
+                            let _ = try await spawnToast(screenSaverModel:screenSaverModel, toastType: toastType, startLocation: nil, endLocation: nil)
                             screenSaverModel.currentNumberOfToasters += 2
                             try await Task.sleep(nanoseconds: UInt64(0.15 * 1_000_000_000))
                         }
