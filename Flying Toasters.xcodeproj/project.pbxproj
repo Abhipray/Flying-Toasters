@@ -8,22 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		2A4A06782B81B47A00512032 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 2A4A06772B81B47A00512032 /* RealityKitContent */; };
-		2A4A067A2B81B47A00512032 /* Zone_OutApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4A06792B81B47A00512032 /* Zone_OutApp.swift */; };
+		2A4A067A2B81B47A00512032 /* Flying_ToastersApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4A06792B81B47A00512032 /* Flying_ToastersApp.swift */; };
 		2A4A067C2B81B47A00512032 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4A067B2B81B47A00512032 /* ContentView.swift */; };
 		2A4A067E2B81B47A00512032 /* ImmersiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4A067D2B81B47A00512032 /* ImmersiveView.swift */; };
 		2A4A06802B81B47A00512032 /* ImageBasedLighting.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 2A4A067F2B81B47A00512032 /* ImageBasedLighting.skybox */; };
 		2A4A06822B81B47C00512032 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A4A06812B81B47C00512032 /* Assets.xcassets */; };
 		2A4A06852B81B47C00512032 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A4A06842B81B47C00512032 /* Preview Assets.xcassets */; };
-		2A4A06902B81B47C00512032 /* Zone_OutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4A068F2B81B47C00512032 /* Zone_OutTests.swift */; };
+		2A4A06902B81B47C00512032 /* Flying_ToastersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4A068F2B81B47C00512032 /* Flying_ToastersTests.swift */; };
 		2A4A069C2B82F6F400512032 /* Toasters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4A069B2B82F6F400512032 /* Toasters.swift */; };
 		2A4A069E2B82F9B900512032 /* GlobalEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4A069D2B82F9B900512032 /* GlobalEntities.swift */; };
 		2A4A06A22B83087800512032 /* ScreenSaverModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4A06A12B83087800512032 /* ScreenSaverModel.swift */; };
 		2A4A06A42B833F3400512032 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4A06A32B833F3400512032 /* Extensions.swift */; };
 		2A4A06A62B84412C00512032 /* Flying-Toasters-HD.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2A4A06A52B84412B00512032 /* Flying-Toasters-HD.mp3 */; };
 		2A4A06A82B84461B00512032 /* CreditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4A06A72B84461B00512032 /* CreditsView.swift */; };
-		2A86C4272BA3EB42003B3198 /* OuterSpace.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 2A86C4262BA3EB41003B3198 /* OuterSpace.skybox */; };
-		2A86C4282BA3EC83003B3198 /* OuterSpace.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 2A86C4262BA3EB41003B3198 /* OuterSpace.skybox */; };
-		2A86C42A2BA3ED5B003B3198 /* OuterSpace.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 2A86C4292BA3ED5B003B3198 /* OuterSpace.skybox */; };
 		2A86C42C2BA3F25D003B3198 /* Starfield.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A86C42B2BA3F25D003B3198 /* Starfield.swift */; };
 /* End PBXBuildFile section */
 
@@ -38,25 +35,23 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2A4A06722B81B47A00512032 /* Zone Out.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Zone Out.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A4A06722B81B47A00512032 /* Flying Toasters.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Flying Toasters.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A4A06762B81B47A00512032 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
-		2A4A06792B81B47A00512032 /* Zone_OutApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zone_OutApp.swift; sourceTree = "<group>"; };
+		2A4A06792B81B47A00512032 /* Flying_ToastersApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flying_ToastersApp.swift; sourceTree = "<group>"; };
 		2A4A067B2B81B47A00512032 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		2A4A067D2B81B47A00512032 /* ImmersiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveView.swift; sourceTree = "<group>"; };
 		2A4A067F2B81B47A00512032 /* ImageBasedLighting.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = ImageBasedLighting.skybox; sourceTree = "<group>"; };
 		2A4A06812B81B47C00512032 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2A4A06842B81B47C00512032 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2A4A06862B81B47C00512032 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2A4A068B2B81B47C00512032 /* Zone OutTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Zone OutTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2A4A068F2B81B47C00512032 /* Zone_OutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zone_OutTests.swift; sourceTree = "<group>"; };
+		2A4A068B2B81B47C00512032 /* Flying ToastersTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Flying ToastersTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A4A068F2B81B47C00512032 /* Flying_ToastersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flying_ToastersTests.swift; sourceTree = "<group>"; };
 		2A4A069B2B82F6F400512032 /* Toasters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toasters.swift; sourceTree = "<group>"; };
 		2A4A069D2B82F9B900512032 /* GlobalEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalEntities.swift; sourceTree = "<group>"; };
 		2A4A06A12B83087800512032 /* ScreenSaverModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenSaverModel.swift; sourceTree = "<group>"; };
 		2A4A06A32B833F3400512032 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		2A4A06A52B84412B00512032 /* Flying-Toasters-HD.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Flying-Toasters-HD.mp3"; sourceTree = "<group>"; };
 		2A4A06A72B84461B00512032 /* CreditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreditsView.swift; sourceTree = "<group>"; };
-		2A86C4262BA3EB41003B3198 /* OuterSpace.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = OuterSpace.skybox; sourceTree = "<group>"; };
-		2A86C4292BA3ED5B003B3198 /* OuterSpace.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; name = OuterSpace.skybox; path = "Zone Out/OuterSpace.skybox"; sourceTree = SOURCE_ROOT; };
 		2A86C42B2BA3F25D003B3198 /* Starfield.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Starfield.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -82,9 +77,9 @@
 		2A4A06692B81B47A00512032 = {
 			isa = PBXGroup;
 			children = (
-				2A4A06742B81B47A00512032 /* Zone Out */,
+				2A4A06742B81B47A00512032 /* Flying Toasters */,
 				2A4A06752B81B47A00512032 /* Packages */,
-				2A4A068E2B81B47C00512032 /* Zone OutTests */,
+				2A4A068E2B81B47C00512032 /* Flying ToastersTests */,
 				2A4A06732B81B47A00512032 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -92,20 +87,19 @@
 		2A4A06732B81B47A00512032 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2A4A06722B81B47A00512032 /* Zone Out.app */,
-				2A4A068B2B81B47C00512032 /* Zone OutTests.xctest */,
+				2A4A06722B81B47A00512032 /* Flying Toasters.app */,
+				2A4A068B2B81B47C00512032 /* Flying ToastersTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		2A4A06742B81B47A00512032 /* Zone Out */ = {
+		2A4A06742B81B47A00512032 /* Flying Toasters */ = {
 			isa = PBXGroup;
 			children = (
 				2A4A06A32B833F3400512032 /* Extensions.swift */,
-				2A86C4262BA3EB41003B3198 /* OuterSpace.skybox */,
 				2A4A069A2B82F6CB00512032 /* screensavers */,
 				2A4A06992B82F6AA00512032 /* USDZs */,
-				2A4A06792B81B47A00512032 /* Zone_OutApp.swift */,
+				2A4A06792B81B47A00512032 /* Flying_ToastersApp.swift */,
 				2A4A067B2B81B47A00512032 /* ContentView.swift */,
 				2A4A067D2B81B47A00512032 /* ImmersiveView.swift */,
 				2A4A067F2B81B47A00512032 /* ImageBasedLighting.skybox */,
@@ -117,7 +111,7 @@
 				2A86C42B2BA3F25D003B3198 /* Starfield.swift */,
 				2A4A06A72B84461B00512032 /* CreditsView.swift */,
 			);
-			path = "Zone Out";
+			path = "Flying Toasters";
 			sourceTree = "<group>";
 		};
 		2A4A06752B81B47A00512032 /* Packages */ = {
@@ -136,13 +130,12 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		2A4A068E2B81B47C00512032 /* Zone OutTests */ = {
+		2A4A068E2B81B47C00512032 /* Flying ToastersTests */ = {
 			isa = PBXGroup;
 			children = (
-				2A4A068F2B81B47C00512032 /* Zone_OutTests.swift */,
-				2A86C4292BA3ED5B003B3198 /* OuterSpace.skybox */,
+				2A4A068F2B81B47C00512032 /* Flying_ToastersTests.swift */,
 			);
-			path = "Zone OutTests";
+			path = "Flying ToastersTests";
 			sourceTree = "<group>";
 		};
 		2A4A06992B82F6AA00512032 /* USDZs */ = {
@@ -164,9 +157,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2A4A06712B81B47A00512032 /* Zone Out */ = {
+		2A4A06712B81B47A00512032 /* Flying Toasters */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2A4A06932B81B47C00512032 /* Build configuration list for PBXNativeTarget "Zone Out" */;
+			buildConfigurationList = 2A4A06932B81B47C00512032 /* Build configuration list for PBXNativeTarget "Flying Toasters" */;
 			buildPhases = (
 				2A4A066E2B81B47A00512032 /* Sources */,
 				2A4A066F2B81B47A00512032 /* Frameworks */,
@@ -176,17 +169,17 @@
 			);
 			dependencies = (
 			);
-			name = "Zone Out";
+			name = "Flying Toasters";
 			packageProductDependencies = (
 				2A4A06772B81B47A00512032 /* RealityKitContent */,
 			);
 			productName = "Zone Out";
-			productReference = 2A4A06722B81B47A00512032 /* Zone Out.app */;
+			productReference = 2A4A06722B81B47A00512032 /* Flying Toasters.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2A4A068A2B81B47C00512032 /* Zone OutTests */ = {
+		2A4A068A2B81B47C00512032 /* Flying ToastersTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2A4A06962B81B47C00512032 /* Build configuration list for PBXNativeTarget "Zone OutTests" */;
+			buildConfigurationList = 2A4A06962B81B47C00512032 /* Build configuration list for PBXNativeTarget "Flying ToastersTests" */;
 			buildPhases = (
 				2A4A06872B81B47C00512032 /* Sources */,
 				2A4A06882B81B47C00512032 /* Frameworks */,
@@ -197,9 +190,9 @@
 			dependencies = (
 				2A4A068D2B81B47C00512032 /* PBXTargetDependency */,
 			);
-			name = "Zone OutTests";
+			name = "Flying ToastersTests";
 			productName = "Zone OutTests";
-			productReference = 2A4A068B2B81B47C00512032 /* Zone OutTests.xctest */;
+			productReference = 2A4A068B2B81B47C00512032 /* Flying ToastersTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -221,7 +214,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2A4A066D2B81B47A00512032 /* Build configuration list for PBXProject "Zone Out" */;
+			buildConfigurationList = 2A4A066D2B81B47A00512032 /* Build configuration list for PBXProject "Flying Toasters" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -234,8 +227,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2A4A06712B81B47A00512032 /* Zone Out */,
-				2A4A068A2B81B47C00512032 /* Zone OutTests */,
+				2A4A06712B81B47A00512032 /* Flying Toasters */,
+				2A4A068A2B81B47C00512032 /* Flying ToastersTests */,
 			);
 		};
 /* End PBXProject section */
@@ -247,8 +240,6 @@
 			files = (
 				2A4A06A62B84412C00512032 /* Flying-Toasters-HD.mp3 in Resources */,
 				2A4A06822B81B47C00512032 /* Assets.xcassets in Resources */,
-				2A86C42A2BA3ED5B003B3198 /* OuterSpace.skybox in Resources */,
-				2A86C4272BA3EB42003B3198 /* OuterSpace.skybox in Resources */,
 				2A4A06852B81B47C00512032 /* Preview Assets.xcassets in Resources */,
 				2A4A06802B81B47A00512032 /* ImageBasedLighting.skybox in Resources */,
 			);
@@ -258,7 +249,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2A86C4282BA3EC83003B3198 /* OuterSpace.skybox in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,7 +261,7 @@
 			files = (
 				2A4A067C2B81B47A00512032 /* ContentView.swift in Sources */,
 				2A4A069C2B82F6F400512032 /* Toasters.swift in Sources */,
-				2A4A067A2B81B47A00512032 /* Zone_OutApp.swift in Sources */,
+				2A4A067A2B81B47A00512032 /* Flying_ToastersApp.swift in Sources */,
 				2A4A06A22B83087800512032 /* ScreenSaverModel.swift in Sources */,
 				2A4A069E2B82F9B900512032 /* GlobalEntities.swift in Sources */,
 				2A4A06A82B84461B00512032 /* CreditsView.swift in Sources */,
@@ -285,7 +275,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2A4A06902B81B47C00512032 /* Zone_OutTests.swift in Sources */,
+				2A4A06902B81B47C00512032 /* Flying_ToastersTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,7 +284,7 @@
 /* Begin PBXTargetDependency section */
 		2A4A068D2B81B47C00512032 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2A4A06712B81B47A00512032 /* Zone Out */;
+			target = 2A4A06712B81B47A00512032 /* Flying Toasters */;
 			targetProxy = 2A4A068C2B81B47C00512032 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -428,7 +418,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Zone Out/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Flying Toasters/Preview Content\"";
 				DEVELOPMENT_TEAM = DNKCQMGDDL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -457,7 +447,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Zone Out/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Flying Toasters/Preview Content\"";
 				DEVELOPMENT_TEAM = DNKCQMGDDL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -493,7 +483,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Zone Out.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Zone Out";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Flying Toasters.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Flying Toasters";
 				XROS_DEPLOYMENT_TARGET = 1.0;
 			};
 			name = Debug;
@@ -513,7 +503,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Zone Out.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Zone Out";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Flying Toasters.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Flying Toasters";
 				XROS_DEPLOYMENT_TARGET = 1.0;
 			};
 			name = Release;
@@ -521,7 +511,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2A4A066D2B81B47A00512032 /* Build configuration list for PBXProject "Zone Out" */ = {
+		2A4A066D2B81B47A00512032 /* Build configuration list for PBXProject "Flying Toasters" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2A4A06912B81B47C00512032 /* Debug */,
@@ -530,7 +520,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2A4A06932B81B47C00512032 /* Build configuration list for PBXNativeTarget "Zone Out" */ = {
+		2A4A06932B81B47C00512032 /* Build configuration list for PBXNativeTarget "Flying Toasters" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2A4A06942B81B47C00512032 /* Debug */,
@@ -539,7 +529,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2A4A06962B81B47C00512032 /* Build configuration list for PBXNativeTarget "Zone OutTests" */ = {
+		2A4A06962B81B47C00512032 /* Build configuration list for PBXNativeTarget "Flying ToastersTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2A4A06972B81B47C00512032 /* Debug */,

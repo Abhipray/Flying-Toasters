@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import Zone_Out
+@testable import Flying_Toasters
 
 class Zone_OutTests: XCTestCase {
 
