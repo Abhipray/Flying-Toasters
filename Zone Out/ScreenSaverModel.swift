@@ -32,6 +32,8 @@ func calculateRotationAngle(from startPoint: SIMD3<Double>, to endPoint: SIMD3<D
     return (normalizedAxis, Float(angleRadians))
 }
 
+extension DismissImmersiveSpaceAction: @unchecked Sendable {}
+
 /// State that drives the different screens of the game and options that players select.
 @Observable
 class ScreenSaverModel {
@@ -177,7 +179,7 @@ class ScreenSaverModel {
                 
                 audioPlayer?.stop() // Ensure this function stops the audio
                 guard let dismissSpace = dismissImmersiveSpace else {
-                    print("openImmersiveSpace is not available.")
+                    print("dismissImmersiveSpace is not available.")
                     return
                 }
                 await dismissSpace()
