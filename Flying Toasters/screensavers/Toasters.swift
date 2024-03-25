@@ -42,23 +42,51 @@ var toasterEndPoint = simd_double(.init(
 
 var toasterPortal : Entity? = nil
 
+/// Generate a random point within a 2D circle in 3D space based on an entity's transform.
+/// - Parameters:
+///   - center: The center of the circle in global space (entity's position).
+///   - radius: The radius of the circle.
+///   - transform: The entity's transform.
+/// - Returns: A random point within the circle in global 3D space.
+func randomPointInCircle3D(center: SIMD3<Float>, radius: Float, transform: Transform) -> SIMD3<Float> {
+    // Step 1: Generate a random angle and radius for the point within the 2D circle.
+    let angle = Float.random(in: 0..<2 * .pi) // Random angle in radians
+    let randomRadius = sqrt(Float.random(in: 0...1)) * radius // Uniform distribution
+    
+    // Step 2: Calculate the point's position in local space (relative to the circle's center).
+    let localPoint = SIMD3<Float>(randomRadius * cos(angle), randomRadius * sin(angle), 0.5)
+    
+    // Step 3: Apply the circle's rotation to the point. This assumes `transform.rotation` is a simd_quatf.
+    let rotatedPoint = transform.rotation.act(localPoint)
+    
+    // Step 4: Scale the point if needed (optional, depending on your application's needs).
+    // This step is skipped in this example for simplicity, assuming the circle's scale is uniform and already considered.
+    
+    // Step 5: Translate the point by the circle's global position to get its position in global space.
+    let globalPoint = rotatedPoint + center
+    
+    return globalPoint
+}
+
 func generateToasterStartEndRotation() -> (Point3D, Point3D, simd_quatf) {
-    let centralPoint = Point3D(x:startPortal.position.x, y:startPortal.position.y, z:startPortal.position.z)
-    let range: Double = 0.5
+//    let centralPoint = Point3D(x:startPortal.position.x, y:startPortal.position.y, z:startPortal.position.z)
+    let range: Float = 0.5
     
 
-    let x = Double.random(in: (centralPoint.x - range)...(centralPoint.x + range))
-    let y = Double.random(in: (centralPoint.y - range)...(centralPoint.y + range))
-    let z = Double.random(in: (centralPoint.z - range)...(centralPoint.z + range))
-    
-    let start = Point3D(x:x, y:y, z:z)
-    let end = Point3D(x: endPortal.position.x, y: endPortal.position.y, z: endPortal.position.z)
+//    let x = Double.random(in: (centralPoint.x - range)...(centralPoint.x + range))
+//    let y = Double.random(in: (centralPoint.y - range)...(centralPoint.y + range))
+//    let z = Double.random(in: (centralPoint.z - range)...(centralPoint.z + range))
+
+    let start = Point3D(randomPointInCircle3D(center: startPortal.position, radius: range, transform: startPortal.transform))
+    let end = Point3D(randomPointInCircle3D(center: endPortal.position, radius: range, transform: endPortal.transform))
+//    let start = Point3D(x:x, y:y, z:z)
+//    let end = Point3D(x: endPortal.position.x, y: endPortal.position.y, z: endPortal.position.z)
     
     // Rotation correction
     // Calculate the rotation in radians (RealityKit uses radians, not degrees)
     let (rotationAxis, radians) = calculateRotationAngle(from: start.toSIMD3(), to: end.toSIMD3())
 
-    // Create a quaternion for the rotation around the y-axis
+    // Create a quaternion for the rotation
     let rotationQuaternion = simd_quatf(angle: radians, axis: rotationAxis)
     
     return (start, end, rotationQuaternion)
@@ -76,6 +104,11 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
     if endLocation != nil {
         end = Point3D(endLocation!)
     }
+    
+    // Adjust start and end to have the toasters appear like they're coming from in front of portals
+//    let offset = 0.2
+//    start.x += offset; start.y += offset; start.z += offset
+//    end.x -= offset; end.y -= offset; end.z -= offset
     
     // Randomize speed/duration of animation
     let mean_dur = ToasterSpawnParameters.average_anim_duration
@@ -108,7 +141,6 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
             for (index, material) in modelComponent.materials.enumerated() {
                 if var physMaterial = material as? PhysicallyBasedMaterial {
                     // Example modification: changing the base color
-//                    physMaterial.baseColor = PhysicallyBasedMaterial.BaseColor(tint: .green)
                     physMaterial.emissiveColor =  PhysicallyBasedMaterial.EmissiveColor(color: UIColor(screenSaverModel.toasterColor))
                     // Assign the modified material back
                     modelComponent.materials[index] = physMaterial

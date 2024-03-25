@@ -359,11 +359,8 @@ class ScreenSaverModel {
             for i in 1...toastMempoolLen {
                 let toaster = toasterTemplate.clone(recursive: true)
                 toaster.generateCollisionShapes(recursive: true)
-                toaster.name = "CToaster\(i)"
-                
-//                toaster.components[PhysicsBodyComponent.self] = PhysicsBodyComponent()
+                toaster.name = "CToaster\(i)"                
                 toaster.scale = SIMD3<Float>(x: toasterScale, y: toasterScale, z: toasterScale)
-                
                 toasters.append(toaster)
             }
             

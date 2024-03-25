@@ -96,7 +96,6 @@
 			children = (
 				2A4A06A32B833F3400512032 /* Extensions.swift */,
 				2A4A069A2B82F6CB00512032 /* screensavers */,
-				2A4A06992B82F6AA00512032 /* USDZs */,
 				2A4A06792B81B47A00512032 /* Flying_ToastersApp.swift */,
 				2A4A067B2B81B47A00512032 /* ContentView.swift */,
 				2A4A067D2B81B47A00512032 /* ImmersiveView.swift */,
@@ -133,13 +132,6 @@
 				2A4A068F2B81B47C00512032 /* Flying_ToastersTests.swift */,
 			);
 			path = "Flying ToastersTests";
-			sourceTree = "<group>";
-		};
-		2A4A06992B82F6AA00512032 /* USDZs */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = USDZs;
 			sourceTree = "<group>";
 		};
 		2A4A069A2B82F6CB00512032 /* screensavers */ = {

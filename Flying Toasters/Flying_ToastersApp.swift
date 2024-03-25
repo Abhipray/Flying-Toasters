@@ -10,7 +10,7 @@ import RealityKit
 import RealityKitContent
 
 @main
-struct Zone_OutApp: App {
+struct Flying_ToastersApp: App {
     @State private var screenSaverModel = ScreenSaverModel()
     
     init() {

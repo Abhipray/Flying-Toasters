@@ -30,11 +30,11 @@ def Xform "Root"
 
         def RealityKitComponent "RigidBody"
         {
-            float angularDamping = 1000
+            float angularDamping = 10000
             bool gravityEnabled = 0
             uniform token info:id = "RealityKit.RigidBody"
             bool isCCDEnabled = 1
-            float linearDamping = 1000
+            float linearDamping = 10000
             bool lockRotationX = 0
             bool lockRotationY = 0
             bool lockRotationZ = 0
@@ -55,9 +55,9 @@ def Xform "Root"
 
             def RealityKitStruct "material"
             {
-                double dynamicFriction = 0.1
-                double restitution = 0.9
-                double staticFriction = 0.1
+                double dynamicFriction = 0.5
+                double restitution = 0.1
+                double staticFriction = 0.5
             }
         }
 
@@ -75,7 +75,7 @@ def Xform "Root"
 
             def RealityKitStruct "Shape"
             {
-                float3 extent = (190, 77, 99)
+                float3 extent = (200, 90, 110)
                 float height = 66.70497
                 float radius = 90.02022
                 token shapeType = "Box"
