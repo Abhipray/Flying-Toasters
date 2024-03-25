@@ -230,10 +230,6 @@ class ScreenSaverModel {
         let world = Entity()
         world.components[WorldComponent.self] = .init()
         
-//        let environment = try! EnvironmentResource.load(named: "OuterSpace")
-//        world.components[ImageBasedLightComponent.self] = .init(source: .single(environment), intensityExponent: 6)
-//        world.components[ImageBasedLightReceiverComponent.self] = .init(imageBasedLight: world)
-        
         Task { @MainActor in
             let sky = try await getStarfieldEntity()
             world.addChild(sky)
