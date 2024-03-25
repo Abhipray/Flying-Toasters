@@ -69,18 +69,10 @@ func randomPointInCircle3D(center: SIMD3<Float>, radius: Float, transform: Trans
 }
 
 func generateToasterStartEndRotation() -> (Point3D, Point3D, simd_quatf) {
-//    let centralPoint = Point3D(x:startPortal.position.x, y:startPortal.position.y, z:startPortal.position.z)
     let range: Float = 0.5
-    
-
-//    let x = Double.random(in: (centralPoint.x - range)...(centralPoint.x + range))
-//    let y = Double.random(in: (centralPoint.y - range)...(centralPoint.y + range))
-//    let z = Double.random(in: (centralPoint.z - range)...(centralPoint.z + range))
 
     let start = Point3D(randomPointInCircle3D(center: startPortal.position, radius: range, transform: startPortal.transform))
     let end = Point3D(randomPointInCircle3D(center: endPortal.position, radius: range, transform: endPortal.transform))
-//    let start = Point3D(x:x, y:y, z:z)
-//    let end = Point3D(x: endPortal.position.x, y: endPortal.position.y, z: endPortal.position.z)
     
     // Rotation correction
     // Calculate the rotation in radians (RealityKit uses radians, not degrees)
@@ -105,11 +97,6 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
         end = Point3D(endLocation!)
     }
     
-    // Adjust start and end to have the toasters appear like they're coming from in front of portals
-//    let offset = 0.2
-//    start.x += offset; start.y += offset; start.z += offset
-//    end.x -= offset; end.y -= offset; end.z -= offset
-    
     // Randomize speed/duration of animation
     let mean_dur = ToasterSpawnParameters.average_anim_duration
     let range_dur = ToasterSpawnParameters.range_anim_duration
@@ -122,6 +109,7 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
         from: .init(scale: .init(repeating: scale),  rotation: rotationQuaternion, translation: simd_float(start.vector)),
         to: .init(scale: .init(repeating: scale), rotation: rotationQuaternion, translation: simd_float(end.vector)),
         duration: anim_duration,
+        isAdditive: false,
         bindTarget: .transform
     )
     
@@ -154,6 +142,7 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
     toaster.playAnimation(animation, transitionDuration: 1.0, startsPaused: false)
     toaster.setMaterialParameterValues(parameter: "saturation", value: .float(0.0))
     toaster.setMaterialParameterValues(parameter: "animate_texture", value: .bool(true))
+    toaster.components[HoverEffectComponent.self] = HoverEffectComponent()
     
     toasterAnimate(toaster, kind: .flapWings, shouldRepeat: true)
     
