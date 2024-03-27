@@ -63,7 +63,7 @@ func randomPointInCircle3D(center: SIMD3<Float>, radius: Float, transform: Trans
 }
 
 func generateToasterStartEndRotation() -> (simd_float3, simd_float3, simd_quatf) {
-    let range: Float = 0.5
+    let range: Float = 0.75
 
     let start = randomPointInCircle3D(center: startPortal.position, radius: range, transform: startPortal.transform)
     let end = randomPointInCircle3D(center: endPortal.position, radius: range, transform: endPortal.transform)

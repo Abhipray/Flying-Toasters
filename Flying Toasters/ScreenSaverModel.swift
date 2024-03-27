@@ -279,11 +279,11 @@ class ScreenSaverModel {
         portal.components[PortalComponent.self] = .init(target: world)
         portal.components[InputTargetComponent.self] = .init(allowedInputTypes: .all)
         portal.components[InputTargetComponent.self]?.isEnabled = true
-        portal.components[CollisionComponent.self] = CollisionComponent(shapes: [.generateBox(width: 2, height: 2, depth: 0.1)], mode: .trigger)
+        portal.components[CollisionComponent.self] = CollisionComponent(shapes: [.generateBox(width: 2, height: 2, depth: 0.5)], mode: .trigger)
         
         var component = GestureComponent(canDrag: true, pivotOnDrag: false, preserveOrientationOnPivotDrag: false, canScale: true, canRotate: true)
         component.scaleMaxMag = 100
-        component.scaleMinMag = 0.75
+        component.scaleMinMag = 0.8
         component.initialScaleXVal = portal.scale.x
         portal.components.set(component)
         

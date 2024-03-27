@@ -24,6 +24,8 @@ func rotationQuaternion(position: SIMD3<Float>) -> simd_quatf {
     return simd_quatf(angle: angle, axis: normalize(axis))
 }
 
+private var user_pos = simd_float3(0,0,0)
+
 struct ImmersiveView: View {
     @Environment(\.dismissWindow) var dismissWindow
     @Environment(ScreenSaverModel.self) var screenSaverModel
@@ -42,17 +44,16 @@ struct ImmersiveView: View {
                     }
                     let idx = Int.random(in: 0...toasterPhrashes.count-1)
                     let text = ModelEntity(mesh: .generateText(toasterPhrashes[idx],
-                                                               extrusionDepth: 4,
+                                                               extrusionDepth: 0.1,
                                                                font: .boldSystemFont(ofSize: 12)))
-                    text.model?.materials = [UnlitMaterial()]
+                    text.model?.materials = [UnlitMaterial(color:.magenta)]
                     text.name = "speech"
                     
                     let toasterHeight = value.entity.visualBounds(relativeTo: nil).extents.y * 100 + 5 // in cm
                     let toasterWidth = value.entity.visualBounds(relativeTo: nil).extents.x * 100/2 + 5 // in cm
                     text.position = [toasterWidth, toasterHeight, 0.0]
-                    text.look(at:simd_float3(0.0,0.0,0.0), from:text.position, relativeTo: nil)
+                    text.look(at:user_pos, from:text.position, relativeTo: nil)
                     value.entity.addChild(text)
-                    
                 }
             }
     }
@@ -96,7 +97,6 @@ struct ImmersiveView: View {
         .installGestures()
         .gesture(tap)
         .onReceive(timer) { _ in
-            
             let probFamily = 0.3
             let maxAllowedToSpan = 4
             let numBabies = 3
