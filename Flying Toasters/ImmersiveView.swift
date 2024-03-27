@@ -50,9 +50,9 @@ struct ImmersiveView: View {
                     let toasterHeight = value.entity.visualBounds(relativeTo: nil).extents.y * 100 + 5 // in cm
                     let toasterWidth = value.entity.visualBounds(relativeTo: nil).extents.x * 100/2 + 5 // in cm
                     text.position = [toasterWidth, toasterHeight, 0.0]
-                    print(text.position)
+                    text.look(at:simd_float3(0.0,0.0,0.0), from:text.position, relativeTo: nil)
                     value.entity.addChild(text)
-                    print(text.position)
+                    
                 }
             }
     }
