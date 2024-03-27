@@ -7,6 +7,7 @@ Extensions and utilities.
 
 import SwiftUI
 import RealityKit
+import ObjectiveC
 
 extension Entity {
     /// Property for getting or setting an entity's `modelComponent`.
@@ -27,6 +28,8 @@ extension Entity {
         return descendents
     }
 }
+
+private var fromToByAnimationKey: UInt8 = 0
 
 extension Entity {
     func setMaterialParameterValues(parameter: String, value: MaterialParameters.Value) {
@@ -72,6 +75,32 @@ extension Entity {
         }
         
         return nextParent.getParent(nameBeginsWith: name)
+    }
+    
+    /// Finds the top-level entity with a name that matches or starts with the given string in the entity's hierarchy.
+    /// - Parameter nameStart: The string to match the beginning of the entity's name.
+    /// - Returns: The top-level entity with a matching name if found; otherwise, nil.
+    func findTopLevelEntity(named nameStart: String) -> Entity? {
+        // Start with the current entity.
+        var currentEntity: Entity? = self
+        
+        // Traverse up the hierarchy.
+        while let parent = currentEntity {
+            if parent.name.starts(with: nameStart) {
+                // If the parent entity's name matches the criteria, return it.
+                return parent
+            }
+            currentEntity = parent.parent
+        }
+        
+        // If no matching entity is found in the hierarchy above the current entity,
+        // check if the current entity itself matches the criteria.
+        if self.name.starts(with: nameStart) {
+            return self
+        }
+        
+        // If the loop exits without finding a matching entity, return nil.
+        return nil
     }
     
     func getParent(withName name: String) -> Entity? {
@@ -123,6 +152,17 @@ extension Entity {
     var forward: SIMD3<Float> {
         forward(relativeTo: nil)
     }
+    
+    var fromToByAnimation: FromToByAnimation<Transform>? {
+        get {
+            objc_getAssociatedObject(self, &fromToByAnimationKey) as? FromToByAnimation<Transform>
+        }
+        set {
+            objc_setAssociatedObject(self, &fromToByAnimationKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    
 }
 
 extension Comparable {

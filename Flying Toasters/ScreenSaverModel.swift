@@ -13,11 +13,11 @@ import GameplayKit
 import AVFoundation
 import Combine
 
-func calculateRotationAngle(from startPoint: SIMD3<Double>, to endPoint: SIMD3<Double>) -> (axis: SIMD3<Float>, angle: Float) {
+func calculateRotationAngle(from startPoint: SIMD3<Float>, to endPoint: SIMD3<Float>) -> (axis: SIMD3<Float>, angle: Float) {
     let directionVector = endPoint - startPoint
     let normalizedDirection = normalize(directionVector)
     
-    let forwardVector = SIMD3<Double>(0, 0, 1)
+    let forwardVector = SIMD3<Float>(0, 0, 1)
     let dotProduct = dot(normalize(forwardVector), normalizedDirection)
     let angleRadians = acos(dotProduct)
 
@@ -239,8 +239,8 @@ class ScreenSaverModel {
             ) else {
                 fatalError("Error loading Moon from Reality Composer Pro project.")
             }
-            moon.position = simd_float3(toasterEndPoint)
-            moon.position -= 0.2
+            moon.position = toasterEndPoint
+            moon.position -= 0.3
             moon.scale = simd_float3(repeating: 0.75)
             
             world.addChild(moon)
@@ -251,8 +251,8 @@ class ScreenSaverModel {
             ) else {
                 fatalError("Error loading Moon from Reality Composer Pro project.")
             }
-            sun.position = simd_float(.init(x:toasterSrcPoint.x, y:toasterSrcPoint.y, z:toasterSrcPoint.z))
-            sun.position += 0.2
+            sun.position = toasterSrcPoint
+            sun.position += 0.3
             sun.scale = simd_float3(repeating: 1.0)
             world.addChild(sun)
         }
@@ -267,7 +267,7 @@ class ScreenSaverModel {
         portal.components[PortalComponent.self] = .init(target: world)
         portal.components[InputTargetComponent.self] = .init(allowedInputTypes: .all)
         portal.components[InputTargetComponent.self]?.isEnabled = true
-        portal.components[CollisionComponent.self] = CollisionComponent(shapes: [.generateBox(width: 2, height: 2, depth: 0.1)], isStatic: false)
+        portal.components[CollisionComponent.self] = CollisionComponent(shapes: [.generateBox(width: 2, height: 2, depth: 0.1)], mode: .trigger)
         
         var component = GestureComponent(canDrag: true, pivotOnDrag: true, preserveOrientationOnPivotDrag: false, canScale: true, canRotate: true)
         component.scaleMaxMag = 100
@@ -299,37 +299,25 @@ class ScreenSaverModel {
             portalWorld = makeWorld()
             startPortal = makePortal(world: portalWorld)
         }
-        let translate = 0.0
-        let start_pos = simd_float(.init(x:toasterSrcPoint.x-translate, y:toasterSrcPoint.y-translate, z:toasterSrcPoint.z-translate))
-        startPortal.position = start_pos
         
-        let end = simd_float(.init(
-            x: toasterSrcPoint.x + ToasterSpawnParameters.deltaX,
-            y: toasterSrcPoint.y + ToasterSpawnParameters.deltaY,
-            z: toasterSrcPoint.z + ToasterSpawnParameters.deltaZ
-        ))
-        let end_double = simd_double(.init(
-            x: toasterSrcPoint.x + ToasterSpawnParameters.deltaX,
-            y: toasterSrcPoint.y + ToasterSpawnParameters.deltaY,
-            z: toasterSrcPoint.z + ToasterSpawnParameters.deltaZ
-        ))
-        
-        let start = Point3D(x:toasterSrcPoint.x, y:toasterSrcPoint.y, z:toasterSrcPoint.z)
-        let (rotationAxis, radians) = calculateRotationAngle(from:start.toSIMD3(), to:end_double)
+        let end = toasterEndPoint
+        let start = toasterSrcPoint
+        let (rotationAxis, radians) = calculateRotationAngle(from:start, to:end)
 
         // Create a quaternion for the rotation around the y-axis
         // Convert rotation axis and angle to Float
-        
-        let rotationQuaternion =  simd_quatf(angle: radians, axis: rotationAxis)
+        startPortal.position = start
+        var rotationQuaternion =  simd_quatf(angle: radians, axis: rotationAxis)
         startPortal.transform.rotation = rotationQuaternion
-        startPortal.scale = SIMD3<Float>(x: 1.0, y: 1.0, z: 1.0)
+        startPortal.transform.scale = SIMD3<Float>(x: 1.0, y: 1.0, z: 1.0)
     
         if init_entities {
             endPortal = makePortal(world: portalWorld)
         }
         endPortal.position = end
-        endPortal.look(at:-start_pos, from: end, relativeTo: nil)
         endPortal.scale = SIMD3<Float>(x: 1.0, y: 1.0, z: 1.0)
+        rotationQuaternion =  simd_quatf(angle: radians + Float.pi, axis: rotationAxis)
+        endPortal.transform.rotation = rotationQuaternion
     }
     
     /// Preload assets when the app launches to avoid pop-in during the game.

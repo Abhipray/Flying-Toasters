@@ -22,23 +22,17 @@ var endPortal = Entity()
 var portalWorld = Entity()
 var poemAttachment = Entity()
 var toastNumber = 0
-var toasterSrcPoint = (x: 4.0, y: 4.0, z: -6.0)
+var toasterSrcPoint = simd_float3(x: 4.0, y: 3.0, z: -8.0)
+var toasterEndPoint = simd_float3(x: -3.0, y: 0.5, z: -1.0)
 
 /// Toaster spawn parameters (in meters).
 struct ToasterSpawnParameters {
-    static var deltaX = -12.0*0.5
-    static var deltaY = -9.0*0.5
-    static var deltaZ = 12.1*0.5
-    
     static var average_anim_duration = 9.0
     static var range_anim_duration = 3.0 // +/- average
+    
+    static var average_speed : Float = 2.0
+    static var range_speed : Float = 1.0
 }
-
-var toasterEndPoint = simd_double(.init(
-    x: toasterSrcPoint.x + ToasterSpawnParameters.deltaX,
-    y: toasterSrcPoint.y + ToasterSpawnParameters.deltaY,
-    z: toasterSrcPoint.z + ToasterSpawnParameters.deltaZ
-))
 
 var toasterPortal : Entity? = nil
 
@@ -54,7 +48,7 @@ func randomPointInCircle3D(center: SIMD3<Float>, radius: Float, transform: Trans
     let randomRadius = sqrt(Float.random(in: 0...1)) * radius // Uniform distribution
     
     // Step 2: Calculate the point's position in local space (relative to the circle's center).
-    let localPoint = SIMD3<Float>(randomRadius * cos(angle), randomRadius * sin(angle), 0.5)
+    let localPoint = SIMD3<Float>(randomRadius * cos(angle), randomRadius * sin(angle), 0.3)
     
     // Step 3: Apply the circle's rotation to the point. This assumes `transform.rotation` is a simd_quatf.
     let rotatedPoint = transform.rotation.act(localPoint)
@@ -68,21 +62,52 @@ func randomPointInCircle3D(center: SIMD3<Float>, radius: Float, transform: Trans
     return globalPoint
 }
 
-func generateToasterStartEndRotation() -> (Point3D, Point3D, simd_quatf) {
+func generateToasterStartEndRotation() -> (simd_float3, simd_float3, simd_quatf) {
     let range: Float = 0.5
 
-    let start = Point3D(randomPointInCircle3D(center: startPortal.position, radius: range, transform: startPortal.transform))
-    let end = Point3D(randomPointInCircle3D(center: endPortal.position, radius: range, transform: endPortal.transform))
+    let start = randomPointInCircle3D(center: startPortal.position, radius: range, transform: startPortal.transform)
+    let end = randomPointInCircle3D(center: endPortal.position, radius: range, transform: endPortal.transform)
     
     // Rotation correction
     // Calculate the rotation in radians (RealityKit uses radians, not degrees)
-    let (rotationAxis, radians) = calculateRotationAngle(from: start.toSIMD3(), to: end.toSIMD3())
+    let (rotationAxis, radians) = calculateRotationAngle(from: start, to: end)
 
     // Create a quaternion for the rotation
     let rotationQuaternion = simd_quatf(angle: radians, axis: rotationAxis)
     
     return (start, end, rotationQuaternion)
 }
+
+var velocityResetWorkItems = [String: DispatchWorkItem]()
+var collidingToasters: [Entity] = [] // Assuming toasters is defined here
+
+
+//@MainActor
+//func handleCollisionStart(for event: CollisionEvents.Began) async throws {
+//    // Unused
+//        let toasterA = event.entityA.findTopLevelEntity(named: "CToaster")
+//        let toasterB = event.entityB.findTopLevelEntity(named: "CToaster")
+//        print("--- Collision ---", event.entityA.name, event.entityB.name)
+//    
+//        // Remove toaster from parent if collision with endPortal
+//}
+
+func randomFloat(in range: ClosedRange<Float>) -> Float {
+    return Float.random(in: range)
+}
+
+// Function to create a random cubic Bezier curve
+func createRandomCubicBezier() -> (controlPoint1: SIMD2<Float>, controlPoint2: SIMD2<Float>) {
+    // Define the range for the control point coordinates
+    let range : ClosedRange<Float> = 0.0...1.0
+    
+    // Generate random control points
+    let controlPoint1 = SIMD2<Float>(randomFloat(in: range), randomFloat(in: range))
+    let controlPoint2 = SIMD2<Float>(randomFloat(in: range), randomFloat(in: range))
+    
+    return (controlPoint1, controlPoint2)
+}
+
 
 /// Creates a toaster and places it in the space.
 @MainActor
@@ -91,10 +116,10 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
     
     var (start, end, rotationQuaternion) = generateToasterStartEndRotation()
     if startLocation != nil {
-        start = Point3D(startLocation!)
+        start = startLocation!
     }
     if endLocation != nil {
-        end = Point3D(endLocation!)
+        end = endLocation!
     }
     
     // Randomize speed/duration of animation
@@ -102,13 +127,14 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
     let range_dur = ToasterSpawnParameters.range_anim_duration
     let anim_duration = Double.random(in: (mean_dur-range_dur)...(mean_dur+range_dur))
     
-    
+    let (controlPoint1, controlPoint2) = createRandomCubicBezier()
     // Generate animation
     let line = FromToByAnimation<Transform>(
         name: "line",
-        from: .init(scale: .init(repeating: scale),  rotation: rotationQuaternion, translation: simd_float(start.vector)),
-        to: .init(scale: .init(repeating: scale), rotation: rotationQuaternion, translation: simd_float(end.vector)),
+        from: .init(scale: .init(repeating: scale),  rotation: rotationQuaternion, translation: start),
+        to: .init(scale: .init(repeating: scale), rotation: rotationQuaternion, translation: end),
         duration: anim_duration,
+        timing: .cubicBezier(controlPoint1: controlPoint1, controlPoint2: controlPoint2),
         isAdditive: false,
         bindTarget: .transform
     )
@@ -119,7 +145,7 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
     let toaster = toasters[toastIndex % toasters.count];
     toastIndex += 1;
     
-    toaster.position = simd_float(start.vector + .init(x: 0, y: 0, z: -0.0))
+    toaster.position = start
     toaster.transform.rotation = rotationQuaternion
 
     if let flyingToasterEntity = toaster.findEntity(named: "Flying_Toaster") as? ModelEntity {
@@ -167,10 +193,10 @@ func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String, startLoca
     
     var (start, end, _) = generateToasterStartEndRotation()
     if startLocation != nil {
-        start = Point3D(startLocation!)
+        start = startLocation!
     }
     if endLocation != nil {
-        end = Point3D(endLocation!)
+        end = endLocation!
     }
     let rotationQuaternion = simd_quatf(angle: Float.pi/4, axis: [1, 1, 0])
     
@@ -213,15 +239,15 @@ func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String, startLoca
     
     let toastScale = toastScales[toastType]!
     toast.scale = SIMD3<Float>(repeating: toastScale)
-    toast.position = simd_float(start.vector + .init(x: 0, y: 0, z: -0.0))
+    toast.position = start + simd_float3(x: 0, y: 0, z: -0.0)
     toast.transform.rotation = rotationQuaternion
     toast.look(at:endPortal.position, from:startPortal.position, relativeTo: nil)
     
     // Generate animation
     let line = FromToByAnimation<Transform>(
         name: "line",
-        from: .init(scale: .init(repeating: toastScale),  rotation: rotationQuaternion, translation: simd_float(start.vector)),
-        to: .init(scale: .init(repeating: toastScale),  rotation: rotationQuaternion, translation: simd_float(end.vector)),
+        from: .init(scale: .init(repeating: toastScale),  rotation: rotationQuaternion, translation: start),
+        to: .init(scale: .init(repeating: toastScale),  rotation: rotationQuaternion, translation: end),
         duration: anim_duration,
         bindTarget: .transform
     )
