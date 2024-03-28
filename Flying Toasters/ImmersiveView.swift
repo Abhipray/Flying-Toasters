@@ -8,6 +8,8 @@
 import SwiftUI
 import RealityKit
 import RealityKitContent
+import ARKit
+import Combine
 
 func rotationQuaternion(position: SIMD3<Float>) -> simd_quatf {
     // Target direction vector from position to the origin
@@ -26,11 +28,34 @@ func rotationQuaternion(position: SIMD3<Float>) -> simd_quatf {
 
 private var user_pos = simd_float3(0,0,0)
 
+@Observable class VisionProPose {
+    let session = ARKitSession()
+    let worldTracking = WorldTrackingProvider()
+    
+    func runArSession() async {
+        Task {
+            try? await session.run([worldTracking])
+        }
+    }
+
+    func getTransform() async -> simd_float4x4? {
+        guard let deviceAnchor = worldTracking.queryDeviceAnchor(atTimestamp: 1)
+        else { return nil }
+    
+        let transform = deviceAnchor.originFromAnchorTransform
+        return transform
+    }
+}
+
 struct ImmersiveView: View {
     @Environment(\.dismissWindow) var dismissWindow
     @Environment(ScreenSaverModel.self) var screenSaverModel
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var showImmersiveSpace = true
+    
+    @State var sceneUpdateSubscription : Cancellable? = nil
+    let session = ARKitSession()
+    let worldInfo = WorldTrackingProvider()
     
     var tap: some Gesture {
         TapGesture()
@@ -43,23 +68,44 @@ struct ImmersiveView: View {
                         return
                     }
                     let idx = Int.random(in: 0...toasterPhrashes.count-1)
-                    let text = ModelEntity(mesh: .generateText(toasterPhrashes[idx],
-                                                               extrusionDepth: 0.1,
-                                                               font: .boldSystemFont(ofSize: 12)))
-                    text.model?.materials = [UnlitMaterial(color:.magenta)]
-                    text.name = "speech"
                     
-                    let toasterHeight = value.entity.visualBounds(relativeTo: nil).extents.y * 100 + 5 // in cm
-                    let toasterWidth = value.entity.visualBounds(relativeTo: nil).extents.x * 100/2 + 5 // in cm
-                    text.position = [toasterWidth, toasterHeight, 0.0]
-                    text.look(at:user_pos, from:text.position, relativeTo: nil)
-                    value.entity.addChild(text)
+                    
+                    let text = ModelEntity(mesh: .generateText(toasterPhrashes[idx],
+                                                               extrusionDepth: 0.0,
+                                                               font: .boldSystemFont(ofSize: 0.1)))
+                    text.model?.materials = [UnlitMaterial(color:.white)]
+                    let textHeight = text.visualBounds(relativeTo: nil).extents.y
+                    let textWidth = text.visualBounds(relativeTo: nil).extents.x
+
+                    // Create a plane for the bubble background. Using a plane as an approximation.
+                    let bubbleMesh = MeshResource.generatePlane(width: textWidth+0.1, height: textHeight+0.1, cornerRadius: 0.05)
+                    let bubbleMaterial = SimpleMaterial(color: .black, isMetallic: false)
+                    let bubbleEntity = ModelEntity(mesh: bubbleMesh, materials: [bubbleMaterial])
+                    bubbleEntity.name = "speech"
+
+                    // Position the bubble behind and centered on the text
+                    text.position = SIMD3<Float>(-textWidth/2, -textHeight/2, 0.01) // Slightly behind the text
+
+                    // Add the text entity as a child of the bubble entity
+                    bubbleEntity.addChild(text)
+                    
+
+                    let toasterHeight = toaster.visualBounds(relativeTo: nil).extents.y
+                    let toasterWidth = toaster.visualBounds(relativeTo: nil).extents.x
+                    bubbleEntity.position = toaster.position
+                    bubbleEntity.position.y += toasterHeight + 0.1
+                    bubbleEntity.position.x -= toasterWidth/2
+                    let direction = normalize(user_pos - bubbleEntity.position)
+                    let rotationQuaternion = simd_quatf(from: [0, 0, 1], to: direction)
+                    bubbleEntity.orientation = rotationQuaternion
+                    toaster.addChild(bubbleEntity, preservingWorldTransform: true)
                 }
             }
     }
     
     var body: some View {
         RealityView { content, attachments in
+            try? await session.run([worldInfo])
             content.add(portalWorld)
             content.add(endPortal)
             content.add(startPortal)
@@ -69,6 +115,17 @@ struct ImmersiveView: View {
                 earthAttachment.position = [0, -1.5, 0]
                 startPortal.addChild(earthAttachment)
             }
+            
+            sceneUpdateSubscription =
+                content.subscribe(to: SceneEvents.Update.self) {event in
+                    guard let pose =
+                       worldInfo.queryDeviceAnchor(atTimestamp: CACurrentMediaTime())
+                    else { return }
+                    let toDeviceTransform = pose.originFromAnchorTransform
+                    let devicePosition = toDeviceTransform.translation
+                    user_pos = devicePosition
+                    print("User pos", user_pos)
+                } as? any Cancellable
             
         } attachments: {
             Attachment(id: "h1") {
