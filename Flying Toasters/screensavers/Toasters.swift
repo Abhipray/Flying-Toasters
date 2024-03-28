@@ -111,7 +111,7 @@ func createRandomCubicBezier() -> (controlPoint1: SIMD2<Float>, controlPoint2: S
 
 /// Creates a toaster and places it in the space.
 @MainActor
-func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3?, endLocation: simd_float3?, scale: Float) async throws -> Entity {
+func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3?, endLocation: simd_float3?, scale: Float, timing: AnimationTimingFunction?) async throws -> (Entity, AnimationTimingFunction?) {
     print("Spawning a new toaster")
     
     var (start, end, rotationQuaternion) = generateToasterStartEndRotation()
@@ -128,13 +128,19 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
     let anim_duration = Double.random(in: (mean_dur-range_dur)...(mean_dur+range_dur))
     
     let (controlPoint1, controlPoint2) = createRandomCubicBezier()
+    let animationTiming : AnimationTimingFunction
+    if timing == nil {
+        animationTiming = .cubicBezier(controlPoint1: controlPoint1, controlPoint2: controlPoint2)
+    } else {
+        animationTiming = timing!
+    }
     // Generate animation
     let line = FromToByAnimation<Transform>(
         name: "line",
         from: .init(scale: .init(repeating: scale),  rotation: rotationQuaternion, translation: start),
         to: .init(scale: .init(repeating: scale), rotation: rotationQuaternion, translation: end),
         duration: anim_duration,
-        timing: .cubicBezier(controlPoint1: controlPoint1, controlPoint2: controlPoint2),
+        timing: animationTiming,
         isAdditive: false,
         bindTarget: .transform
     )
@@ -184,7 +190,7 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
     }
     
     
-    return toaster
+    return (toaster, timing)
 }
 
 @MainActor
