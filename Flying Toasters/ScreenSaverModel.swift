@@ -280,6 +280,7 @@ class ScreenSaverModel {
         portal.components[InputTargetComponent.self] = .init(allowedInputTypes: .all)
         portal.components[InputTargetComponent.self]?.isEnabled = true
         portal.components[CollisionComponent.self] = CollisionComponent(shapes: [.generateBox(width: 2, height: 2, depth: 0.5)], mode: .trigger)
+        portal.components.set(HoverEffectComponent())
         
         var component = GestureComponent(canDrag: true, pivotOnDrag: false, preserveOrientationOnPivotDrag: false, canScale: true, canRotate: true)
         component.scaleMaxMag = 100
