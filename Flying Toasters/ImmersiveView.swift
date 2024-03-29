@@ -72,13 +72,13 @@ struct ImmersiveView: View {
                     
                     let text = ModelEntity(mesh: .generateText(toasterPhrashes[idx],
                                                                extrusionDepth: 0.0,
-                                                               font: .boldSystemFont(ofSize: 0.1)))
+                                                               font: .monospacedSystemFont(ofSize: 0.05, weight: .light)))
                     text.model?.materials = [UnlitMaterial(color:.white)]
                     let textHeight = text.visualBounds(relativeTo: nil).extents.y
                     let textWidth = text.visualBounds(relativeTo: nil).extents.x
 
                     // Create a plane for the bubble background. Using a plane as an approximation.
-                    let bubbleMesh = MeshResource.generatePlane(width: textWidth+0.1, height: textHeight+0.1, cornerRadius: 0.05)
+                    let bubbleMesh = MeshResource.generatePlane(width: textWidth+0.1, height: textHeight+0.1, cornerRadius: 0.1)
                     let bubbleMaterial = SimpleMaterial(color: .black, isMetallic: false)
                     let bubbleEntity = ModelEntity(mesh: bubbleMesh, materials: [bubbleMaterial])
                     bubbleEntity.name = "speech"
@@ -89,11 +89,10 @@ struct ImmersiveView: View {
                     // Add the text entity as a child of the bubble entity
                     bubbleEntity.addChild(text)
                     
-
                     let toasterHeight = toaster.visualBounds(relativeTo: nil).extents.y
                     let toasterWidth = toaster.visualBounds(relativeTo: nil).extents.x
                     bubbleEntity.position = toaster.position
-                    bubbleEntity.position.y += toasterHeight + 0.1
+                    bubbleEntity.position.y += toasterHeight + 0.05
                     bubbleEntity.position.x -= toasterWidth/2
                     let direction = normalize(user_pos - bubbleEntity.position)
                     let rotationQuaternion = simd_quatf(from: [0, 0, 1], to: direction)

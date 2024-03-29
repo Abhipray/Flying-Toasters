@@ -329,7 +329,7 @@ class ScreenSaverModel {
             endPortal = makePortal(world: portalWorld)
         }
         endPortal.position = end
-        endPortal.scale = SIMD3<Float>(x: 1.0, y: 1.0, z: 1.0)
+        endPortal.scale = SIMD3<Float>(repeating: 1.5)
         rotationQuaternion =  simd_quatf(angle: radians + Float.pi, axis: rotationAxis)
         endPortal.transform.rotation = rotationQuaternion
     }

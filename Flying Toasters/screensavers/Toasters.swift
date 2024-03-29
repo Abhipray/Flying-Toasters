@@ -146,7 +146,7 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
         bindTarget: .transform
     )
     
-    let conclusion_time = 3.0
+    let conclusion_time = 2.0
     // Lurch into portal with scaling down
     // find the point on the surface of the sphere that is closest to end
     let direction = normalize(end - moonEntity.position)
@@ -154,7 +154,7 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
     let targetPoint = moonEntity.position + normalize(direction) * moon_radius
     let (rotationAxis, radians) = calculateRotationAngle(from:end, to:targetPoint)
     let final_rotation = simd_quatf(angle: radians, axis: rotationAxis)
-    let final_transform = Transform(scale: .init(repeating: scale*0.1), rotation: final_rotation, translation: targetPoint)
+    let final_transform = Transform(scale: .init(repeating: scale*0.02), rotation: final_rotation, translation: targetPoint)
     
     // Approach towards the Moon in the other world
     let conclusion_line = FromToByAnimation<Transform>(
@@ -288,7 +288,7 @@ func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String, startLoca
     
     let toastScale = toastScales[toastType]!
     toast.scale = SIMD3<Float>(repeating: toastScale)
-    toast.position = start + simd_float3(x: 0, y: 0, z: -0.0)
+    toast.position = start
     toast.transform.rotation = rotationQuaternion
     toast.look(at:endPortal.position, from:startPortal.position, relativeTo: nil)
     
