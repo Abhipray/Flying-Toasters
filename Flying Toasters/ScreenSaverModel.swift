@@ -245,6 +245,7 @@ class ScreenSaverModel {
         Task { @MainActor in
             let sky = try await getStarfieldEntity()
             world.addChild(sky)
+            
             guard let moon = await loadFromRealityComposerPro(
                 named: "Moon",
                 fromSceneNamed: "flying_toasters"
@@ -254,7 +255,7 @@ class ScreenSaverModel {
             moon.position = toasterEndPoint
             moon.position -= 0.3
             moon.scale = simd_float3(repeating: 0.75)
-            
+            moonEntity = moon
             world.addChild(moon)
             
             guard let sun = await loadFromRealityComposerPro(

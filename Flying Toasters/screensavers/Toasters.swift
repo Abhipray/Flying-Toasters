@@ -21,6 +21,7 @@ var startPortal = Entity()
 var endPortal = Entity()
 var portalWorld = Entity()
 var poemAttachment = Entity()
+var moonEntity = Entity()
 var toastNumber = 0
 var toasterSrcPoint = simd_float3(x: 4.0, y: 3.0, z: -8.0)
 var toasterEndPoint = simd_float3(x: -3.0, y: 0.5, z: -1.0)
@@ -145,13 +146,46 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
         bindTarget: .transform
     )
     
-    let animation = try! AnimationResource
+    let conclusion_time = 5.0
+    // Lurch into portal with scaling down
+    let forwardVector = SIMD3<Float>(0, 0, 1) // Assume forward along positive Z-axis
+    let rotatedVector = rotationQuaternion.act(forwardVector) * 3.0
+    let targetPoint = moonEntity.position
+    let (rotationAxis, radians) = calculateRotationAngle(from:end, to:targetPoint)
+    let final_rotation = simd_quatf(angle: radians, axis: rotationAxis)
+    let conclusion_line = FromToByAnimation<Transform>(
+        name: "line2",
+        to: .init(scale: .init(repeating: 0.0005), rotation: final_rotation, translation: targetPoint),
+        duration: conclusion_time,
+        isAdditive: false,
+        bindTarget: .transform
+    )
+    
+    
+    // Orbit moon animation
+//    let orbit = OrbitAnimation(name: "orbit",
+//        duration: 10.0,
+//        axis: SIMD3<Float>(x: 1.0, y: 0.0, z: 0.0),
+//                               startTransform: Transform(scale: simd_float3(repeating: scale*0.5),
+//        rotation: simd_quatf(ix: 10, iy: 20, iz: 20, r: 100),
+//        translation: simd_float3(11, 2, 3)),
+//        spinClockwise: false,
+//        orientToPath: true,
+//        rotationCount: 100.0,
+//        bindTarget: nil)
+    
+    
+    let animation_first = try! AnimationResource
         .generate(with: line)
+    let animation_second = try! AnimationResource
+        .generate(with: conclusion_line)
+    let animation_sequence = try! AnimationResource.sequence(with: [animation_first, animation_second])
     
     let toaster = toasters[toastIndex % toasters.count];
     toastIndex += 1;
     
-    toaster.position = start
+    // Initial toaster configuration
+    toaster.position = toasterSrcPoint
     toaster.transform.rotation = rotationQuaternion
 
     if let flyingToasterEntity = toaster.findEntity(named: "Flying_Toaster") as? ModelEntity {
@@ -171,7 +205,7 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
         }
     }
 
-    toaster.playAnimation(animation, transitionDuration: 1.0, startsPaused: false)
+    toaster.playAnimation(animation_sequence, transitionDuration: 0.5, startsPaused: false)
     toaster.setMaterialParameterValues(parameter: "saturation", value: .float(0.0))
     toaster.setMaterialParameterValues(parameter: "animate_texture", value: .bool(true))
     toaster.components[HoverEffectComponent.self] = HoverEffectComponent()
@@ -180,8 +214,14 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
     
     spaceOrigin.addChild(toaster)
     
-    // Schedule the removal of the entity after the animation completes
     DispatchQueue.main.asyncAfter(deadline: .now() + anim_duration) { [weak toaster] in
+        // Remove from main world and put in second world
+        toaster?.removeFromParent()
+        portalWorld.addChild(toaster!, preservingWorldTransform: true)
+    }
+    
+    // Schedule the removal of the entity after the second animation completes
+    DispatchQueue.main.asyncAfter(deadline: .now() + anim_duration + conclusion_time) { [weak toaster] in
         if let childToRemove = toaster?.children.first(where: { $0.name == "speech" }) {
             childToRemove.removeFromParent()
         }
