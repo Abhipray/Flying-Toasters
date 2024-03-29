@@ -28,8 +28,8 @@ var toasterEndPoint = simd_float3(x: -3.0, y: 0.5, z: -1.0)
 
 /// Toaster spawn parameters (in meters).
 struct ToasterSpawnParameters {
-    static var average_anim_duration = 9.0
-    static var range_anim_duration = 3.0 // +/- average
+    static var average_anim_duration = 10.0
+    static var range_anim_duration = 4.0 // +/- average
     
     static var average_speed : Float = 2.0
     static var range_speed : Float = 1.0
@@ -146,40 +146,43 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
         bindTarget: .transform
     )
     
-    let conclusion_time = 5.0
+    let conclusion_time = 3.0
     // Lurch into portal with scaling down
-    let forwardVector = SIMD3<Float>(0, 0, 1) // Assume forward along positive Z-axis
-    let rotatedVector = rotationQuaternion.act(forwardVector) * 3.0
-    let targetPoint = moonEntity.position
+    // find the point on the surface of the sphere that is closest to end
+    let direction = normalize(end - moonEntity.position)
+    let moon_radius = moonEntity.visualBounds(relativeTo: nil).extents.x
+    let targetPoint = moonEntity.position + normalize(direction) * moon_radius
     let (rotationAxis, radians) = calculateRotationAngle(from:end, to:targetPoint)
     let final_rotation = simd_quatf(angle: radians, axis: rotationAxis)
+    let final_transform = Transform(scale: .init(repeating: scale*0.1), rotation: final_rotation, translation: targetPoint)
+    
+    // Approach towards the Moon in the other world
     let conclusion_line = FromToByAnimation<Transform>(
         name: "line2",
-        to: .init(scale: .init(repeating: 0.0005), rotation: final_rotation, translation: targetPoint),
+        to: final_transform ,
         duration: conclusion_time,
         isAdditive: false,
         bindTarget: .transform
     )
     
-    
     // Orbit moon animation
-//    let orbit = OrbitAnimation(name: "orbit",
-//        duration: 10.0,
-//        axis: SIMD3<Float>(x: 1.0, y: 0.0, z: 0.0),
-//                               startTransform: Transform(scale: simd_float3(repeating: scale*0.5),
-//        rotation: simd_quatf(ix: 10, iy: 20, iz: 20, r: 100),
-//        translation: simd_float3(11, 2, 3)),
-//        spinClockwise: false,
-//        orientToPath: true,
-//        rotationCount: 100.0,
-//        bindTarget: nil)
+    let orbit_time = 4.0
+    let orbit = OrbitAnimation(name: "orbit",
+        duration: orbit_time,
+        axis: moonEntity.position,
+        startTransform: final_transform,
+        orientToPath: true,
+        bindTarget: .transform,
+        repeatMode: .repeat)
     
     
     let animation_first = try! AnimationResource
         .generate(with: line)
     let animation_second = try! AnimationResource
         .generate(with: conclusion_line)
-    let animation_sequence = try! AnimationResource.sequence(with: [animation_first, animation_second])
+    let animation_third = try! AnimationResource
+        .generate(with: orbit)
+    let animation_sequence = try! AnimationResource.sequence(with: [animation_first, animation_second, animation_third])
     
     let toaster = toasters[toastIndex % toasters.count];
     toastIndex += 1;
@@ -221,7 +224,7 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
     }
     
     // Schedule the removal of the entity after the second animation completes
-    DispatchQueue.main.asyncAfter(deadline: .now() + anim_duration + conclusion_time) { [weak toaster] in
+    DispatchQueue.main.asyncAfter(deadline: .now() + anim_duration + conclusion_time + orbit_time) { [weak toaster] in
         if let childToRemove = toaster?.children.first(where: { $0.name == "speech" }) {
             childToRemove.removeFromParent()
         }
