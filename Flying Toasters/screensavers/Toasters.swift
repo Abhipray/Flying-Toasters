@@ -208,7 +208,7 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
         }
     }
 
-    toaster.playAnimation(animation_sequence, transitionDuration: 0.5, startsPaused: false)
+    toaster.playAnimation(animation_sequence, transitionDuration: 0.1, startsPaused: false)
     toaster.setMaterialParameterValues(parameter: "saturation", value: .float(0.0))
     toaster.setMaterialParameterValues(parameter: "animate_texture", value: .bool(true))
     toaster.components[HoverEffectComponent.self] = HoverEffectComponent()
