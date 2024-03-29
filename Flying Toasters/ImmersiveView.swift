@@ -123,7 +123,6 @@ struct ImmersiveView: View {
                     let toDeviceTransform = pose.originFromAnchorTransform
                     let devicePosition = toDeviceTransform.translation
                     user_pos = devicePosition
-                    print("User pos", user_pos)
                 } as? any Cancellable
             
         } attachments: {
