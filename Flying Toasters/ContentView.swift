@@ -187,7 +187,6 @@ struct SettingsView: View {
     let hoursRange = Array(0...23)
     let minutesAndSecondsRange = Array(0...59)
 
-    
     var body: some View {
         @Bindable var screenSaverModel = screenSaverModel
         NavigationView {
@@ -251,8 +250,12 @@ struct SettingsView: View {
                     }
                     .help("Enable or disable background music for the screensaver.")
                     
-                    ColorPicker("Toaster Color", selection: $screenSaverModel.toasterColor)
+                    ColorPicker("Toaster Color", selection: $screenSaverModel.toasterColor).help("Pick a color for the toasters")
                     
+                    Toggle(isOn: $screenSaverModel.ghostMode) {
+                        Text("Make Toasters Ghosts")
+                    }
+                    .help("Allow toasters to pass through each other")
                 }
                 
             }
@@ -273,13 +276,11 @@ struct SettingsView: View {
                     .clipShape(Circle())
                 }
             }
-            .padding()
         }
     }
 }
-    
 
 
 #Preview(windowStyle: .automatic) {
-    ContentView()
+    SettingsView()
 }

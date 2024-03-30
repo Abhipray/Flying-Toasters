@@ -221,6 +221,14 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
     toaster.setMaterialParameterValues(parameter: "animate_texture", value: .bool(true))
     toaster.components[HoverEffectComponent.self] = HoverEffectComponent()
     
+
+    if (screenSaverModel.ghostMode) {
+        toaster.components[PhysicsBodyComponent.self]?.mode = .static
+    } else {
+        toaster.components[PhysicsBodyComponent.self]?.mode = .dynamic
+    }
+    
+    
     toasterAnimate(toaster, kind: .flapWings, shouldRepeat: true)
     
     spaceOrigin.addChild(toaster)
@@ -299,6 +307,12 @@ func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String, startLoca
     toast.position = start
     toast.transform.rotation = rotationQuaternion
     toast.look(at:endPortal.position, from:startPortal.position, relativeTo: nil)
+    
+    if (screenSaverModel.ghostMode) {
+        toast.components[PhysicsBodyComponent.self]?.mode = .static
+    } else {
+        toast.components[PhysicsBodyComponent.self]?.mode = .dynamic
+    }
     
     // Generate animation
     let line = FromToByAnimation<Transform>(

@@ -60,6 +60,7 @@ class ScreenSaverModel {
     
     
     // Toaster config
+    var ghostMode: Bool = false
     var numberOfToastersConfig: Double = 10
     var toastLevelConfig: Int = 0
     var musicEnabled = true {
@@ -82,7 +83,7 @@ class ScreenSaverModel {
     var currentCountdownSecs: Int = 0
     
     var useCustomTimeout = false
-    var hours = 0 {
+    var hours = 1 {
         didSet {
             currentCountdownSecs = hours * 60 * 60 + minutes * 60 + seconds
         }
