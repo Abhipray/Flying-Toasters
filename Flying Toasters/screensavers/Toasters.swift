@@ -63,10 +63,18 @@ func randomPointInCircle3D(center: SIMD3<Float>, radius: Float, transform: Trans
     return globalPoint
 }
 
-func generateToasterStartEndRotation() -> (simd_float3, simd_float3, simd_quatf) {
+func generateToasterStartEndRotation(prevLocation: simd_float3?) -> (simd_float3, simd_float3, simd_quatf) {
     let range: Float = 0.75
+    let min_dist: Float = 0.5
 
-    let start = randomPointInCircle3D(center: startPortal.position, radius: range, transform: startPortal.transform)
+    var start = randomPointInCircle3D(center: startPortal.position, radius: range, transform: startPortal.transform)
+    if prevLocation != nil {
+        // Enforce a minimum distance
+        while (distance(start, prevLocation!) < min_dist) {
+            start = randomPointInCircle3D(center: startPortal.position, radius: range, transform: startPortal.transform)
+        }
+    }
+    
     let end = randomPointInCircle3D(center: endPortal.position, radius: range, transform: endPortal.transform)
     
     // Rotation correction
@@ -112,10 +120,10 @@ func createRandomCubicBezier() -> (controlPoint1: SIMD2<Float>, controlPoint2: S
 
 /// Creates a toaster and places it in the space.
 @MainActor
-func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3?, endLocation: simd_float3?, scale: Float, timing: AnimationTimingFunction?) async throws -> (Entity, AnimationTimingFunction?) {
+func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3?, endLocation: simd_float3?, scale: Float, timing: AnimationTimingFunction?, prevLocation: simd_float3?) async throws -> (Entity, AnimationTimingFunction?) {
     print("Spawning a new toaster")
     
-    var (start, end, rotationQuaternion) = generateToasterStartEndRotation()
+    var (start, end, rotationQuaternion) = generateToasterStartEndRotation(prevLocation: prevLocation)
     if startLocation != nil {
         start = startLocation!
     }
@@ -240,7 +248,7 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
 func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String, startLocation: simd_float3?, endLocation: simd_float3?) async throws -> Entity {
     print("Spawning a new toast")
     
-    var (start, end, _) = generateToasterStartEndRotation()
+    var (start, end, _) = generateToasterStartEndRotation(prevLocation: nil)
     if startLocation != nil {
         start = startLocation!
     }

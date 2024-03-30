@@ -56,6 +56,7 @@ struct ImmersiveView: View {
     @State var sceneUpdateSubscription : Cancellable? = nil
     let session = ARKitSession()
     let worldInfo = WorldTrackingProvider()
+    @State private var prevToasterStart : simd_float3? = nil
     
     var tap: some Gesture {
         TapGesture()
@@ -163,22 +164,27 @@ struct ImmersiveView: View {
             if randomValue < probFamily {
                 family = true
             }
+            
+            
             if maxNumToSpawn >= 1 {
                 Task { @MainActor () -> Void in
                     do {
                         let spawnAmount = Int.random(in: 1...maxNumToSpawn)
                         for _ in (0..<spawnAmount) {
-                            let (mother, mother_timing) = try await spawnToaster(screenSaverModel:screenSaverModel,  startLocation: nil, endLocation: nil, scale:toasterScale, timing: nil)
+                            let (mother, mother_timing) = try await spawnToaster(screenSaverModel:screenSaverModel,  startLocation: nil, endLocation: nil, scale:toasterScale, timing: nil, prevLocation: prevToasterStart)
+                            prevToasterStart = mother.position
+                            
                             try await Task.sleep(nanoseconds: UInt64(0.15 * 1_000_000_000))
                             
                             if family {
                                 for _ in 1...numBabies {
-                                    let _ = try await spawnToaster(screenSaverModel:screenSaverModel, startLocation: mother.position, endLocation: endPortal.position, scale: toasterScale*0.4, timing: mother_timing)
+                                    let _ = try await spawnToaster(screenSaverModel:screenSaverModel, startLocation: prevToasterStart, endLocation: endPortal.position, scale: toasterScale*0.4, timing: mother_timing, prevLocation: prevToasterStart)
                                     try await Task.sleep(nanoseconds: UInt64(0.5 * 1_000_000_000))
                                 }
                                 screenSaverModel.currentNumberOfToasters += numBabies
                                 family = false
                             }
+                            
                             
                             let toastType = screenSaverModel.toastTypes[screenSaverModel.toastLevelConfig]
                             let _ = try await spawnToast(screenSaverModel:screenSaverModel, toastType: toastType, startLocation: nil, endLocation: nil)
