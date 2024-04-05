@@ -313,6 +313,20 @@ class ScreenSaverModel {
         if init_entities {
             portalWorld = makeWorld()
             startPortal = makePortal(world: portalWorld)
+            
+            Task {
+                guard let resource = try? await EnvironmentResource(named: "fantasy") else { return }
+                var iblComponent = ImageBasedLightComponent(
+                    source: .single(resource),
+                    intensityExponent: 1.0)
+
+                // Ensure that the light rotates with its entity. Omit this line
+                // for a light that remains fixed relative to the surroundings.
+                iblComponent.inheritsRotation = true
+
+                await spaceOrigin.components.set(iblComponent)
+                await spaceOrigin.components.set(ImageBasedLightReceiverComponent(imageBasedLight: spaceOrigin))
+            }
         }
         
         let end = toasterEndPoint

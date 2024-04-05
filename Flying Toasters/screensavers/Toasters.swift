@@ -196,7 +196,7 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
     toastIndex += 1;
     
     // Initial toaster configuration
-    toaster.position = toasterSrcPoint
+    toaster.position = start
     toaster.transform.rotation = rotationQuaternion
 
     if let flyingToasterEntity = toaster.findEntity(named: "Flying_Toaster") as? ModelEntity {
@@ -206,7 +206,10 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
             for (index, material) in modelComponent.materials.enumerated() {
                 if var physMaterial = material as? PhysicallyBasedMaterial {
                     // Example modification: changing the base color
-                    physMaterial.emissiveColor =  PhysicallyBasedMaterial.EmissiveColor(color: UIColor(screenSaverModel.toasterColor))
+//                    physMaterial.emissiveColor =  PhysicallyBasedMaterial.EmissiveColor(color: UIColor(screenSaverModel.toasterColor))
+                    physMaterial.emissiveIntensity = 0.0
+                    physMaterial.baseColor =  PhysicallyBasedMaterial.BaseColor(tint: UIColor(screenSaverModel.toasterColor))
+                    physMaterial.metallic = PhysicallyBasedMaterial.Metallic(floatLiteral: 1.0)
                     // Assign the modified material back
                     modelComponent.materials[index] = physMaterial
                 }

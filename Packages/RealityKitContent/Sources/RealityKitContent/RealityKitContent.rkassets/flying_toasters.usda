@@ -96,13 +96,16 @@ def Xform "Root"
 
                 over "Shader"
                 {
-                    color3f inputs:diffuseColor = (0.9575176, 1, 0.081351794) (
+                    float inputs:clearcoat = 1
+                    float inputs:clearcoatRoughness = 0.5
+                    color3f inputs:diffuseColor = (0.9772005, 1, 0.97146434) (
                         colorSpace = "srgb_displayp3"
                     )
-                    color3f inputs:emissiveColor = (0.7066688, 0.2688082, 0.27007347) (
+                    color3f inputs:emissiveColor = (0.69443166, 0.7066688, 0.6762267) (
                         colorSpace = "srgb_displayp3"
                     )
-                    float inputs:metallic = 0.8
+                    float inputs:ior = 1.5
+                    float inputs:metallic = 1
                 }
             }
         }
@@ -157,6 +160,9 @@ def Xform "Root"
         {
             uniform token info:id = "UsdPreviewSurface"
             color3f inputs:diffuseColor = (1, 1, 1) (
+                colorSpace = "srgb_displayp3"
+            )
+            color3f inputs:emissiveColor = (0, 0, 0) (
                 colorSpace = "srgb_displayp3"
             )
             float inputs:metallic = 1
