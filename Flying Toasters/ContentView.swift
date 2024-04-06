@@ -264,6 +264,7 @@ struct SettingsView: View {
                     Toggle(isOn: $screenSaverModel.useImmersiveDisplay) {
                         Text("Screen Saver is immersive")
                     }
+                    .disabled(screenSaverModel.isScreenSaverRunning)
                     .help("Allow Screen Saver to run alongside other app")
                 }
                 

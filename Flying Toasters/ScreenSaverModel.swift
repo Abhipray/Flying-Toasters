@@ -75,7 +75,7 @@ class ScreenSaverModel {
     var ghostMode: Bool = true
     var numberOfToastersConfig: Double = 10
     var toastLevelConfig: Int = 0
-    var musicEnabled = true {
+    var musicEnabled = false {
         didSet {
             if (isScreenSaverRunning) {
                 if (musicEnabled) {
