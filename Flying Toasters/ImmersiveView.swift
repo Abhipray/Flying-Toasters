@@ -105,7 +105,7 @@ struct ImmersiveView: View {
     
     var body: some View {
         RealityView { content, attachments in
-            try? await session.run([worldInfo])
+//            try? await session.run([worldInfo])
             content.add(portalWorld)
             content.add(endPortal)
             content.add(startPortal)
@@ -116,15 +116,15 @@ struct ImmersiveView: View {
                 startPortal.addChild(earthAttachment)
             }
             
-            sceneUpdateSubscription =
-                content.subscribe(to: SceneEvents.Update.self) {event in
-                    guard let pose =
-                       worldInfo.queryDeviceAnchor(atTimestamp: CACurrentMediaTime())
-                    else { return }
-                    let toDeviceTransform = pose.originFromAnchorTransform
-                    let devicePosition = toDeviceTransform.translation
-                    user_pos = devicePosition
-                } as? any Cancellable
+//            sceneUpdateSubscription =
+//                content.subscribe(to: SceneEvents.Update.self) {event in
+//                    guard let pose =
+//                       worldInfo.queryDeviceAnchor(atTimestamp: CACurrentMediaTime())
+//                    else { return }
+//                    let toDeviceTransform = pose.originFromAnchorTransform
+//                    let devicePosition = toDeviceTransform.translation
+//                    user_pos = devicePosition
+//                } as? any Cancellable
             
         } attachments: {
             Attachment(id: "h1") {
@@ -165,20 +165,21 @@ struct ImmersiveView: View {
                 family = true
             }
             
+            let motherScale = screenSaverModel.useImmersiveDisplay ? toasterScale : toasterScale * volumetricToImmersionRatio
             
             if maxNumToSpawn >= 1 {
                 Task { @MainActor () -> Void in
                     do {
                         let spawnAmount = Int.random(in: 1...maxNumToSpawn)
                         for _ in (0..<spawnAmount) {
-                            let (mother, mother_timing) = try await spawnToaster(screenSaverModel:screenSaverModel,  startLocation: nil, endLocation: nil, scale:toasterScale, timing: nil, prevLocation: prevToasterStart)
+                            let (mother, mother_timing) = try await spawnToaster(screenSaverModel:screenSaverModel,  startLocation: nil, endLocation: nil, scale:motherScale, timing: nil, prevLocation: prevToasterStart)
                             prevToasterStart = mother.position
                             
                             try await Task.sleep(nanoseconds: UInt64(0.15 * 1_000_000_000))
                             
                             if family {
                                 for _ in 1...numBabies {
-                                    let _ = try await spawnToaster(screenSaverModel:screenSaverModel, startLocation: prevToasterStart, endLocation: endPortal.position, scale: toasterScale*0.4, timing: mother_timing, prevLocation: prevToasterStart)
+                                    let _ = try await spawnToaster(screenSaverModel:screenSaverModel, startLocation: prevToasterStart, endLocation: endPortal.position, scale: motherScale*0.4, timing: mother_timing, prevLocation: prevToasterStart)
                                     try await Task.sleep(nanoseconds: UInt64(0.5 * 1_000_000_000))
                                 }
                                 screenSaverModel.currentNumberOfToasters += numBabies
@@ -197,6 +198,9 @@ struct ImmersiveView: View {
                 }
             }
         }
+        .onDisappear(perform: {
+            screenSaverModel.handleImmersiveSpaceChange(newValue: false)
+        })
     }
 }
 

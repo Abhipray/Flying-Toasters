@@ -26,7 +26,15 @@ struct Flying_ToastersApp: App {
 
         ImmersiveSpace(id: "ImmersiveSpace") {
             ImmersiveView().environment(screenSaverModel)
-        }.immersionStyle(selection: .constant(.mixed), in: .mixed)
+        }
+        .immersionStyle(selection: .constant(.mixed), in: .mixed)
+        
+        WindowGroup(id: "VolumetricSpace") {
+            ImmersiveView().environment(screenSaverModel)
+        }
+        .windowStyle(.volumetric)
+        .defaultSize(width: 2, height: 2, depth: 2, in: .meters)
+        
     }
     
 }

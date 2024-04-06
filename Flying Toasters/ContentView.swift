@@ -22,6 +22,9 @@ struct ContentView: View {
     
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
+    @Environment(\.openWindow) private var openVolumeWindow
+    @Environment(\.dismissWindow) private var dismissVolumeWindow
+    
     @Environment(ScreenSaverModel.self) var screenSaverModel
     
     func timeString(from totalSeconds: Int) -> String {
@@ -169,6 +172,8 @@ struct ContentView: View {
             .onAppear {
                 screenSaverModel.openImmersiveSpace = openImmersiveSpace
                 screenSaverModel.dismissImmersiveSpace = dismissImmersiveSpace
+                screenSaverModel.dismissVolumeSpace = dismissVolumeWindow
+                screenSaverModel.openVolumeSpace = openVolumeWindow
             }
             .onDisappear {
                 screenSaverModel.handleImmersiveSpaceChange(newValue:false)
@@ -180,7 +185,6 @@ struct SettingsView: View {
 
     @Environment(\.dismiss) var dismiss
     @Environment(ScreenSaverModel.self) var screenSaverModel
-    
 
     
     // Arrays to hold the values for hours, minutes, and seconds
@@ -256,6 +260,11 @@ struct SettingsView: View {
                         Text("Make Toasters Ghosts")
                     }
                     .help("Allow toasters to pass through each other")
+                    
+                    Toggle(isOn: $screenSaverModel.useImmersiveDisplay) {
+                        Text("Screen Saver is immersive")
+                    }
+                    .help("Allow Screen Saver to run alongside other app")
                 }
                 
             }

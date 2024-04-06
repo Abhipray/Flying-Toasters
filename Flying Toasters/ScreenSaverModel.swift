@@ -58,9 +58,21 @@ class ScreenSaverModel {
     var openImmersiveSpace: OpenImmersiveSpaceAction?
     var dismissImmersiveSpace: DismissImmersiveSpaceAction?
     
+    var openVolumeSpace: OpenWindowAction?
+    var dismissVolumeSpace: DismissWindowAction?
+    var useImmersiveDisplay = false {
+        didSet {
+            let scale = useImmersiveDisplay ? 1.0 : volumetricToImmersionRatio
+            preloadPortals(init_entities: false)
+            moonEntity.position = (toasterEndPoint - 0.3) * scale
+            moonEntity.scale = simd_float3(repeating: 0.75) * scale
+            sunEntity.position = (toasterSrcPoint + 0.3) * scale
+            sunEntity.scale = simd_float3(repeating: 1.0) * scale
+        }
+    }
     
     // Toaster config
-    var ghostMode: Bool = false
+    var ghostMode: Bool = true
     var numberOfToastersConfig: Double = 10
     var toastLevelConfig: Int = 0
     var musicEnabled = true {
@@ -174,28 +186,46 @@ class ScreenSaverModel {
                 } else {
                     audioPlayer?.stop() // Ensure this function stops the audio
                 }
-                guard let openSpace = openImmersiveSpace else {
-                    print("openImmersiveSpace is not available.")
-                    return
-                }
-                switch await openSpace(id: "ImmersiveSpace") {
-                case .opened:
+                if self.useImmersiveDisplay {
+                    guard let openSpace = openImmersiveSpace else {
+                        print("openImmersiveSpace is not available.")
+                        return
+                    }
+                    switch await openSpace(id: "ImmersiveSpace") {
+                    case .opened:
+                        isScreenSaverRunning = true
+                        stopTimer()
+                    case .error, .userCancelled:
+                        fallthrough
+                    @unknown default:
+                        isScreenSaverRunning = false
+                    }
+                } else {
+                    guard let openSpace = self.openVolumeSpace else {
+                        print("openVolumeSpace is not available.")
+                        return
+                    }
+                    openSpace(id: "VolumetricSpace")
                     isScreenSaverRunning = true
                     stopTimer()
-                case .error, .userCancelled:
-                    fallthrough
-                @unknown default:
-                    isScreenSaverRunning = false
                 }
             } else if !newValue && isScreenSaverRunning {
                 print("Disabling screen saver")
                 
                 audioPlayer?.stop() // Ensure this function stops the audio
-                guard let dismissSpace = dismissImmersiveSpace else {
-                    print("dismissImmersiveSpace is not available.")
-                    return
+                if self.useImmersiveDisplay {
+                    guard let dismissSpace = dismissImmersiveSpace else {
+                        print("dismissImmersiveSpace is not available.")
+                        return
+                    }
+                    await dismissSpace()
+                } else {
+                    guard let dismissSpace = dismissVolumeSpace else {
+                        print("dismissVolumeSpace is not available.")
+                        return
+                    }
+                    dismissSpace(id: "VolumetricSpace")
                 }
-                await dismissSpace()
                 
                 let timeoutLabel = timeouts[selectedTimeout].0
                 if timeoutLabel != "Never" {
@@ -268,6 +298,7 @@ class ScreenSaverModel {
             sun.position = toasterSrcPoint
             sun.position += 0.3
             sun.scale = simd_float3(repeating: 1.0)
+            sunEntity = sun
             world.addChild(sun)
         }
         
@@ -328,23 +359,23 @@ class ScreenSaverModel {
                 await spaceOrigin.components.set(ImageBasedLightReceiverComponent(imageBasedLight: spaceOrigin))
             }
         }
-        
-        let end = toasterEndPoint
-        let start = toasterSrcPoint
+        let scale = self.useImmersiveDisplay ? 1.0 : volumetricToImmersionRatio
+        let end = toasterEndPoint * scale
+        let start = toasterSrcPoint * scale
         let (rotationAxis, radians) = calculateRotationAngle(from:start, to:end)
 
         // Create a quaternion for the rotation around the y-axis
         // Convert rotation axis and angle to Float
-        startPortal.position = start
+        startPortal.position = start * scale
         var rotationQuaternion =  simd_quatf(angle: radians, axis: rotationAxis)
         startPortal.transform.rotation = rotationQuaternion
-        startPortal.transform.scale = SIMD3<Float>(x: 1.0, y: 1.0, z: 1.0)
+        startPortal.transform.scale = SIMD3<Float>(x: 1.0, y: 1.0, z: 1.0) * scale
     
         if init_entities {
             endPortal = makePortal(world: portalWorld)
         }
-        endPortal.position = end
-        endPortal.scale = SIMD3<Float>(repeating: 1.5)
+        endPortal.position = end * scale
+        endPortal.scale = SIMD3<Float>(repeating: 1.5) * scale
         rotationQuaternion =  simd_quatf(angle: radians + Float.pi, axis: rotationAxis)
         endPortal.transform.rotation = rotationQuaternion
     }
@@ -361,7 +392,6 @@ class ScreenSaverModel {
             } catch {
                 print("Error loading toaster from scene flying_toasters: \(error.localizedDescription)")
             }
-            
             
             toasterTemplate = entity
             
