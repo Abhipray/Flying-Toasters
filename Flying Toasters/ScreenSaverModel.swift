@@ -332,7 +332,7 @@ class ScreenSaverModel {
         particles.emitterShapeSize = SIMD3<Float>(x: 0.8, y: 0.8, z: 0.8)
         particles.particlesInheritTransform = true
         particles.speed = 3.0
-        particles.burstCount = 1000
+        particles.burstCount = 50
         particleEntity.components[ParticleEmitterComponent.self] = particles
         portal.addChild(particleEntity)
         

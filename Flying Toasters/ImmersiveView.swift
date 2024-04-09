@@ -187,6 +187,7 @@ struct ImmersiveView: View {
                         for _ in (0..<spawnAmount) {
                             let (mother, mother_timing) = try await spawnToaster(screenSaverModel:screenSaverModel,  startLocation: nil, endLocation: nil, scale:motherScale, timing: nil, prevLocation: prevToasterStart)
                             prevToasterStart = mother.position
+                            startPortal.children[0].components[ParticleEmitterComponent.self]?.burst()
                             
                             try await Task.sleep(nanoseconds: UInt64(0.15 * 1_000_000_000))
                             
