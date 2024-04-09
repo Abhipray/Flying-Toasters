@@ -332,7 +332,8 @@ class ScreenSaverModel {
         particles.emitterShapeSize = SIMD3<Float>(x: 0.8, y: 0.8, z: 0.8)
         particles.particlesInheritTransform = true
         particles.speed = 3.0
-        particles.burstCount = 50
+        particles.burstCount = 100
+        particles.mainEmitter.birthRate = 50
         particleEntity.components[ParticleEmitterComponent.self] = particles
         portal.addChild(particleEntity)
         
@@ -346,10 +347,10 @@ class ScreenSaverModel {
             startPortal = makePortal(world: portalWorld)
             
             Task {
-                guard let resource = try? await EnvironmentResource(named: "fantasy") else { return }
+                guard let resource = try? await EnvironmentResource(named: "Sunlight") else { return }
                 var iblComponent = ImageBasedLightComponent(
                     source: .single(resource),
-                    intensityExponent: 1.0)
+                    intensityExponent: 14.0)
 
                 // Ensure that the light rotates with its entity. Omit this line
                 // for a light that remains fixed relative to the surroundings.
