@@ -122,6 +122,7 @@ struct ImmersiveView: View {
             content.add(startPortal)
             content.add(spaceOrigin)
             content.add(cameraAnchor)
+            
             if let earthAttachment = attachments.entity(for: "h1") {
                 earthAttachment.position = [0, -1.5, 0]
                 startPortal.addChild(earthAttachment)

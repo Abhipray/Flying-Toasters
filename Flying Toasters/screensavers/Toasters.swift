@@ -24,10 +24,9 @@ var moonEntity = Entity()
 var sunEntity = Entity()
 var toastNumber = 0
 
-var volumetricToImmersionRatio : Float = 2.0/7.0
-
 var toasterSrcPoint = simd_float3(x: 4.0, y: 3.0, z: -8.0)
 var toasterEndPoint = simd_float3(x: -3.0, y: 0.5, z: -1.0)
+var volumetricToImmersionRatio : Float = 2.0/reduce_max(abs(toasterEndPoint-toasterSrcPoint))
 
 /// Toaster spawn parameters (in meters).
 struct ToasterSpawnParameters {

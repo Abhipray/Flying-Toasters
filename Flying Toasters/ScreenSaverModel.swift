@@ -337,6 +337,16 @@ class ScreenSaverModel {
         particleEntity.components[ParticleEmitterComponent.self] = particles
         portal.addChild(particleEntity)
         
+        // Add a backing
+        // Create the circular plane as a child entity
+        let circularPlaneBack = ModelEntity(mesh: .generatePlane(width: 2, height: 2, cornerRadius: 1), materials: [SimpleMaterial(color: .black, isMetallic: false)])
+
+        circularPlaneBack.position = [0, 0, -0.1]
+        circularPlaneBack.orientation = simd_quatf(angle: .pi, axis: [0, 1, 0]) // Rotate 180 degrees around the y-axis
+
+        // Add the circular plane as a child of the portal
+        portal.addChild(circularPlaneBack)
+        
         return portal
     }
     
@@ -376,7 +386,7 @@ class ScreenSaverModel {
             endPortal = makePortal(world: portalWorld)
         }
         endPortal.position = end * scale
-        endPortal.scale = SIMD3<Float>(repeating: 1.5) * scale
+        endPortal.scale = SIMD3<Float>(repeating: 1.0) * scale
         rotationQuaternion =  simd_quatf(angle: radians + Float.pi, axis: rotationAxis)
         endPortal.transform.rotation = rotationQuaternion
     }
