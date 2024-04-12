@@ -315,10 +315,7 @@ class ScreenSaverModel {
         portal.components[CollisionComponent.self] = CollisionComponent(shapes: [.generateBox(width: 2, height: 2, depth: 0.5)], mode: .trigger)
         portal.components.set(HoverEffectComponent())
         
-        var component = GestureComponent(canDrag: true, pivotOnDrag: false, preserveOrientationOnPivotDrag: false, canScale: true, canRotate: true)
-        component.scaleMaxMag = 100
-        component.scaleMinMag = 0.8
-        component.initialScaleXVal = portal.scale.x
+        let component = GestureComponent(canDrag: true, pivotOnDrag: false, preserveOrientationOnPivotDrag: false, canScale: true, canRotate: true)
         portal.components.set(component)
         
         // Particle effects
@@ -351,12 +348,15 @@ class ScreenSaverModel {
     }
     
     func preloadPortals(init_entities: Bool) -> Void {
+        let scale = self.useImmersiveDisplay ? 1.0 : volumetricToImmersionRatio
+        
         // Start portal
         if init_entities {
             portalWorld = makeWorld()
             startPortal = makePortal(world: portalWorld)
+            endPortal = makePortal(world: portalWorld)
         }
-        let scale = self.useImmersiveDisplay ? 1.0 : volumetricToImmersionRatio
+        
         let end = toasterEndPoint * scale
         let start = toasterSrcPoint * scale
         let (rotationAxis, radians) = calculateRotationAngle(from:start, to:end)
@@ -368,13 +368,19 @@ class ScreenSaverModel {
         startPortal.transform.rotation = rotationQuaternion
         startPortal.transform.scale = SIMD3<Float>(x: 1.0, y: 1.0, z: 1.0) * scale
     
-        if init_entities {
-            endPortal = makePortal(world: portalWorld)
-        }
+
         endPortal.position = end * scale
         endPortal.scale = SIMD3<Float>(repeating: 1.0) * scale
         rotationQuaternion =  simd_quatf(angle: radians + Float.pi, axis: rotationAxis)
         endPortal.transform.rotation = rotationQuaternion
+        
+        startPortal.components[GestureComponent.self]?.scaleMaxMag = 100*scale
+        startPortal.components[GestureComponent.self]?.scaleMinMag = 0.8*scale
+        startPortal.components[GestureComponent.self]?.initialScaleXVal = startPortal.scale.x
+        
+        endPortal.components[GestureComponent.self]?.scaleMaxMag = 100*scale
+        endPortal.components[GestureComponent.self]?.scaleMinMag = 0.8*scale
+        endPortal.components[GestureComponent.self]?.initialScaleXVal = endPortal.scale.x
     }
     
     /// Preload assets when the app launches to avoid pop-in during the game.
