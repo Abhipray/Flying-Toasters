@@ -195,7 +195,13 @@ struct SettingsView: View {
         @Bindable var screenSaverModel = screenSaverModel
         NavigationView {
             Form {
-                Section(header: Text("").font(.headline)) {
+                Section() {
+                    Toggle(isOn: $screenSaverModel.useImmersiveDisplay) {
+                        Text("Screen Saver is fully immersive")
+                    }
+                    .disabled(screenSaverModel.isScreenSaverRunning)
+                    .help("Allow/disallow Screen Saver to run alongside other apps")
+                    
                     Picker("Start Screen Saver when inactive ", selection: $screenSaverModel.selectedTimeout) {
                         ForEach(0..<screenSaverModel.timeouts.count, id: \.self) { index in
                             Text(screenSaverModel.timeouts[index].0).tag(index)
@@ -237,7 +243,7 @@ struct SettingsView: View {
                             .help("Set the number of flying toasters displayed.")
                     }
 
-                    VStack{
+                    HStack{
                         Text("Toast Level:")
                         Picker("Toast Level", selection: $screenSaverModel.toastLevelConfig) {
                             Text("Light").tag(0) // Index for Light
@@ -261,11 +267,6 @@ struct SettingsView: View {
                     }
                     .help("Allow toasters to pass through each other")
                     
-                    Toggle(isOn: $screenSaverModel.useImmersiveDisplay) {
-                        Text("Screen Saver is immersive")
-                    }
-                    .disabled(screenSaverModel.isScreenSaverRunning)
-                    .help("Allow Screen Saver to run alongside other app")
                 }
                 
             }
