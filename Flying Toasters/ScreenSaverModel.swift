@@ -75,7 +75,7 @@ class ScreenSaverModel {
     var ghostMode: Bool = true
     var numberOfToastersConfig: Double = 10
     var toastLevelConfig: Int = 0
-    var musicEnabled = false {
+    var musicEnabled = true {
         didSet {
             if (isScreenSaverRunning) {
                 if (musicEnabled) {
@@ -340,7 +340,7 @@ class ScreenSaverModel {
         // Add a backing
         // Create the circular plane as a child entity
         let circularPlaneBack = ModelEntity(mesh: .generatePlane(width: 2, height: 2, cornerRadius: 1), materials: [SimpleMaterial(color: .black, isMetallic: false)])
-
+        circularPlaneBack.setSunlight(intensity: nil)
         circularPlaneBack.position = [0, 0, -0.1]
         circularPlaneBack.orientation = simd_quatf(angle: .pi, axis: [0, 1, 0]) // Rotate 180 degrees around the y-axis
 

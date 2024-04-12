@@ -70,7 +70,7 @@ struct ImmersiveView: View {
                     }
                     print("Tap tap@")
                     
-                    let scale = screenSaverModel.useImmersiveDisplay ? 1.0 : volumetricToImmersionRatio
+                    let scale : Float = screenSaverModel.useImmersiveDisplay ? 1.0 : volumetricToImmersionRatio
                     let idx = Int.random(in: 0...toasterPhrashes.count-1)
                     let text = ModelEntity(mesh: .generateText(toasterPhrashes[idx],
                                                                extrusionDepth: 0.0,
@@ -78,8 +78,8 @@ struct ImmersiveView: View {
                     text.model?.materials = [UnlitMaterial(color:.white)]
                     let textHeight = text.visualBounds(relativeTo: nil).extents.y
                     let textWidth = text.visualBounds(relativeTo: nil).extents.x
-                
                     
+
                     // Create a plane for the bubble background. Using a plane as an approximation.
                     let bubbleMesh = MeshResource.generatePlane(width: textWidth+(0.1*scale), height: textHeight+(0.1*scale), cornerRadius: 0.1*scale)
                     let bubbleMaterial = SimpleMaterial(color: .black, isMetallic: false)
@@ -105,9 +105,9 @@ struct ImmersiveView: View {
                         bubbleEntity.orientation = rotationQuaternion
                         toaster.addChild(bubbleEntity, preservingWorldTransform: true)
                     } else {
-                        bubbleEntity.position = [toasterWidth*100, toasterHeight*50, 0]
-//                        bubbleEntity.orientation = toaster.orientation
-                        toaster.addChild(bubbleEntity)
+                        bubbleEntity.position = [0,0,0]
+                        toaster.addChild(bubbleEntity, preservingWorldTransform: true)
+                        print(toaster.position)
                     }
                     print("Added a speech bubble")
                 }
@@ -117,9 +117,9 @@ struct ImmersiveView: View {
     var body: some View {
         RealityView { content, attachments in
             try? await session.run([worldInfo])
-            content.add(portalWorld)
-            content.add(endPortal)
-            content.add(startPortal)
+            spaceOrigin.addChild(portalWorld)
+            spaceOrigin.addChild(endPortal)
+            spaceOrigin.addChild(startPortal)
             content.add(spaceOrigin)
             content.add(cameraAnchor)
             
