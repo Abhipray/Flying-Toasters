@@ -60,7 +60,7 @@ class ScreenSaverModel {
     
     var openVolumeSpace: OpenWindowAction?
     var dismissVolumeSpace: DismissWindowAction?
-    var useImmersiveDisplay = false {
+    var useImmersiveDisplay = true {
         didSet {
             let scale = useImmersiveDisplay ? 1.0 : volumetricToImmersionRatio
             preloadPortals(init_entities: false)
@@ -355,20 +355,6 @@ class ScreenSaverModel {
         if init_entities {
             portalWorld = makeWorld()
             startPortal = makePortal(world: portalWorld)
-            
-            Task {
-                guard let resource = try? await EnvironmentResource(named: "Sunlight") else { return }
-                var iblComponent = ImageBasedLightComponent(
-                    source: .single(resource),
-                    intensityExponent: 14.0)
-
-                // Ensure that the light rotates with its entity. Omit this line
-                // for a light that remains fixed relative to the surroundings.
-                iblComponent.inheritsRotation = true
-
-                await spaceOrigin.components.set(iblComponent)
-                await spaceOrigin.components.set(ImageBasedLightReceiverComponent(imageBasedLight: spaceOrigin))
-            }
         }
         let scale = self.useImmersiveDisplay ? 1.0 : volumetricToImmersionRatio
         let end = toasterEndPoint * scale

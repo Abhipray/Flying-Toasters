@@ -89,9 +89,6 @@ func generateToasterStartEndRotation(prevLocation: simd_float3?, scale: Float) -
     return (start, end, rotationQuaternion)
 }
 
-var velocityResetWorkItems = [String: DispatchWorkItem]()
-var collidingToasters: [Entity] = [] // Assuming toasters is defined here
-
 
 //@MainActor
 //func handleCollisionStart(for event: CollisionEvents.Began) async throws {
@@ -224,6 +221,8 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
     toaster.setMaterialParameterValues(parameter: "animate_texture", value: .bool(true))
     toaster.components[HoverEffectComponent.self] = HoverEffectComponent()
     
+    toaster.setSunlight(intensity: 12.0)
+    
 
     if (screenSaverModel.ghostMode) {
         toaster.components[PhysicsBodyComponent.self]?.mode = .static
@@ -333,6 +332,7 @@ func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String, startLoca
     toast.playAnimation(animation, transitionDuration: 1.0, startsPaused: false)
     toast.setMaterialParameterValues(parameter: "saturation", value: .float(0.0))
     toast.setMaterialParameterValues(parameter: "animate_texture", value: .bool(false))
+    toast.setSunlight(intensity: 14.0)
     
     spaceOrigin.addChild(toast)
 
