@@ -491,13 +491,16 @@ def Xform "Root"
 
         def RealityKitComponent "RigidBody"
         {
-            float angularDamping = 1000
+            float angularDamping = 10000
             bool gravityEnabled = 0
             uniform token info:id = "RealityKit.RigidBody"
-            float linearDamping = 1000
+            float linearDamping = 10000
 
             def RealityKitStruct "massFrame"
             {
+                float3 m_inertia = (4000, 4000, 0.1)
+                float m_mass = 5
+
                 def RealityKitStruct "m_pose"
                 {
                 }
@@ -505,6 +508,9 @@ def Xform "Root"
 
             def RealityKitStruct "material"
             {
+                double dynamicFriction = 0.5
+                double restitution = 1
+                double staticFriction = 0.5
             }
         }
     }

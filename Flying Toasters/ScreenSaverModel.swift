@@ -42,7 +42,7 @@ class ScreenSaverModel {
     var audioPlayer: AVAudioPlayer? = nil
     var secondsLeft = Int.max
     
-    var toasterColor = Color(.sRGB, red: 0.98, green: 0.9, blue: 0.2)
+    var toasterColor = Color(.sRGB, red: 247/255, green: 228/255, blue: 70/255)
     
     var secondsElapsed = 0 {
         didSet {
