@@ -10,7 +10,7 @@
 
 def Xform "Root"
 {
-    reorder nameChildren = ["toaster", "Material", "Material_wing", "portal", "toast_dark", "toast_light", "bread_light_1", "toast_medium"]
+    reorder nameChildren = ["toaster", "Material", "Material_wing", "toast_dark", "toast_light", "toast_med", "Moon", "Sun", "Cylinder", "ParticleEmitter"]
     def "toaster" (
         active = true
         prepend apiSchemas = ["MaterialBindingAPI"]
@@ -101,8 +101,8 @@ def Xform "Root"
                     color3f inputs:diffuseColor = (0.9772005, 1, 0.97146434) (
                         colorSpace = "srgb_displayp3"
                     )
-                    color3f inputs:emissiveColor = (0.69443166, 0.7066688, 0.6762267) (
-                        colorSpace = "srgb_displayp3"
+                    color3f inputs:emissiveColor = (0, 0, 0) (
+                        colorSpace = "srgb_texture"
                     )
                     float inputs:ior = 1.5
                     float inputs:metallic = 1
@@ -192,12 +192,16 @@ def Xform "Root"
         def Shader "UsdPreviewSurface"
         {
             uniform token info:id = "UsdPreviewSurface"
-            color3f inputs:diffuseColor = (1, 1, 1) (
-                colorSpace = "srgb_displayp3"
+            float inputs:clearcoat = 1
+            float inputs:clearcoatRoughness = 0.5
+            color3f inputs:diffuseColor = (0.999996, 1, 1) (
+                colorSpace = "srgb_texture"
             )
-            color3f inputs:emissiveColor = (0.96285033, 0.96285033, 0.96285033) (
-                colorSpace = "srgb_displayp3"
+            color3f inputs:emissiveColor = (0.837418, 0.8374378, 0.83742714) (
+                colorSpace = "srgb_texture"
             )
+            float inputs:metallic = 1
+            float inputs:opacityThreshold = 0
             token outputs:surface
         }
     }
@@ -268,7 +272,7 @@ def Xform "Root"
 
     def "toast_light" (
         active = true
-        prepend references = @toast_light.usdz@
+        references = @toast_light.usdz@
     )
     {
         float3 xformOp:scale = (1, 1, 1)
@@ -319,7 +323,7 @@ def Xform "Root"
 
     def "toast_med" (
         active = true
-        prepend references = @toast_med.usdz@
+        references = @toast_med.usdz@
     )
     {
         float3 xformOp:scale = (1, 1, 1)
@@ -370,7 +374,7 @@ def Xform "Root"
 
     def "Moon" (
         active = true
-        prepend references = @Moon.usda@
+        references = @Moon.usda@
     )
     {
         float3 xformOp:scale = (1, 1, 1)
@@ -380,7 +384,7 @@ def Xform "Root"
 
     def "Sun" (
         active = true
-        prepend references = @Sun.usda@
+        references = @Sun.usda@
     )
     {
         float3 xformOp:scale = (1, 1, 1)
@@ -403,6 +407,61 @@ def Xform "Root"
             )
             {
                 bool isEnabled = 0
+            }
+        }
+    }
+
+    def "toaster_mirror_perm2" (
+        active = true
+        prepend references = @toaster_mirror_perm2.usdz@
+    )
+    {
+        float3 xformOp:scale = (0.001, 0.001, 0.001)
+        float3 xformOp:translate = (-0.07033996, 0.01, 0.11003928)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        over "Geom"
+        {
+            over "toaster_top" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
+            {
+                rel material:binding = </Root/toaster/Materials/defaultMaterial> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+            }
+
+            over "wings_001" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
+            {
+                rel material:binding = </Root/Material_wing> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+            }
+
+            over "wings" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
+            {
+                rel material:binding = </Root/Material_wing> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+            }
+        }
+
+        over "Materials"
+        {
+            over "Material"
+            {
+                token outputs:mtlx:surface
+                token outputs:realitykit:vertex
+            }
+
+            over "defaultMaterial"
+            {
+                token outputs:mtlx:surface
+                token outputs:realitykit:vertex
             }
         }
     }

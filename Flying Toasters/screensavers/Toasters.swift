@@ -221,7 +221,7 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
     toaster.setMaterialParameterValues(parameter: "animate_texture", value: .bool(true))
     toaster.components[HoverEffectComponent.self] = HoverEffectComponent()
     
-    toaster.setSunlight(intensity: 10.0)
+    toaster.setSunlight(intensity: 14.0)
     
 
     if (screenSaverModel.ghostMode) {

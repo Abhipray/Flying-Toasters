@@ -395,7 +395,7 @@ class ScreenSaverModel {
             var entity: Entity? = nil
             do {
                 let scene = try await Entity(named: "flying_toasters", in: realityKitContentBundle)
-                entity = scene.findEntity(named: "toaster")
+                entity = scene.findEntity(named: "toaster_mirror_perm2")
             } catch {
                 print("Error loading toaster from scene flying_toasters: \(error.localizedDescription)")
             }
