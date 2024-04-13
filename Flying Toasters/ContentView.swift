@@ -196,11 +196,17 @@ struct SettingsView: View {
         NavigationView {
             Form {
                 Section() {
-                    Toggle(isOn: $screenSaverModel.useImmersiveDisplay) {
-                        Text("Screen Saver is fully immersive")
+                    HStack{
+                        Text("Display mode:")
+                        Picker("Display mode", selection: $screenSaverModel.displayMode) {
+                            Text("Volumetric").tag(0) // Index for Light
+                            Text("Immersive").tag(1) // Index for Medium
+                        }
+                        .pickerStyle(.segmented)
+                        .disabled(screenSaverModel.isScreenSaverRunning)
+                        .help("Allow/disallow Screen Saver to run alongside other apps")
                     }
-                    .disabled(screenSaverModel.isScreenSaverRunning)
-                    .help("Allow/disallow Screen Saver to run alongside other apps")
+                    
                     
                     Picker("Start Screen Saver when inactive ", selection: $screenSaverModel.selectedTimeout) {
                         ForEach(0..<screenSaverModel.timeouts.count, id: \.self) { index in

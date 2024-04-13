@@ -123,6 +123,10 @@ struct ImmersiveView: View {
             content.add(spaceOrigin)
             content.add(cameraAnchor)
             
+            if !screenSaverModel.useImmersiveDisplay {
+                spaceOrigin.position.y -= 0.5
+            }
+            
             if let earthAttachment = attachments.entity(for: "h1") {
                 earthAttachment.position = [0, -1.5, 0]
                 startPortal.addChild(earthAttachment)

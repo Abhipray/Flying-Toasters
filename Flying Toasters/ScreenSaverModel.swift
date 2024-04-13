@@ -60,16 +60,20 @@ class ScreenSaverModel {
     
     var openVolumeSpace: OpenWindowAction?
     var dismissVolumeSpace: DismissWindowAction?
-    var useImmersiveDisplay = true {
+    var displayMode : Int = 1 {
         didSet {
-            let scale = useImmersiveDisplay ? 1.0 : volumetricToImmersionRatio
-            preloadPortals(init_entities: false)
-            moonEntity.position = (toasterEndPoint - 0.3) * scale
-            moonEntity.scale = simd_float3(repeating: 0.75) * scale
-            sunEntity.position = (toasterSrcPoint + 0.3) * scale
-            sunEntity.scale = simd_float3(repeating: 1.0) * scale
+                useImmersiveDisplay = displayMode == 1
+                let scale = useImmersiveDisplay ? 1.0 : volumetricToImmersionRatio
+                preloadPortals(init_entities: false)
+                moonEntity.position = (toasterEndPoint - 0.3) * scale
+                moonEntity.scale = simd_float3(repeating: 0.75) * scale
+                sunEntity.position = (toasterSrcPoint + 0.3) * scale
+                sunEntity.scale = simd_float3(repeating: 1.0) * scale
+            
         }
     }
+    
+    var useImmersiveDisplay : Bool = true
     
     // Toaster config
     var ghostMode: Bool = true

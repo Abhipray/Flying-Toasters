@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2A42497E2BBE77F50017E5C4 /* Sunlight.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 2A42497D2BBE77F50017E5C4 /* Sunlight.skybox */; };
-		2A4249802BBE7B210017E5C4 /* fantasy.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 2A42497F2BBE7B210017E5C4 /* fantasy.skybox */; };
 		2A4A06782B81B47A00512032 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 2A4A06772B81B47A00512032 /* RealityKitContent */; };
 		2A4A067A2B81B47A00512032 /* Flying_ToastersApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4A06792B81B47A00512032 /* Flying_ToastersApp.swift */; };
 		2A4A067C2B81B47A00512032 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A4A067B2B81B47A00512032 /* ContentView.swift */; };
@@ -37,7 +36,6 @@
 
 /* Begin PBXFileReference section */
 		2A42497D2BBE77F50017E5C4 /* Sunlight.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = Sunlight.skybox; sourceTree = "<group>"; };
-		2A42497F2BBE7B210017E5C4 /* fantasy.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = fantasy.skybox; sourceTree = "<group>"; };
 		2A4A06722B81B47A00512032 /* Flying Toasters.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Flying Toasters.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A4A06762B81B47A00512032 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
 		2A4A06792B81B47A00512032 /* Flying_ToastersApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flying_ToastersApp.swift; sourceTree = "<group>"; };
@@ -99,7 +97,6 @@
 			isa = PBXGroup;
 			children = (
 				2A4A06A32B833F3400512032 /* Extensions.swift */,
-				2A42497F2BBE7B210017E5C4 /* fantasy.skybox */,
 				2A42497D2BBE77F50017E5C4 /* Sunlight.skybox */,
 				2A4A069A2B82F6CB00512032 /* screensavers */,
 				2A4A06792B81B47A00512032 /* Flying_ToastersApp.swift */,
@@ -237,7 +234,6 @@
 				2A4A06822B81B47C00512032 /* Assets.xcassets in Resources */,
 				2A4A06852B81B47C00512032 /* Preview Assets.xcassets in Resources */,
 				2A42497E2BBE77F50017E5C4 /* Sunlight.skybox in Resources */,
-				2A4249802BBE7B210017E5C4 /* fantasy.skybox in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
