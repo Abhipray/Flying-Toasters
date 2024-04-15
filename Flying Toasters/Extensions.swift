@@ -224,7 +224,7 @@ extension Entity {
 
                 // Ensure that the light rotates with its entity. Omit this line
                 // for a light that remains fixed relative to the surroundings.
-                iblComponent.inheritsRotation = true
+                iblComponent.inheritsRotation = false
 
                 components.set(iblComponent)
                 components.set(ImageBasedLightReceiverComponent(imageBasedLight: self))
