@@ -11,127 +11,6 @@
 def Xform "Root"
 {
     reorder nameChildren = ["toaster", "Material", "Material_wing", "toast_dark", "toast_light", "toast_med", "Moon", "Sun", "Cylinder", "ParticleEmitter"]
-    def "toaster" (
-        active = true
-        prepend apiSchemas = ["MaterialBindingAPI"]
-        customData = {
-            float3 rotationEulerHint = (0, 0, 0)
-        }
-        references = @toaster.usdz@
-    )
-    {
-        rel material:binding = </Root/Material> (
-            bindMaterialAs = "weakerThanDescendants"
-        )
-        quatf xformOp:orient = (1, 0, 0, 0)
-        float3 xformOp:scale = (0.001, 0.001, 0.001)
-        float3 xformOp:translate = (0, 0, 0)
-        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-
-        def RealityKitComponent "RigidBody"
-        {
-            float angularDamping = 10000
-            bool gravityEnabled = 0
-            uniform token info:id = "RealityKit.RigidBody"
-            bool isCCDEnabled = 1
-            float linearDamping = 10000
-            bool lockRotationX = 0
-            bool lockRotationY = 0
-            bool lockRotationZ = 0
-            bool lockTranslationX = 0
-            bool lockTranslationY = 0
-            bool lockTranslationZ = 0
-            token motionType = "Dynamic"
-
-            def RealityKitStruct "massFrame"
-            {
-                float3 m_inertia = (400, 400, 400)
-                float m_mass = 5
-
-                def RealityKitStruct "m_pose"
-                {
-                }
-            }
-
-            def RealityKitStruct "material"
-            {
-                double dynamicFriction = 0.5
-                double restitution = 0.1
-                double staticFriction = 0.5
-            }
-        }
-
-        def RealityKitComponent "InputTarget"
-        {
-            uniform token info:id = "RealityKit.InputTarget"
-        }
-
-        def RealityKitComponent "Collider"
-        {
-            uint group = 1
-            uniform token info:id = "RealityKit.Collider"
-            uint mask = 4294967295
-            token type = "Default"
-
-            def RealityKitStruct "Shape"
-            {
-                float3 extent = (200, 90, 110)
-                float height = 66.70497
-                float radius = 90.02022
-                token shapeType = "Box"
-
-                def RealityKitStruct "pose"
-                {
-                    float3 position = (-2.7077675, 37.51191, 3.1135979)
-                }
-            }
-        }
-
-        over "Materials"
-        {
-            over "defaultMaterial"
-            {
-                token outputs:mtlx:surface
-                token outputs:realitykit:vertex
-
-                over "Shader"
-                {
-                    float inputs:clearcoat = 1
-                    float inputs:clearcoatRoughness = 0.5
-                    color3f inputs:diffuseColor = (0.9772005, 1, 0.97146434) (
-                        colorSpace = "srgb_displayp3"
-                    )
-                    color3f inputs:emissiveColor = (0, 0, 0) (
-                        colorSpace = "srgb_texture"
-                    )
-                    float inputs:ior = 1.5
-                    float inputs:metallic = 1
-                }
-            }
-        }
-
-        over "Geom"
-        {
-            over "wings" (
-                prepend apiSchemas = ["MaterialBindingAPI"]
-            )
-            {
-                rel material:binding = </Root/Material_wing> (
-                    bindMaterialAs = "weakerThanDescendants"
-                )
-            }
-
-            over "wings_001" (
-                prepend apiSchemas = ["MaterialBindingAPI"]
-            )
-            {
-                rel material:binding = </Root/Material_wing> (
-                    bindMaterialAs = "weakerThanDescendants"
-                )
-            }
-        }
-    }
-
     def Material "Material"
     {
         token outputs:mtlx:surface.connect = </Root/Material/PreviewSurface.outputs:out>
@@ -202,6 +81,7 @@ def Xform "Root"
             )
             float inputs:metallic = 1
             float inputs:opacityThreshold = 0
+            float inputs:roughness = 0
             token outputs:surface
         }
     }
@@ -413,9 +293,10 @@ def Xform "Root"
 
     def "toaster_mirror_perm2" (
         active = true
-        prepend references = @toaster_mirror_perm2.usdz@
+        references = @toaster_mirror_perm2.usdz@
     )
     {
+        reorder nameChildren = ["Materials", "Geom", "Collider", "InputTarget", "RigidBody", "defaultMaterial_1"]
         float3 xformOp:scale = (0.001, 0.001, 0.001)
         float3 xformOp:translate = (-0.07033996, 0.01, 0.11003928)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
@@ -426,7 +307,7 @@ def Xform "Root"
                 prepend apiSchemas = ["MaterialBindingAPI"]
             )
             {
-                rel material:binding = </Root/toaster/Materials/defaultMaterial> (
+                rel material:binding = </Root/toaster_mirror_perm2/Materials/defaultMaterial> (
                     bindMaterialAs = "weakerThanDescendants"
                 )
             }
@@ -448,20 +329,46 @@ def Xform "Root"
                     bindMaterialAs = "weakerThanDescendants"
                 )
             }
+
+            over "Flying_Toaster" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
+            {
+                rel material:binding = </Root/toaster_mirror_perm2/Materials/Material> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+            }
         }
 
         over "Materials"
         {
+            reorder nameChildren = ["Material", "defaultMaterial"]
             over "Material"
             {
                 token outputs:mtlx:surface
                 token outputs:realitykit:vertex
+
+                over "surfaceShader"
+                {
+                    float inputs:clearcoat = 0
+                    float inputs:metallic = 1
+                    float inputs:roughness = 0.1
+                }
             }
 
             over "defaultMaterial"
             {
                 token outputs:mtlx:surface
                 token outputs:realitykit:vertex
+
+                over "Shader"
+                {
+                    color3f inputs:diffuseColor = (0.837418, 0.8374378, 0.83742714) (
+                        colorSpace = "srgb_texture"
+                    )
+                    float inputs:metallic = 1
+                    float inputs:roughness = 0.1
+                }
             }
         }
 

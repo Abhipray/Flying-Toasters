@@ -221,7 +221,7 @@ func spawnToaster(screenSaverModel: ScreenSaverModel, startLocation: simd_float3
     toaster.setMaterialParameterValues(parameter: "animate_texture", value: .bool(true))
     toaster.components[HoverEffectComponent.self] = HoverEffectComponent()
     
-    toaster.setSunlight(intensity: 10.0)
+    toaster.setSunlight(intensity: 0.1)
     
 
     if (screenSaverModel.ghostMode) {
@@ -332,7 +332,7 @@ func spawnToast(screenSaverModel: ScreenSaverModel, toastType: String, startLoca
     toast.playAnimation(animation, transitionDuration: 1.0, startsPaused: false)
     toast.setMaterialParameterValues(parameter: "saturation", value: .float(0.0))
     toast.setMaterialParameterValues(parameter: "animate_texture", value: .bool(false))
-    toast.setSunlight(intensity: 14.0)
+    toast.setSunlight(intensity: 1.0)
     
     spaceOrigin.addChild(toast)
 
